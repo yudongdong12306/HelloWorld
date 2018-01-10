@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        tools:ignore="Suspicious0dp">
+
+        <TextView
+            android:id="@+id/start_detect_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/start_detect"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/size_20sp" />
+
+        <TextView
+            android:id="@+id/data_manage_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/data_manage"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/size_20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        tools:ignore="Suspicious0dp">
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/system_set_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/system_set"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/size_20sp" />
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/about_us_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/data_manage"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/size_20sp" />
+    </LinearLayout>
+
+
+</LinearLayout>
