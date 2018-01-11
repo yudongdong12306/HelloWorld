@@ -1,4 +1,4 @@
-package com.detect.detect;
+package com.detect.detect.ui;
 
 /**
  * Created by dongdong.yu on 2018/1/8.

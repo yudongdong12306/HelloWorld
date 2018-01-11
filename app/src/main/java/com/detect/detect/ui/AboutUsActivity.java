@@ -1,13 +1,12 @@
-package com.detect.detect;
+package com.detect.detect.ui;
 
 /**
- * Created by dongdong.yu on 2018/1/7.
+ * Created by dongdong.yu on 2018/1/9.
  */
 
-public class SystemSetActivity extends BaseActivity {
+public class AboutUsActivity extends BaseActivity {
     @Override
     protected void initData() {
-
     }
 
     @Override

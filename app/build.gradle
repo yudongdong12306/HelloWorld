@@ -57,7 +57,9 @@ dependencies {
     compile "jp.wasabeef:glide-transformations:$rootProject.glideTransformationVersion"
 
     //Butterknife
-    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+//    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     //fragmentation
 //    compile "me.yokeyword:fragmentation:$rootProject.fragmentationVersion"

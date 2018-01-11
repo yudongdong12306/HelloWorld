@@ -1,10 +1,11 @@
-package com.detect.detect;
+package com.detect.detect.ui;
+
 
 /**
  * Created by dongdong.yu on 2018/1/7.
  */
 
-public class StartDetectActivity extends BaseActivity {
+public class SystemSetActivity extends BaseActivity {
     @Override
     protected void initData() {
 
@@ -12,7 +13,7 @@ public class StartDetectActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_start_detect;
+        return 0;
     }
 
     @Override

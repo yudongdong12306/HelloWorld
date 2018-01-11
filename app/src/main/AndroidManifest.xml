@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.detect.detect">
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".global.GlobalApplication"
         android:allowBackup="true"
@@ -12,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".FlashActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,14 +23,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.FlashActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".StartDetectActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".AboutUsActivity" />
-        <activity android:name=".DataManagerActivity" />
-        <activity android:name=".SystemSetActivity" />
+            android:name=".ui.StartDetectActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.AboutUsActivity" />
+        <activity android:name=".ui.DataManagerActivity" />
+        <activity android:name=".ui.SystemSetActivity" />
     </application>
 
 </manifest>

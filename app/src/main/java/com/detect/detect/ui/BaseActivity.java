@@ -1,4 +1,4 @@
-package com.detect.detect;
+package com.detect.detect.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

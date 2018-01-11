@@ -1,5 +1,8 @@
 package com.detect.detect.widgets;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -12,13 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ValueAnimator;
-import com.zyw.horrarndoo.yizhi.R;
+import com.detect.detect.R;
+
 
 /**
- * Created by dongdong.yu on 2018/1/7.
+ * Created by dongdong.yu on 18/1/11.
  */
 
 public class PersonalPopupWindow extends PopupWindow {
@@ -146,7 +147,7 @@ public class PersonalPopupWindow extends PopupWindow {
                 if (!flag) {
                     isHideAniming = false;
                     PersonalPopupWindow.super.dismiss();
-                }else {
+                } else {
                     isShowAniming = false;
                 }
             }

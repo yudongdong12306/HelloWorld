@@ -17,14 +17,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="end|center_vertical"
+            android:gravity="center"
             android:text="@string/project_info"
             android:textSize="@dimen/size_20sp" />
 
         <EditText
+            android:id="@+id/project_info_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center" />
     </LinearLayout>
 
@@ -40,14 +41,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="end|center_vertical"
+            android:gravity="center"
             android:text="@string/build_serial_num"
             android:textSize="@dimen/size_20sp" />
 
         <EditText
+            android:id="@+id/build_serial_num_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center" />
     </LinearLayout>
 
@@ -63,14 +65,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="end|center_vertical"
+            android:gravity="center"
             android:text="@string/coordinate_info"
             android:textSize="@dimen/size_20sp" />
 
         <EditText
+            android:id="@+id/coordinate_info_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center" />
     </LinearLayout>
 
@@ -86,14 +89,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="end|center_vertical"
+            android:gravity="center"
             android:text="@string/detect_time"
             android:textSize="@dimen/size_20sp" />
 
         <EditText
+            android:id="@+id/detect_time_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center" />
     </LinearLayout>
     <LinearLayout
@@ -103,6 +107,7 @@
 
 
         <TextView
+            android:id="@+id/back_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -110,6 +115,7 @@
             android:text="@string/back"
             android:textSize="@dimen/size_20sp" />
         <TextView
+            android:id="@+id/take_photo_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -118,11 +124,12 @@
             android:textSize="@dimen/size_20sp" />
 
         <TextView
+            android:id="@+id/print_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/detect_time"
+            android:text="@string/print"
             android:textSize="@dimen/size_20sp" />
 
     </LinearLayout>

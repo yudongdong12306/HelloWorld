@@ -1,9 +1,10 @@
-package com.detect.detect;
+package com.detect.detect.ui;
 
 import android.Manifest;
 import android.content.Intent;
 
 
+import com.detect.detect.R;
 import com.detect.detect.helper.RxHelper;
 import com.detect.detect.utils.ToastUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
