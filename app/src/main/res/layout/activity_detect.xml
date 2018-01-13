@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/size_60dp"
+    android:layout_marginRight="@dimen/size_60dp"
+    android:layout_marginTop="@dimen/size_30dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/rr_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/size_10dp">
+
+        <TextView
+            android:layout_width="@dimen/size_80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/build_serial_num"
+            android:textSize="@dimen/size_18sp" />
+
+        <EditText
+            android:id="@+id/build_serial_num_et"
+            android:layout_width="@dimen/size_120dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:imeOptions="actionNext"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rr_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_60dp"
+        android:layout_below="@id/rr_1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/s1"
+            android:textSize="@dimen/size_18sp" />
+
+        <EditText
+            android:id="@+id/detect_data_s1_et"
+            android:layout_width="260dp"
+            android:layout_height="match_parent"
+            android:gravity="start|bottom"
+            android:imeOptions="actionNext"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/size_130dp"
+            android:gravity="center"
+            android:text="@string/state_start"
+            android:textSize="@dimen/size_18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rr_3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_60dp"
+        android:layout_below="@id/rr_2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/s2"
+            android:textSize="@dimen/size_18sp" />
+
+        <EditText
+            android:id="@+id/detect_data_s2_et"
+            android:layout_width="260dp"
+            android:layout_height="match_parent"
+            android:gravity="start|bottom"
+            android:imeOptions="actionNext"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rr_4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_60dp"
+        android:layout_below="@id/rr_3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/s3"
+            android:textSize="@dimen/size_18sp" />
+
+        <EditText
+            android:id="@+id/detect_data_s3_et"
+            android:layout_width="260dp"
+            android:layout_height="match_parent"
+            android:gravity="start|bottom"
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/confirm_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/rr_4"
+        android:layout_marginRight="@dimen/size_15dp"
+        android:gravity="center"
+        android:padding="@dimen/size_10dp"
+        android:src="@drawable/shape_bottom_corners"
+        android:text="@string/cancel_detect"
+        android:textSize="@dimen/size_18sp" />
+
+</RelativeLayout>

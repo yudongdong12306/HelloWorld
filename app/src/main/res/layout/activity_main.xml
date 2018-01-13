@@ -20,7 +20,7 @@
             android:gravity="center"
             android:text="@string/start_detect"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/size_20sp" />
+            android:textSize="@dimen/size_18sp" />
 
         <TextView
             android:id="@+id/data_manage_tv"
@@ -30,7 +30,7 @@
             android:gravity="center"
             android:text="@string/data_manage"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/size_20sp" />
+            android:textSize="@dimen/size_18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -48,7 +48,7 @@
             android:layout_weight="1"
             android:text="@string/system_set"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/size_20sp" />
+            android:textSize="@dimen/size_18sp" />
 
         <TextView
             android:gravity="center"
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:text="@string/data_manage"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/size_20sp" />
+            android:textSize="@dimen/size_18sp" />
     </LinearLayout>
 
 

@@ -28,9 +28,21 @@
         <activity
             android:name=".ui.StartDetectActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".ui.AboutUsActivity" />
-        <activity android:name=".ui.DataManagerActivity" />
-        <activity android:name=".ui.SystemSetActivity" />
+        <activity
+            android:name=".ui.AboutUsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.DataManagerActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.SystemSetActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.ProjectInfoDetailSetActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.DetectActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

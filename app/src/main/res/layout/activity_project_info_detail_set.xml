@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/size_60dp"
     android:layout_marginRight="@dimen/size_60dp"
-    android:layout_marginTop="@dimen/size_15dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,24 +11,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/size_10dp"
-        android:paddingTop="@dimen/size_20dp">
+        android:paddingTop="@dimen/size_12dp">
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/project_info"
+            android:text="@string/project_name"
             android:textSize="@dimen/size_18sp" />
 
         <EditText
-            android:id="@+id/project_info_et"
+            android:id="@+id/project_name_et"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="4"
-            android:editable="false"
             android:gravity="start"
-            android:hint="@string/project_info_hint"
             android:imeOptions="actionNext"
             android:singleLine="true" />
     </LinearLayout>
@@ -45,36 +42,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/build_serial_num"
+            android:text="@string/construction_organization"
             android:textSize="@dimen/size_18sp" />
 
         <EditText
-            android:singleLine="true"
-            android:id="@+id/build_serial_num_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:gravity="start"
-            android:imeOptions="actionNext"
-             />
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_10dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/coordinate_info"
-            android:textSize="@dimen/size_18sp" />
-
-        <EditText
-            android:id="@+id/coordinate_info_et"
+            android:id="@+id/construction_organization_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
@@ -94,11 +67,59 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/detect_time"
+            android:text="@string/filler_type"
             android:textSize="@dimen/size_18sp" />
 
         <EditText
-            android:id="@+id/detect_time_et"
+            android:id="@+id/filler_type_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="start"
+            android:imeOptions="actionNext"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/size_10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/instrument_number"
+            android:textSize="@dimen/size_18sp" />
+
+        <EditText
+            android:id="@+id/instrument_number_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="start"
+            android:imeOptions="actionNext"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/size_5dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/detect_person"
+            android:textSize="@dimen/size_18sp" />
+
+        <EditText
+            android:id="@+id/detect_person_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
@@ -107,37 +128,31 @@
             android:singleLine="true" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_15dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/back_tv"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/newly_build_bt"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/size_40dp"
             android:gravity="center"
-            android:text="@string/back"
+            android:src="@drawable/shape_bottom_corners"
+            android:text="@string/newly_build"
             android:textSize="@dimen/size_18sp" />
 
-        <TextView
-            android:id="@+id/take_photo_tv"
-            android:layout_width="0dp"
+
+        <Button
+            android:id="@+id/confirm_bt"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/size_40dp"
             android:gravity="center"
-            android:text="@string/take_photo"
+            android:src="@drawable/shape_bottom_corners"
+            android:text="@string/confirm"
             android:textSize="@dimen/size_18sp" />
 
-        <TextView
-            android:id="@+id/print_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/print"
-            android:textSize="@dimen/size_18sp" />
-
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

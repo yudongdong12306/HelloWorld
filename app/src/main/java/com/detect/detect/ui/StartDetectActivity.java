@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import butterknife.OnClick;
  */
 
 public class StartDetectActivity extends BaseActivity implements ITakePhoto {
+    private static final String TAG = "StartDetectActivity";
     @BindView(R.id.project_info_et)
     EditText projectInfoEt;
     @BindView(R.id.build_serial_num_tv)
@@ -159,7 +161,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     }
 
-    @OnClick({R.id.back_tv, R.id.take_photo_tv, R.id.print_tv})
+    @OnClick({R.id.back_tv, R.id.take_photo_tv, R.id.print_tv, R.id.project_info_et})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back_tv:
@@ -169,6 +171,10 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                 showPopupView();
                 break;
             case R.id.print_tv:
+                break;
+            case R.id.project_info_et:
+                Log.d(TAG, "onViewClicked: ");
+                startActivity(new Intent(this,ProjectInfoDetailSetActivity.class));
                 break;
         }
     }
