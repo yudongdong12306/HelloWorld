@@ -6,21 +6,25 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.detect.detect.widgets.PersonalPopupWindow;
 import com.detect.detect.R;
+import com.detect.detect.widgets.PersonalPopupWindow;
 
 import java.io.File;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -29,6 +33,10 @@ import butterknife.OnClick;
 
 public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     private static final String TAG = "StartDetectActivity";
+    @BindView(R.id.common_back_ll)
+    LinearLayout commonBackLl;
+    @BindView(R.id.common_title_tv)
+    TextView commonTitleTv;
     @BindView(R.id.project_info_et)
     EditText projectInfoEt;
     @BindView(R.id.build_serial_num_tv)
@@ -37,12 +45,11 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     EditText coordinateInfoEt;
     @BindView(R.id.detect_time_et)
     EditText detectTimeEt;
-    @BindView(R.id.back_tv)
-    TextView backTv;
-    @BindView(R.id.take_photo_tv)
-    TextView takePhotoTv;
-    @BindView(R.id.print_tv)
-    TextView printTv;
+    @BindView(R.id.take_photo_bt)
+    Button takePhotoBt;
+    @BindView(R.id.print_bt)
+    Button printBt;
+
     private PersonalPopupWindow popupWindow;
     private StartDetectPresenter mPresenter;
 
@@ -161,21 +168,23 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     }
 
-    @OnClick({R.id.back_tv, R.id.take_photo_tv, R.id.print_tv, R.id.project_info_et})
+
+    @OnClick({R.id.common_back_ll, R.id.take_photo_bt, R.id.print_bt, R.id.project_info_et})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.back_tv:
+            case R.id.common_back_ll:
                 finish();
                 break;
-            case R.id.take_photo_tv:
+            case R.id.take_photo_bt:
                 showPopupView();
                 break;
-            case R.id.print_tv:
+            case R.id.print_bt:
                 break;
             case R.id.project_info_et:
                 Log.d(TAG, "onViewClicked: ");
-                startActivity(new Intent(this,ProjectInfoDetailSetActivity.class));
+                startActivity(new Intent(this, ProjectInfoDetailSetActivity.class));
                 break;
         }
     }
 }
+

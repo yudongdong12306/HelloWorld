@@ -35,13 +35,13 @@
             android:name=".ui.DataManagerActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".ui.SystemSetActivity"
-            android:screenOrientation="landscape" />
-        <activity
             android:name=".ui.ProjectInfoDetailSetActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.DetectActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.SystemSettingsActivity"
             android:screenOrientation="landscape" />
     </application>
 

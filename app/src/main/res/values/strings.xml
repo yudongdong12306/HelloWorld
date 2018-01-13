@@ -5,10 +5,10 @@
     <string name="system_set">系统设置</string>
     <string name="about_us">关于我们</string>
     <string name="splash_welcome">欢迎</string>
-    <string name="project_info">工程信息</string>
-    <string name="build_serial_num">构建序号</string>
-    <string name="coordinate_info">坐标信息</string>
-    <string name="detect_time">测试时间</string>
+    <string name="project_info">工程信息: </string>
+    <string name="build_serial_num">构建序号: </string>
+    <string name="coordinate_info">坐标信息: </string>
+    <string name="detect_time">测试时间: </string>
     <string name="back">返回</string>
     <string name="take_photo">拍照</string>
     <string name="project_info_hint">点击设置</string>
@@ -20,17 +20,27 @@
     <string name="dialog_negative">取消</string>
     <string name="loading">正在加载中……</string>
     <string name="load_failed">加载失败，请点我重试</string>
-    <string name="project_name">工程名称</string>
-    <string name="construction_organization">施工单位</string>
-    <string name="filler_type">填料类型</string>
-    <string name="instrument_number">仪器编号</string>
-    <string name="detect_person">检测人</string>
+    <string name="project_name">工程名称: </string>
+    <string name="construction_organization">施工单位: </string>
+    <string name="filler_type">填料类型: </string>
+    <string name="instrument_number">仪器编号: </string>
+    <string name="detect_person">检测人: </string>
     <string name="newly_build">新建</string>
     <string name="press_again">再按一次退出</string>
     <string name="confirm">确认</string>
+    <string name="check_update">检测更新</string>
     <string name="s1">s1:</string>
     <string name="s2">s2:</string>
     <string name="s3">s3:</string>
     <string name="state_start">开始</string>
     <string name="cancel_detect">取消测试</string>
+    <string name="settings_wifi">WIFI设置: </string>
+    <string name="settings_bluetooth">蓝牙设置: </string>
+    <string name="settings_params">参数设置: </string>
+    <string name="settings_language">语言设置: </string>
+    <string name="Instrument_number">仪器编号: </string>
+    <string name="curve_correction">曲线修正: </string>
+    <string name="params_1">参数一: </string>
+    <string name="params_2">参数二: </string>
+
 </resources>

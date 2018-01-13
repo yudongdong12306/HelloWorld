@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.detect.detect.R;
 
@@ -17,7 +19,10 @@ import butterknife.OnClick;
  */
 
 public class ProjectInfoDetailSetActivity extends BaseActivity {
-
+    @BindView(R.id.common_back_ll)
+    LinearLayout commonBackLl;
+    @BindView(R.id.common_title_tv)
+    TextView commonTitleTv;
     @BindView(R.id.project_name_et)
     EditText projectNameEt;
     @BindView(R.id.construction_organization_tv)
@@ -48,14 +53,17 @@ public class ProjectInfoDetailSetActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.newly_build_bt, R.id.confirm_bt})
+    @OnClick({R.id.newly_build_bt, R.id.common_back_ll, R.id.confirm_bt})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.newly_build_bt:
                 finish();
                 break;
+            case R.id.common_back_ll:
+                finish();
+                break;
             case R.id.confirm_bt:
-                startActivity(new Intent(this,DetectActivity.class));
+                startActivity(new Intent(this, DetectActivity.class));
                 break;
         }
     }

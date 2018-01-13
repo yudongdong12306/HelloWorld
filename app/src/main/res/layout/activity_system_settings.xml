@@ -4,30 +4,30 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/size_60dp"
     android:layout_marginRight="@dimen/size_60dp"
-    android:layout_marginTop="@dimen/size_5dp"
+    android:layout_marginTop="@dimen/size_10dp"
     android:orientation="vertical">
 
     <include layout="@layout/common_title" />
 
     <LinearLayout
+        android:layout_marginTop="-5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-15dp"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_5dp">
+        android:paddingBottom="@dimen/size_10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/project_name"
+            android:text="@string/settings_wifi"
             android:textSize="@dimen/size_15sp" />
 
         <EditText
             android:id="@+id/project_name_et"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="41"
             android:gravity="start"
             android:imeOptions="actionNext"
             android:singleLine="true" />
@@ -37,20 +37,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_5dp">
+        android:paddingBottom="@dimen/size_10dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/construction_organization"
+            android:text="@string/settings_bluetooth"
             android:textSize="@dimen/size_15sp" />
 
         <EditText
-
-            android:id="@+id/construction_organization_tv"
+            android:id="@+id/project_nam_t"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="start"
             android:imeOptions="actionNext"
@@ -61,42 +60,66 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_5dp">
+        android:paddingBottom="@dimen/size_10dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/filler_type"
-            android:textSize="@dimen/size_15sp" />
-
-        <EditText
-            android:id="@+id/filler_type_et"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:imeOptions="actionNext"
-            android:singleLine="true" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/instrument_number"
             android:textSize="@dimen/size_15sp" />
 
         <EditText
-            android:id="@+id/instrument_number_et"
+            android:id="@+id/projec_nam_et"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:imeOptions="actionNext"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/size_10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/curve_correction"
+            android:textSize="@dimen/size_15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/size_10dp"
+            android:gravity="center"
+            android:text="@string/params_1"
+            android:textSize="@dimen/size_15sp" />
+
+        <EditText
+            android:id="@+id/projec_am_et"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:imeOptions="actionNext"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/params_2"
+            android:textSize="@dimen/size_15sp" />
+
+        <EditText
+            android:id="@+id/projec_am"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="start"
             android:imeOptions="actionNext"
@@ -110,46 +133,18 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/detect_person"
+            android:text="@string/settings_language"
             android:textSize="@dimen/size_15sp" />
 
         <EditText
-            android:id="@+id/detect_person_et"
+            android:id="@+id/project_nam_et"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="start"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             android:singleLine="true" />
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/newly_build_bt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_40dp"
-            android:gravity="center"
-            android:src="@drawable/shape_bottom_corners"
-            android:text="@string/newly_build"
-            android:textSize="@dimen/size_15sp" />
-
-
-        <Button
-            android:id="@+id/confirm_bt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/size_40dp"
-            android:gravity="center"
-            android:src="@drawable/shape_bottom_corners"
-            android:text="@string/confirm"
-            android:textSize="@dimen/size_15sp" />
-
-    </RelativeLayout>
 </LinearLayout>

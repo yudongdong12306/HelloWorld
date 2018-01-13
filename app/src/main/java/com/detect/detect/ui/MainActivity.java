@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(this, DataManagerActivity.class));
                 break;
             case R.id.system_set_tv:
-                startActivity(new Intent(this, SystemSetActivity.class));
+                startActivity(new Intent(this, SystemSettingsActivity.class));
                 break;
         }
     }
