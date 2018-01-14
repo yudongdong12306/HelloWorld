@@ -10,8 +10,9 @@
     <include layout="@layout/common_title" />
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="-15dp"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/size_5dp">
@@ -24,18 +25,27 @@
             android:textSize="@dimen/size_15sp" />
 
         <EditText
-            android:id="@+id/project_name_et"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:imeOptions="actionNext"
-            android:singleLine="true" />
+        android:id="@+id/project_name_et"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="start"
+        android:imeOptions="actionNext"
+        android:singleLine="true" />
+
+        <!--<Spinner-->
+            <!--android:id="@+id/project_name_sp"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="start"-->
+            <!--android:imeOptions="actionNext"-->
+            <!--android:singleLine="true" />-->
     </LinearLayout>
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/size_5dp">
 
@@ -58,8 +68,9 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/size_5dp">
 
@@ -81,8 +92,9 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/size_5dp">
 
@@ -104,8 +116,9 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal">
 
         <TextView

@@ -42,5 +42,6 @@
     <string name="curve_correction">曲线修正: </string>
     <string name="params_1">参数一: </string>
     <string name="params_2">参数二: </string>
+    <string name="request_tips">应用需要用到读写权限和拍照权限，请在“设置—>权限”中打开，否则您将无法正常使用本应用</string>
 
 </resources>

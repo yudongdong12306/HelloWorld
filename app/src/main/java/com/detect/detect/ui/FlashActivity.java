@@ -2,33 +2,41 @@ package com.detect.detect.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 
 import com.detect.detect.R;
 import com.detect.detect.helper.RxHelper;
-import com.detect.detect.utils.ToastUtils;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by dongdong.yu on 2018/1/9.
  */
-public class FlashActivity extends BaseActivity {
+public class FlashActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
-    private static final String TAG = "RxPermission";
+    private static final String TAG = "FlashActivity";
     private int mTime = 3;
+    private static final int RC_CAMERA_PERM = 123;
 
     @Override
     protected void initData() {
 
+    }
+
+    private boolean hasPermission() {
+        return EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @Override
@@ -38,69 +46,38 @@ public class FlashActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        requestPermissions();
+        checkPermissions();
     }
 
+    /**
+     * 检测权限
+     */
+    private void checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermission()) {
+            Log.d(TAG, "checkPermissions: 没有获取权限");
+            requestPermissions();
+        } else {
 
+            initCountDown();
+            Log.d(TAG, "checkPermissions: 获取了权限");
+        }
+    }
+
+    /**
+     * 请求权限
+     */
     private void requestPermissions() {
-        RxPermissions rxPermission = new RxPermissions(FlashActivity.this);
-        //请求权限全部结果
-        rxPermission.request(
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean granted) throws Exception {
-                        if (!granted) {
-                            ToastUtils.showToast("App未能获取全部需要的相关权限，部分功能可能不能正常使用.");
-                        }
-                        //不管是否获取全部权限，进入主页面
-                        initCountDown();
-                    }
-                });
-        //分别请求权限
-        //        rxPermission.requestEach(Manifest.permission.ACCESS_FINE_LOCATION,
-        //                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        //                Manifest.permission.READ_CALENDAR,
-        //                Manifest.permission.READ_CALL_LOG,
-        //                Manifest.permission.READ_CONTACTS,
-        //                Manifest.permission.READ_PHONE_STATE,
-        //                Manifest.permission.READ_SMS,
-        //                Manifest.permission.RECORD_AUDIO,
-        //                Manifest.permission.CAMERA,
-        //                Manifest.permission.CALL_PHONE,
-        //                Manifest.permission.SEND_SMS)
-        //注：魅族pro6s-7.0-flyme6权限没有像类似6.0以上手机一样正常的提示dialog获取运行时权限，而是直接默认给了权限。魅族pro6s动态获取权限不会回调下面的方法
-        //        rxPermission.requestEach(
-        //                Manifest.permission.CAMERA,
-        //                Manifest.permission.READ_PHONE_STATE,
-        //                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        //                Manifest.permission.READ_EXTERNAL_STORAGE,
-        //                Manifest.permission.ACCESS_COARSE_LOCATION)
-        //                .subscribe(new Consumer<Permission>() {
-        //                    @Override
-        //                    public void accept(Permission permission) throws Exception {
-        //                        if (permission.granted) {
-        //                            // 用户已经同意该权限
-        //                            Log.d(TAG, permission.name + " is granted.");
-        //                        } else if (permission.shouldShowRequestPermissionRationale) {
-        //                            // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
-        //                            Log.d(TAG, permission.name + " is denied. More info should
-        // be provided.");
-        //                        } else {
-        //                            // 用户拒绝了该权限，并且选中『不再询问』
-        //                            Log.d(TAG, permission.name + " is denied.");
-        //                        }
-        //                    }
-        //                });
+        EasyPermissions.requestPermissions(
+                this,
+                getString(R.string.request_tips),
+                RC_CAMERA_PERM,
+                Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private void initCountDown() {
         Observable.interval(1, TimeUnit.SECONDS)
-                .take(3)//计时次数
+                .take(2)//计时次数
                 .map(new Function<Long, Long>() {
                     @Override
                     public Long apply(Long aLong) throws Exception {
@@ -127,5 +104,65 @@ public class FlashActivity extends BaseActivity {
                         finish();
                     }
                 });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        Log.d(TAG, "onPermissionsGranted: ");
+        if (hasPermission()) {
+            initCountDown();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+        if (!hasPermission()) {
+            new AppSettingsDialog.Builder(this).build().show();
+
+        }
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+//        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+//        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            Log.d(TAG, "onActivityResult: ");
+            if (!hasPermission()) {
+                restartAPP();
+            } else {
+                initCountDown();
+            }
+        }
+    }
+
+    /**
+     * 重启应用
+     */
+    private void restartAPP() {
+        Log.d(TAG, "restartAPP: 重启应用");
+        // 重启当前的Activity,System.exit(0) 必须退出整个程序再重启
+        System.exit(0);
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
     }
 }

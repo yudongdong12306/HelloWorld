@@ -4,6 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 
+import com.detect.detect.shared_preferences.ProjectInfoSP;
+
+import java.util.prefs.Preferences;
+
 
 /**
  * Created by dongdong.yu on 2018/1/8.
@@ -28,6 +32,7 @@ public class GlobalApplication extends Application {
         context = getApplicationContext();
         handler = new Handler();
         mainThreadId = android.os.Process.myTid();
+        ProjectInfoSP.initialize(this);
 //        Logger.init(LOG_TAG).logLevel(BuildConfig.IS_SHOW_LOG ? LogLevel.FULL : LogLevel.NONE);
     }
 

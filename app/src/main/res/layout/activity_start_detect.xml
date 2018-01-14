@@ -48,7 +48,7 @@
             android:textSize="@dimen/size_18sp" />
 
         <EditText
-            android:id="@+id/build_serial_num_tv"
+            android:id="@+id/build_serial_num_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -118,13 +118,13 @@
             android:textSize="@dimen/size_18sp" />
 
         <Button
-            android:id="@+id/print_bt"
+            android:id="@+id/confirm_bt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:src="@drawable/shape_bottom_corners"
-            android:text="@string/print"
+            android:text="@string/confirm"
             android:textSize="@dimen/size_18sp" />
 
     </LinearLayout>

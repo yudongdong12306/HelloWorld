@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.detect.detect.R;
+import com.detect.detect.shared_preferences.Project;
+import com.detect.detect.shared_preferences.ProjectInfoSP;
+import com.detect.detect.shared_preferences.TestPoint;
+import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.widgets.PersonalPopupWindow;
 
 import java.io.File;
@@ -32,26 +37,30 @@ import butterknife.OnClick;
  */
 
 public class StartDetectActivity extends BaseActivity implements ITakePhoto {
-    private static final String TAG = "StartDetectActivity";
+    private static final String TAG = "StartDetect";
+    private static final int REQUEST_CODE_PROJECT_DETAIL = 100;
     @BindView(R.id.common_back_ll)
     LinearLayout commonBackLl;
     @BindView(R.id.common_title_tv)
     TextView commonTitleTv;
     @BindView(R.id.project_info_et)
     EditText projectInfoEt;
-    @BindView(R.id.build_serial_num_tv)
-    EditText buildSerialNumTv;
+    @BindView(R.id.build_serial_num_et)
+    EditText buildSerialNumEt;
     @BindView(R.id.coordinate_info_et)
     EditText coordinateInfoEt;
     @BindView(R.id.detect_time_et)
     EditText detectTimeEt;
     @BindView(R.id.take_photo_bt)
     Button takePhotoBt;
-    @BindView(R.id.print_bt)
-    Button printBt;
+    @BindView(R.id.confirm_bt)
+    Button confirmBt;
 
     private PersonalPopupWindow popupWindow;
     private StartDetectPresenter mPresenter;
+    private TestPoint testPointNew;
+    private TestPoint testPointInsert;
+    private String picPath;
 
     @Override
     protected void initData() {
@@ -104,6 +113,8 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     @Override
     public void gotoHeadSettingActivity(String path) {
+        this.picPath = path;
+        ToastUtils.showToast("获取照片成功,图片路径: " + path);
 //        if (uri == null) {
 //            return;
 //        }
@@ -149,6 +160,25 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         mPresenter.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE_PROJECT_DETAIL) {
+            Log.d(TAG, "onActivityResult: ");
+            switch (resultCode) {
+                case ProjectInfoDetailSetActivity.RESULT_CODE_START_DETECT_NEW_BUILD:
+                    testPointNew = (TestPoint) intent.getSerializableExtra(ProjectInfoDetailSetActivity.NEW_BUILD_TEST_POINT);
+                    projectInfoEt.setText(testPointNew.getProjectName());
+                    int maxBuildSerialNum1 = ProjectInfoSP.getInstance().getMaxBuildSerialNum(testPointNew.getProjectName());
+                    buildSerialNumEt.setText(maxBuildSerialNum1 + 1 + "");
+                    Log.d(TAG, "onActivityResult: 1");
+                    break;
+                case ProjectInfoDetailSetActivity.RESULT_CODE_START_DETECT_INSERT:
+                    testPointInsert = (TestPoint) intent.getSerializableExtra(ProjectInfoDetailSetActivity.INSERT_TEST_POINT);
+                    projectInfoEt.setText(testPointInsert.getProjectName());
+                    int maxBuildSerialNum2 = ProjectInfoSP.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
+                    buildSerialNumEt.setText(maxBuildSerialNum2 + 1 + "");
+                    Log.d(TAG, "onActivityResult: 2");
+                    break;
+            }
+        }
     }
 
     @Override
@@ -169,7 +199,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     }
 
 
-    @OnClick({R.id.common_back_ll, R.id.take_photo_bt, R.id.print_bt, R.id.project_info_et})
+    @OnClick({R.id.common_back_ll, R.id.take_photo_bt, R.id.confirm_bt, R.id.project_info_et})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.common_back_ll:
@@ -178,13 +208,64 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
             case R.id.take_photo_bt:
                 showPopupView();
                 break;
-            case R.id.print_bt:
+            case R.id.confirm_bt:
+                TestPoint testPointData = getTestPointData();
+                if (testPointData == null) {
+                    return;
+                }
+                if (testPointInsert != null) {
+                    ProjectInfoSP.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
+                } else if (testPointNew != null) {
+                    ProjectInfoSP.getInstance().newBuildProject(testPointNew.getProjectName(), testPointNew);
+                }
+                startActivity(new Intent(this, DetectActivity.class));
                 break;
             case R.id.project_info_et:
-                Log.d(TAG, "onViewClicked: ");
-                startActivity(new Intent(this, ProjectInfoDetailSetActivity.class));
+                //重置
+                testPointInsert = null;
+                testPointNew = null;
+                startActivityForResult(new Intent(this, ProjectInfoDetailSetActivity.class), REQUEST_CODE_PROJECT_DETAIL);
                 break;
         }
     }
+
+    private TestPoint getTestPointData() {
+        String buildSerialNum = buildSerialNumEt.getText().toString().trim();
+        String coordinateInfo = coordinateInfoEt.getText().toString().trim();
+        String detectTime = detectTimeEt.getText().toString().trim();
+        if (TextUtils.isEmpty(buildSerialNum)) {
+            ToastUtils.showToast("构建序号不能为空!");
+            return null;
+        }
+        if (TextUtils.isEmpty(coordinateInfo)) {
+            ToastUtils.showToast("坐标信息不能为空!");
+            return null;
+        }
+        if (TextUtils.isEmpty(detectTime)) {
+            ToastUtils.showToast("测试时间不能为空!");
+            return null;
+        }
+        if (TextUtils.isEmpty(picPath)) {
+            ToastUtils.showToast("没有拍照!");
+            return null;
+        }
+        if (testPointInsert != null) {
+            testPointInsert.setBuildSerialNum(buildSerialNum);
+            testPointInsert.setCoordinateInfo(coordinateInfo);
+            testPointInsert.setDetectTime(Integer.parseInt(detectTime));
+            testPointInsert.setPicPath(picPath);
+            return testPointInsert;
+        } else if (testPointNew != null) {
+            testPointNew.setBuildSerialNum(buildSerialNum);
+            testPointNew.setCoordinateInfo(coordinateInfo);
+            testPointNew.setDetectTime(Integer.parseInt(detectTime));
+            testPointNew.setPicPath(picPath);
+            return testPointNew;
+        }
+
+        ToastUtils.showToast("工程信息不能为空!");
+        return null;
+    }
+
 }
 
