@@ -9,7 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -59,7 +61,6 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     private PersonalPopupWindow popupWindow;
     private StartDetectPresenter mPresenter;
-    //    private TestPoint testPointNew;
     private TestPoint testPointInsert;
     private String picPath;
 
@@ -67,6 +68,35 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     protected void initData() {
         mPresenter = new StartDetectPresenter(this);
         initPopupView();
+        //每次构建序号有变化,请清空拍照路径
+        buildSerialNumEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                picPath = null;
+                if (TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+                try {
+                    int num = Integer.parseInt(s.toString());
+                    if (num < 1) {
+                        ToastUtils.showToast("构建序号最小为1!");
+                    }
+                }catch (Exception ignored){
+                    buildSerialNumEt.setText("");
+                }
+
+            }
+        });
     }
 
 
@@ -201,16 +231,23 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     @Override
     public void initView() {
         TestPoint latestDetectPoint = LatestTestPointSP.getInstance().getLatestDetectPoint();
-        if (latestDetectPoint==null) {
+        if (latestDetectPoint == null) {
             return;
         }
         //取上次的,对界面进行恢复,仅仅是恢复,方便用户修改再用
-        buildSerialNumEt.setText(latestDetectPoint.getBuildSerialNum()+"");
+        buildSerialNumEt.setText(latestDetectPoint.getBuildSerialNum() + "");
         coordinateInfoEt.setText(latestDetectPoint.getCoordinateInfo());
-        detectTimeEt.setText(latestDetectPoint.getDetectTime()+"");
+        detectTimeEt.setText(latestDetectPoint.getDetectTime() + "");
         projectInfoEt.setText(latestDetectPoint.getProjectName());
         int maxBuildSerialNum = ProjectInfoSP.getInstance().getMaxBuildSerialNum(latestDetectPoint.getProjectName());
         buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
+        //对详情页面数据进行初始化
+        testPointInsert = new TestPoint();
+        testPointInsert.setProjectName(latestDetectPoint.getProjectName());
+        testPointInsert.setConstructionOrganization(latestDetectPoint.getConstructionOrganization());
+        testPointInsert.setFillerType(latestDetectPoint.getFillerType());
+        testPointInsert.setInstrumentNumber(latestDetectPoint.getInstrumentNumber());
+        testPointInsert.setDetectPerson(latestDetectPoint.getDetectPerson());
     }
 
 

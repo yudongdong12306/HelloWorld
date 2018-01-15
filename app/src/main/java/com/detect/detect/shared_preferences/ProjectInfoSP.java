@@ -37,7 +37,6 @@ public class ProjectInfoSP {
         preferences = sContext.getSharedPreferences(SHARED_NAME_PUBLIC, Context.MODE_PRIVATE);
     }
 
-
     /**
      * 初始化
      *
@@ -77,7 +76,8 @@ public class ProjectInfoSP {
         }
         Project project = new Project();
         project.setProjectName(projectName);
-        project.setMaxBuildSerialNum(0);
+        //节点从1开始,没有默认为0
+        project.setMaxBuildSerialNum(1);
         List<TestPoint> testPointList = project.getTestPointList();
         testPointList.add(testPoint);
 
@@ -134,7 +134,6 @@ public class ProjectInfoSP {
                 projects.add(project);
                 jsonArray.addAll(projects);
             }
-
         }
         editor.putString(SHARED_KEY_PROJECT_INFO, JSON.toJSONString(jsonArray));
         editor.apply();
@@ -153,76 +152,6 @@ public class ProjectInfoSP {
         }
         return JSON.parseArray(projectInfo, Project.class);
     }
-
-    /**
-     * 获取最近的测试点
-     *
-     * @return 最近的测试点
-     */
-    public TestPoint getLatestProject() {
-        String projectInfo = preferences.getString(SHARED_KEY_PROJECT_INFO, "");
-        //该sp下无任何项目，就创建该项目
-        if (TextUtils.isEmpty(projectInfo)) {
-            return null;
-        }
-        List<Project> projects = JSON.parseArray(projectInfo, Project.class);
-        if (projects == null || projects.size() == 0) {
-            return null;
-        }
-        for (Project project : projects) {
-            if (project != null) {
-                List<TestPoint> testPointList = project.getTestPointList();
-                for (TestPoint testPoint : testPointList) {
-                    if (testPoint != null && testPoint.isLatest()) {
-                        return testPoint;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-//    /**
-//     * 对于已经存在的项目,插入一个测试点
-//     *
-//     * @param projectName 项目名称
-//     * @param testPoint   测试点
-//     */
-//    public void insertTestPoint(String projectName, TestPoint testPoint) {
-//        SharedPreferences.Editor editor = preferences.edit();
-//        String projectInfo = preferences.getString(SHARED_KEY_PROJECT_INFO, "");
-//        if (TextUtils.isEmpty(projectInfo)) {
-//            //理论上不可能存在
-//            return;
-//        }
-//        List<Project> projects = JSON.parseArray(projectInfo, Project.class);
-//        if (projects == null) {
-//            //理论上不可能存在
-//            return;
-//        }
-//        for (Project project : projects) {
-//            String projectName1 = project.getProjectName();
-//            if (!TextUtils.isEmpty(projectName1) && projectName1.equals(projectName)) {
-//                List<TestPoint> testPointList = project.getTestPointList();
-//                Iterator<TestPoint> iterator = testPointList.iterator();
-//                //遍历查看有相同构建序号的移除
-//                while (iterator.hasNext()) {
-//                    TestPoint point = iterator.next();
-//                    if (point != null) {
-//                        if (point.getBuildSerialNum() == testPoint.getBuildSerialNum()) {
-//                            iterator.remove();
-//                        }
-//                    }
-//                }
-//                //添加新的构建测试点
-//                testPointList.add(testPoint);
-//            }
-//        }
-//        JSONArray jsonArray = new JSONArray();
-//        jsonArray.addAll(projects);
-//        editor.putString(SHARED_KEY_PROJECT_INFO, JSON.toJSONString(jsonArray));
-//        editor.apply();
-//    }
-
     /**
      * 获取所有项目的项目名称
      *

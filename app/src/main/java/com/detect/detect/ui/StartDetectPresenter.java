@@ -120,10 +120,10 @@ public class StartDetectPresenter {
                 break;
             case REQUEST_PHOTO:  //调用系统相册返回
                 if (resultCode == Activity.RESULT_OK) {
-//                    Uri uri = intent.getData();
-//                    mIView.gotoHeadSettingActivity(uri);
-                    mIView.gotoHeadSettingActivity(tempFile.getAbsolutePath());
-
+                    Uri uri = intent.getData();
+                    if (uri != null) {
+                        mIView.gotoHeadSettingActivity(uri.getPath());
+                    }
                 }
                 break;
         }
