@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bigkoo.pickerview.YMDPickerView;
 import com.detect.detect.R;
 import com.detect.detect.shared_preferences.LatestTestPointSP;
 import com.detect.detect.shared_preferences.Project;
@@ -30,6 +31,7 @@ import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.widgets.PersonalPopupWindow;
 
 import java.io.File;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +65,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     private StartDetectPresenter mPresenter;
     private TestPoint testPointInsert;
     private String picPath;
+    private int detectTime;
 
     @Override
     protected void initData() {
@@ -91,7 +94,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                     if (num < 1) {
                         ToastUtils.showToast("构建序号最小为1!");
                     }
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
                     buildSerialNumEt.setText("");
                 }
 
@@ -230,6 +233,14 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     @Override
     public void initView() {
+        //初始化
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        detectTimeEt.setText(year + "年" + month + "月" + day + "日");
+        detectTime = (int) (calendar.getTimeInMillis() / 1000L);
+        //回显上次测试
         TestPoint latestDetectPoint = LatestTestPointSP.getInstance().getLatestDetectPoint();
         if (latestDetectPoint == null) {
             return;
@@ -237,7 +248,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         //取上次的,对界面进行恢复,仅仅是恢复,方便用户修改再用
         buildSerialNumEt.setText(latestDetectPoint.getBuildSerialNum() + "");
         coordinateInfoEt.setText(latestDetectPoint.getCoordinateInfo());
-        detectTimeEt.setText(latestDetectPoint.getDetectTime() + "");
+//        detectTimeEt.setText(latestDetectPoint.getDetectTime() + "");
         projectInfoEt.setText(latestDetectPoint.getProjectName());
         int maxBuildSerialNum = ProjectInfoSP.getInstance().getMaxBuildSerialNum(latestDetectPoint.getProjectName());
         buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
@@ -248,14 +259,18 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         testPointInsert.setFillerType(latestDetectPoint.getFillerType());
         testPointInsert.setInstrumentNumber(latestDetectPoint.getInstrumentNumber());
         testPointInsert.setDetectPerson(latestDetectPoint.getDetectPerson());
+
     }
 
 
-    @OnClick({R.id.common_back_ll, R.id.take_photo_bt, R.id.confirm_bt, R.id.project_info_et})
+    @OnClick({R.id.detect_time_et, R.id.common_back_ll, R.id.take_photo_bt, R.id.confirm_bt, R.id.project_info_et})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.common_back_ll:
                 finish();
+                break;
+            case R.id.detect_time_et:
+                showTimePiker();
                 break;
             case R.id.take_photo_bt:
                 showPopupView();
@@ -277,10 +292,39 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         }
     }
 
+    /**
+     *
+     */
+    public void showTimePiker() {
+        long selectTime = System.currentTimeMillis() / 1000L;
+        YMDPickerView ymdPickerView = new YMDPickerView(
+                this,
+                YMDPickerView.Type.YEAR_MONTH_DAY,
+                getResources().getString(R.string.selete_time),
+                selectTime, true);
+        ymdPickerView.setCancelable(true);
+        ymdPickerView.setMaxTime(selectTime);
+//        ymdPickerView.setMinTime(minTime);
+        ymdPickerView.setOnYMDSelectListener(new YMDPickerView.OnYMDSelectListener() {
+            @Override
+            public void onYMDSelect(Calendar calendar, int year, int month, int day) {
+                detectTime = (int) (calendar.getTimeInMillis() / 1000L);
+                detectTimeEt.setText(year + "年" + (month + 1) + "月" + day + "日");
+                Log.d(TAG, "onYMDSelect() called with: calendar = [" + calendar + "], year = [" + year + "], month = [" + month + "], day = [" + day + "]");
+            }
+
+            @Override
+            public void onYMDSelect(Calendar calendar, int year, int month) {
+
+            }
+        });
+        ymdPickerView.show();
+    }
+
     private TestPoint getTestPointData() {
         String buildSerialNum = buildSerialNumEt.getText().toString().trim();
         String coordinateInfo = coordinateInfoEt.getText().toString().trim();
-        String detectTime = detectTimeEt.getText().toString().trim();
+//        String detectTime = detectTimeEt.getText().toString().trim();
         if (TextUtils.isEmpty(buildSerialNum)) {
             ToastUtils.showToast("构建序号不能为空!");
             return null;
@@ -289,10 +333,10 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
             ToastUtils.showToast("坐标信息不能为空!");
             return null;
         }
-        if (TextUtils.isEmpty(detectTime)) {
-            ToastUtils.showToast("测试时间不能为空!");
-            return null;
-        }
+//        if (TextUtils.isEmpty(detectTime)) {
+//            ToastUtils.showToast("测试时间不能为空!");
+//            return null;
+//        }
         if (TextUtils.isEmpty(picPath)) {
             ToastUtils.showToast("没有拍照!");
             return null;
@@ -300,7 +344,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         if (testPointInsert != null) {
             testPointInsert.setBuildSerialNum(Integer.parseInt(buildSerialNum));
             testPointInsert.setCoordinateInfo(coordinateInfo);
-            testPointInsert.setDetectTime(Integer.parseInt(detectTime));
+            testPointInsert.setDetectTime(detectTime);
             testPointInsert.setPicPath(picPath);
             return testPointInsert;
         }

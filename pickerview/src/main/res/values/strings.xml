@@ -1,0 +1,14 @@
+<resources>
+    <string name="pickerview_cancel">cancel</string>
+    <string name="pickerview_submit">confirm</string>
+    <string name="pickerview_year"></string>
+    <string name="pickerview_month"></string>
+    <string name="pickerview_day"></string>
+    <string name="pickerview_hours"></string>
+    <string name="pickerview_minutes"></string>
+    <string name="pickerview_seconds">second</string>
+    <string name="height_cm">CM</string>
+    <string name="height_in">IN</string>
+    <string name="weight_kg">KG</string>
+    <string name="weight_lbs">LB</string>
+</resources>

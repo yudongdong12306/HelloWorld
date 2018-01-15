@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.detect.detect"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -88,4 +88,5 @@ dependencies {
 
     //Bugly
 //    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile project(path: ':pickerview')
 }

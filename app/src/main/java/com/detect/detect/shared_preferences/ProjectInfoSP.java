@@ -152,6 +152,7 @@ public class ProjectInfoSP {
         }
         return JSON.parseArray(projectInfo, Project.class);
     }
+
     /**
      * 获取所有项目的项目名称
      *
@@ -220,5 +221,34 @@ public class ProjectInfoSP {
             }
         }
         return 0;
+    }
+
+    public String getTestPointPicPath(String projectName, int buildSerialNum) {
+        String projectInfo = preferences.getString(SHARED_KEY_PROJECT_INFO, "");
+        if (TextUtils.isEmpty(projectInfo)) {
+            return null;
+        }
+        List<Project> projects = JSON.parseArray(projectInfo, Project.class);
+        if (projects == null) {
+            //理论上不可能存在
+            return null;
+        }
+        for (Project projectT : projects) {
+            if (projectT != null) {
+                String projectNameT = projectT.getProjectName();
+                if (!TextUtils.isEmpty(projectNameT) && projectNameT.equals(projectName)) {
+                    List<TestPoint> testPointList = projectT.getTestPointList();
+                    for (TestPoint testPoint : testPointList) {
+                        if (testPoint != null) {
+                            if (testPoint.getBuildSerialNum() == buildSerialNum) {
+                                return testPoint.getPicPath();
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        return null;
     }
 }
