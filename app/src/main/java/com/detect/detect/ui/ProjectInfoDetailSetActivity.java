@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.detect.detect.R;
+import com.detect.detect.shared_preferences.LatestTestPointSP;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.ToastUtils;
@@ -26,9 +27,9 @@ import butterknife.OnClick;
 public class ProjectInfoDetailSetActivity extends BaseActivity implements ProjectNameSelectDialog.ConfirmClickCallback {
     private static final String FRAGMENT_TAG_SELSTE = "FRAGMENT_TAG_SELECT";
     public static final String INSERT_TEST_POINT = "insert_test_point";
-    public static final String NEW_BUILD_TEST_POINT = "new_build_test_point";
+    //    public static final String NEW_BUILD_TEST_POINT = "new_build_test_point";
     public static final int RESULT_CODE_START_DETECT_INSERT = 101;
-    public static final int RESULT_CODE_START_DETECT_NEW_BUILD = 102;
+    //    public static final int RESULT_CODE_START_DETECT_NEW_BUILD = 102;
     @BindView(R.id.common_back_ll)
     LinearLayout commonBackLl;
     @BindView(R.id.common_title_tv)
@@ -62,7 +63,16 @@ public class ProjectInfoDetailSetActivity extends BaseActivity implements Projec
 
     @Override
     public void initView() {
-
+        TestPoint latestDetectPoint = LatestTestPointSP.getInstance().getLatestDetectPoint();
+        if (latestDetectPoint==null) {
+            return;
+        }
+        //取上次的,对界面进行恢复,仅仅是恢复,方便用户修改再用
+        projectNameEt.setText(latestDetectPoint.getProjectName());
+        constructionOrganizationTv.setText(latestDetectPoint.getConstructionOrganization());
+        fillerTypeEt.setText(latestDetectPoint.getFillerType());
+        instrumentNumberEt.setText(latestDetectPoint.getInstrumentNumber());
+        detectPersonEt.setText(latestDetectPoint.getDetectPerson());
     }
 
     @OnClick({R.id.newly_build_bt, R.id.project_name_et, R.id.common_back_ll, R.id.confirm_bt})
@@ -150,8 +160,8 @@ public class ProjectInfoDetailSetActivity extends BaseActivity implements Projec
         testPoint.setInstrumentNumber(instrumentNumber);
         testPoint.setDetectPerson(detectPerson);
         Intent intent = new Intent();
-        intent.putExtra(NEW_BUILD_TEST_POINT, testPoint);
-        setResult(RESULT_CODE_START_DETECT_NEW_BUILD, intent);
+        intent.putExtra(INSERT_TEST_POINT, testPoint);
+        setResult(RESULT_CODE_START_DETECT_INSERT, intent);
         finish();
 //        ProjectInfoSP.getInstance().newBuildProject(projectName, testPoint);
     }

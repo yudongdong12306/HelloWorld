@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 
+import com.detect.detect.shared_preferences.LatestTestPointSP;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
 
 import java.util.prefs.Preferences;
@@ -33,7 +34,7 @@ public class GlobalApplication extends Application {
         handler = new Handler();
         mainThreadId = android.os.Process.myTid();
         ProjectInfoSP.initialize(this);
-//        Logger.init(LOG_TAG).logLevel(BuildConfig.IS_SHOW_LOG ? LogLevel.FULL : LogLevel.NONE);
+        LatestTestPointSP.initialize(this);
     }
 
     /**

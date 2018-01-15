@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.detect.detect.R;
+import com.detect.detect.shared_preferences.LatestTestPointSP;
 import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
 import com.detect.detect.shared_preferences.TestPoint;
@@ -58,7 +59,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     private PersonalPopupWindow popupWindow;
     private StartDetectPresenter mPresenter;
-    private TestPoint testPointNew;
+    //    private TestPoint testPointNew;
     private TestPoint testPointInsert;
     private String picPath;
 
@@ -113,6 +114,10 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     @Override
     public void gotoHeadSettingActivity(String path) {
+        if (TextUtils.isEmpty(path)) {
+            ToastUtils.showToast("获取图片失败,请重试!");
+            return;
+        }
         this.picPath = path;
         ToastUtils.showToast("获取照片成功,图片路径: " + path);
 //        if (uri == null) {
@@ -163,18 +168,18 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         if (requestCode == REQUEST_CODE_PROJECT_DETAIL) {
             Log.d(TAG, "onActivityResult: ");
             switch (resultCode) {
-                case ProjectInfoDetailSetActivity.RESULT_CODE_START_DETECT_NEW_BUILD:
-                    testPointNew = (TestPoint) intent.getSerializableExtra(ProjectInfoDetailSetActivity.NEW_BUILD_TEST_POINT);
-                    projectInfoEt.setText(testPointNew.getProjectName());
-                    int maxBuildSerialNum1 = ProjectInfoSP.getInstance().getMaxBuildSerialNum(testPointNew.getProjectName());
-                    buildSerialNumEt.setText(maxBuildSerialNum1 + 1 + "");
-                    Log.d(TAG, "onActivityResult: 1");
-                    break;
+//                case ProjectInfoDetailSetActivity.RESULT_CODE_START_DETECT_NEW_BUILD:
+//                    testPointNew = (TestPoint) intent.getSerializableExtra(ProjectInfoDetailSetActivity.NEW_BUILD_TEST_POINT);
+//                    projectInfoEt.setText(testPointNew.getProjectName());
+//                    int maxBuildSerialNum1 = ProjectInfoSP.getInstance().getMaxBuildSerialNum(testPointNew.getProjectName());
+//                    buildSerialNumEt.setText(maxBuildSerialNum1 + 1 + "");
+//                    Log.d(TAG, "onActivityResult: 1");
+//                    break;
                 case ProjectInfoDetailSetActivity.RESULT_CODE_START_DETECT_INSERT:
                     testPointInsert = (TestPoint) intent.getSerializableExtra(ProjectInfoDetailSetActivity.INSERT_TEST_POINT);
                     projectInfoEt.setText(testPointInsert.getProjectName());
-                    int maxBuildSerialNum2 = ProjectInfoSP.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
-                    buildSerialNumEt.setText(maxBuildSerialNum2 + 1 + "");
+                    int maxBuildSerialNum = ProjectInfoSP.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
+                    buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
                     Log.d(TAG, "onActivityResult: 2");
                     break;
             }
@@ -195,7 +200,17 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     @Override
     public void initView() {
-
+        TestPoint latestDetectPoint = LatestTestPointSP.getInstance().getLatestDetectPoint();
+        if (latestDetectPoint==null) {
+            return;
+        }
+        //取上次的,对界面进行恢复,仅仅是恢复,方便用户修改再用
+        buildSerialNumEt.setText(latestDetectPoint.getBuildSerialNum()+"");
+        coordinateInfoEt.setText(latestDetectPoint.getCoordinateInfo());
+        detectTimeEt.setText(latestDetectPoint.getDetectTime()+"");
+        projectInfoEt.setText(latestDetectPoint.getProjectName());
+        int maxBuildSerialNum = ProjectInfoSP.getInstance().getMaxBuildSerialNum(latestDetectPoint.getProjectName());
+        buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
     }
 
 
@@ -213,17 +228,13 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                 if (testPointData == null) {
                     return;
                 }
-                if (testPointInsert != null) {
-                    ProjectInfoSP.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
-                } else if (testPointNew != null) {
-                    ProjectInfoSP.getInstance().newBuildProject(testPointNew.getProjectName(), testPointNew);
-                }
+                LatestTestPointSP.getInstance().setLatestDetectPoint(testPointData);
+                ProjectInfoSP.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
                 startActivity(new Intent(this, DetectActivity.class));
                 break;
             case R.id.project_info_et:
                 //重置
                 testPointInsert = null;
-                testPointNew = null;
                 startActivityForResult(new Intent(this, ProjectInfoDetailSetActivity.class), REQUEST_CODE_PROJECT_DETAIL);
                 break;
         }
@@ -250,22 +261,14 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
             return null;
         }
         if (testPointInsert != null) {
-            testPointInsert.setBuildSerialNum(buildSerialNum);
+            testPointInsert.setBuildSerialNum(Integer.parseInt(buildSerialNum));
             testPointInsert.setCoordinateInfo(coordinateInfo);
             testPointInsert.setDetectTime(Integer.parseInt(detectTime));
             testPointInsert.setPicPath(picPath);
             return testPointInsert;
-        } else if (testPointNew != null) {
-            testPointNew.setBuildSerialNum(buildSerialNum);
-            testPointNew.setCoordinateInfo(coordinateInfo);
-            testPointNew.setDetectTime(Integer.parseInt(detectTime));
-            testPointNew.setPicPath(picPath);
-            return testPointNew;
         }
-
         ToastUtils.showToast("工程信息不能为空!");
         return null;
     }
-
 }
 

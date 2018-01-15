@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by yu on 18/1/14.
  */
 
-public class TestPoint implements Serializable{
+public class TestPoint implements Serializable {
     private int buildSerialNum;
     private String coordinateInfo;
     private long detectTime;
@@ -16,6 +16,16 @@ public class TestPoint implements Serializable{
     private String instrumentNumber;
     private String detectPerson;
     private String picPath;
+
+    public boolean isLatest() {
+        return isLatest;
+    }
+
+    public void setLatest(boolean latest) {
+        isLatest = latest;
+    }
+
+    private boolean isLatest;
 
     public int getBuildSerialNum() {
         return buildSerialNum;
