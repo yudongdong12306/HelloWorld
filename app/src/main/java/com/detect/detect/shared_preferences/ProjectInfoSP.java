@@ -98,24 +98,30 @@ public class ProjectInfoSP {
                 //理论上不可能存在
                 return;
             }
+            int maxProjectTestPointNum = 0;
             boolean isProjectExit = false;
             for (Project projectT : projects) {
                 String projectNameT = projectT.getProjectName();
                 //该项目已经存在
                 if (!TextUtils.isEmpty(projectNameT) && projectNameT.equals(projectName)) {
-
-
                     List<TestPoint> testPointListT = projectT.getTestPointList();
                     Iterator<TestPoint> iteratorT = testPointListT.iterator();
                     //遍历查看有相同构建序号的移除
                     while (iteratorT.hasNext()) {
                         TestPoint pointT = iteratorT.next();
                         if (pointT != null) {
+                            if (pointT.getBuildSerialNum() > maxProjectTestPointNum) {
+                                maxProjectTestPointNum = pointT.getBuildSerialNum();
+                            }
                             if (pointT.getBuildSerialNum() == testPoint.getBuildSerialNum()) {
                                 iteratorT.remove();
                             }
                         }
                     }
+                    if (testPoint.getBuildSerialNum() > maxProjectTestPointNum) {
+                        maxProjectTestPointNum = testPoint.getBuildSerialNum();
+                    }
+                    projectT.setMaxBuildSerialNum(maxProjectTestPointNum);
                     //添加新的构建测试点
                     testPointListT.add(testPoint);
                     jsonArray.addAll(projects);
@@ -280,7 +286,7 @@ public class ProjectInfoSP {
         }
         for (Project project : projects) {
             String projectName1 = project.getProjectName();
-            if (TextUtils.isEmpty(projectName1) && projectName1.equals(projectName)) {
+            if (!TextUtils.isEmpty(projectName1) && projectName1.equals(projectName)) {
                 return project.getMaxBuildSerialNum();
             }
         }
