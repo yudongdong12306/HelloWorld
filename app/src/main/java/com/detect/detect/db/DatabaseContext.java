@@ -7,11 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.text.TextUtils;
 
-import com.detect.detect.constant.FileConstant;
-import com.detect.detect.log.DetectLog;
 
 import java.io.File;
 import java.io.IOException;
+
 
 /**
  * 封装context类，保存数据库到SD卡
@@ -44,7 +43,7 @@ public class DatabaseContext extends ContextWrapper {
         boolean sdExist = android.os.Environment.MEDIA_MOUNTED
                 .equals(android.os.Environment.getExternalStorageState());
         if (!sdExist) {// 若是不存在,
-            DetectLog.e("SD卡办理：SD卡不存在，请加载SD卡");
+//            RaiingLog.e("SD卡办理：SD卡不存在，请加载SD卡");
             return null;
         } else {// 若是存在
             // 数据库途径
@@ -93,7 +92,7 @@ public class DatabaseContext extends ContextWrapper {
      */
     @Override
     public SQLiteDatabase openOrCreateDatabase(String name, int mode,
-                                               SQLiteDatabase.CursorFactory factory) {
+                                               CursorFactory factory) {
         SQLiteDatabase result = SQLiteDatabase.openOrCreateDatabase(
                 getDatabasePath(name), null);
         return result;
@@ -106,9 +105,9 @@ public class DatabaseContext extends ContextWrapper {
      * @param mode
      * @param factory
      * @param errorHandler
-     * @see android.content.ContextWrapper#openOrCreateDatabase(java.lang.String,
-     * int, android.database.sqlite.SQLiteDatabase.CursorFactory,
-     * android.database.DatabaseErrorHandler)
+     * @see ContextWrapper#openOrCreateDatabase(String,
+     * int, CursorFactory,
+     * DatabaseErrorHandler)
      */
     @Override
     public SQLiteDatabase openOrCreateDatabase(String name, int mode,

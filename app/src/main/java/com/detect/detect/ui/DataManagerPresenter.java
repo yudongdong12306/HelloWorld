@@ -31,7 +31,7 @@ import static com.detect.detect.constant.HeadConstant.HEAD_IMAGE_NAME;
  */
 
 
-public class StartDetectPresenter {
+public class DataManagerPresenter {
     private static final String TAG = "StartDetectPresenter";
     //请求相机
     private static final int REQUEST_CAMERA = 100;
@@ -45,7 +45,7 @@ public class StartDetectPresenter {
 
     private File tempFile;
 
-    public StartDetectPresenter(ITakePhoto mIView) {
+    public DataManagerPresenter(ITakePhoto mIView) {
         this.mIView = mIView;
     }
 

@@ -6,7 +6,7 @@
     <string name="about_us">关于我们</string>
     <string name="splash_welcome">欢迎</string>
     <string name="project_info">工程信息: </string>
-    <string name="build_serial_num">构建序号: </string>
+    <string name="build_serial_num">构件序号: </string>
     <string name="coordinate_info">坐标信息: </string>
     <string name="detect_time">测试时间: </string>
     <string name="back">返回</string>

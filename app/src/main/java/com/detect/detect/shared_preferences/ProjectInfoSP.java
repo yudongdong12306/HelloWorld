@@ -17,7 +17,7 @@ import java.util.List;
  * Created by damon on 3/7/16.
  * 存储好孕墙相关的缓存
  */
-public class ProjectInfoSP {
+public class ProjectInfoSP implements IProjectDataManager {
     private static final String TAG = "ProjectInfoSP...";
     /**
      * shared公共存储的文件名字
@@ -250,5 +250,15 @@ public class ProjectInfoSP {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean deleteTestPoint(String projectName, int buildSerialNum) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteProject(String projectName) {
+        return false;
     }
 }

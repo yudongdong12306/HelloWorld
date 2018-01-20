@@ -9,8 +9,4 @@ public class DbConstant {
      * 温度数据库名字
      */
     public static final String TEMPERATURE_DB = "TemperatureDB.db";
-    /**
-     * 提醒数据库
-     */
-    public static final String REMIND_DB = "RemindDB.db";
 }

@@ -45,6 +45,9 @@
         <activity
             android:name=".ui.SystemSettingsActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.DetectFinishedActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.detect.detect.shared_preferences.LatestTestPointSP;
+import com.detect.detect.shared_preferences.ProjectDataManagerDB;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
 
 import java.util.prefs.Preferences;
@@ -35,6 +36,7 @@ public class GlobalApplication extends Application {
         mainThreadId = android.os.Process.myTid();
         ProjectInfoSP.initialize(this);
         LatestTestPointSP.initialize(this);
+        ProjectDataManagerDB.initialize(this);
     }
 
     /**

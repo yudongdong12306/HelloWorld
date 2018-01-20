@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bigkoo.pickerview.YMDPickerView;
 import com.detect.detect.R;
+import com.detect.detect.constant.SkipActivityConstant;
 import com.detect.detect.shared_preferences.LatestTestPointSP;
 import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
@@ -36,6 +37,8 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.detect.detect.constant.SkipActivityConstant.PROJECT_INFO_TEST_POINT;
 
 /**
  * Created by dongdong.yu on 2018/1/7.
@@ -71,7 +74,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     protected void initData() {
         mPresenter = new StartDetectPresenter(this);
         initPopupView();
-        //每次构建序号有变化,请清空拍照路径
+        //每次构件序号有变化,请清空拍照路径
         buildSerialNumEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -92,7 +95,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                 try {
                     int num = Integer.parseInt(s.toString());
                     if (num < 1) {
-                        ToastUtils.showToast("构建序号最小为1!");
+                        ToastUtils.showToast("构件序号最小为1!");
                     }
                 } catch (Exception ignored) {
                     buildSerialNumEt.setText("");
@@ -282,18 +285,23 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                 }
                 LatestTestPointSP.getInstance().setLatestDetectPoint(testPointData);
                 ProjectInfoSP.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
-                startActivity(new Intent(this, DetectActivity.class));
+                Intent intent = new Intent(this, DetectActivity.class);
+                intent.putExtra(SkipActivityConstant.DETECT_PROJECT_NAME, testPointData.getProjectName());
+                intent.putExtra(SkipActivityConstant.DETECT_TEST_POINT_SERIAL_BUILD_NUM, testPointInsert.getBuildSerialNum());
+                startActivity(intent);
                 break;
             case R.id.project_info_et:
                 //重置
-                testPointInsert = null;
-                startActivityForResult(new Intent(this, ProjectInfoDetailSetActivity.class), REQUEST_CODE_PROJECT_DETAIL);
+//                testPointInsert = null;
+                Intent projectInfoIntent = new Intent(this, ProjectInfoDetailSetActivity.class);
+                projectInfoIntent.putExtra(PROJECT_INFO_TEST_POINT, testPointInsert);
+                startActivityForResult(projectInfoIntent, REQUEST_CODE_PROJECT_DETAIL);
                 break;
         }
     }
 
     /**
-     *
+     * 显示时间弹框
      */
     public void showTimePiker() {
         long selectTime = System.currentTimeMillis() / 1000L;
@@ -326,7 +334,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         String coordinateInfo = coordinateInfoEt.getText().toString().trim();
 //        String detectTime = detectTimeEt.getText().toString().trim();
         if (TextUtils.isEmpty(buildSerialNum)) {
-            ToastUtils.showToast("构建序号不能为空!");
+            ToastUtils.showToast("构件序号不能为空!");
             return null;
         }
         if (TextUtils.isEmpty(coordinateInfo)) {

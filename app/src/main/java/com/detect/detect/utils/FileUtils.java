@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dongdong.yu on 2017/8/31.
@@ -173,7 +175,7 @@ public class FileUtils {
      * @param saveResultCallback 保存结果callback
      */
     public static void saveImage(final Context context, final String fileName, final File file,
-                                final SaveResultCallback saveResultCallback) {
+                                 final SaveResultCallback saveResultCallback) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -256,6 +258,28 @@ public class FileUtils {
                 context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
             }
         }).start();
+    }
+
+    public static List<String> getProjectMD5NameList(String dbPath) {
+        File file = new File(dbPath);
+        if (!file.exists() || !file.isDirectory()) {
+            return null;
+        }
+        File[] files = file.listFiles();
+        if (files == null) {
+            return null;
+        }
+        ArrayList<String> fileNameList = new ArrayList<>();
+        for (File fileT : files) {
+            if (fileT != null && file.exists() && file.isDirectory()) {
+                String fileName = fileT.getName().trim();
+                if (fileName.length() == 32) {
+                    fileNameList.add(fileName);
+                }
+
+            }
+        }
+        return fileNameList;
     }
 
     public interface SaveResultCallback {

@@ -9,13 +9,36 @@ import java.io.Serializable;
 public class TestPoint implements Serializable {
     private int buildSerialNum;
     private String coordinateInfo;
-    private long detectTime;
+    private int detectTime;
     private String projectName;
     private String constructionOrganization;
     private String fillerType;
     private String instrumentNumber;
     private String detectPerson;
     private String picPath;
+    private int[] advArr = new int[1000];
+
+    public TestPoint() {
+    }
+
+    public TestPoint(int build_serial_num, String coordinate_info, int detect_time,
+                     String project_name, String construction_organization, String filler_type,
+                     String instrument_number, String detect_person, String pic_path) {
+        this.buildSerialNum = build_serial_num;
+        this.coordinateInfo = coordinate_info;
+        this.detectTime = detect_time;
+        this.projectName = project_name;
+        this.constructionOrganization = construction_organization;
+        this.fillerType = filler_type;
+        this.instrumentNumber = instrument_number;
+        this.detectPerson = detect_person;
+        this.picPath = pic_path;
+    }
+
+    public int[] getAdvArr() {
+        return advArr;
+    }
+
 
     public boolean isLatest() {
         return isLatest;
@@ -47,7 +70,7 @@ public class TestPoint implements Serializable {
         return detectTime;
     }
 
-    public void setDetectTime(long detectTime) {
+    public void setDetectTime(int detectTime) {
         this.detectTime = detectTime;
     }
 

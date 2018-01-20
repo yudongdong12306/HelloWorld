@@ -20,6 +20,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.detect.detect.constant.SkipActivityConstant.PROJECT_INFO_TEST_POINT;
+
 /**
  * Created by yu on 18/1/13.
  */
@@ -63,16 +65,24 @@ public class ProjectInfoDetailSetActivity extends BaseActivity implements Projec
 
     @Override
     public void initView() {
-        TestPoint latestDetectPoint = LatestTestPointSP.getInstance().getLatestDetectPoint();
-        if (latestDetectPoint==null) {
+        initUI();
+    }
+
+    private void initUI() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
+        TestPoint testPoint = (TestPoint) intent.getSerializableExtra(PROJECT_INFO_TEST_POINT);
+        if (testPoint == null) {
             return;
         }
         //取上次的,对界面进行恢复,仅仅是恢复,方便用户修改再用
-        projectNameEt.setText(latestDetectPoint.getProjectName());
-        constructionOrganizationTv.setText(latestDetectPoint.getConstructionOrganization());
-        fillerTypeEt.setText(latestDetectPoint.getFillerType());
-        instrumentNumberEt.setText(latestDetectPoint.getInstrumentNumber());
-        detectPersonEt.setText(latestDetectPoint.getDetectPerson());
+        projectNameEt.setText(testPoint.getProjectName());
+        constructionOrganizationTv.setText(testPoint.getConstructionOrganization());
+        fillerTypeEt.setText(testPoint.getFillerType());
+        instrumentNumberEt.setText(testPoint.getInstrumentNumber());
+        detectPersonEt.setText(testPoint.getDetectPerson());
     }
 
     @OnClick({R.id.newly_build_bt, R.id.project_name_et, R.id.common_back_ll, R.id.confirm_bt})
