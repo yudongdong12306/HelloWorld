@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.detect.detect.R;
 import com.detect.detect.shared_preferences.LatestTestPointSP;
+import com.detect.detect.shared_preferences.ProjectDataManagerDB;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.ToastUtils;
@@ -99,7 +100,7 @@ public class ProjectInfoDetailSetActivity extends BaseActivity implements Projec
                     return;
                 }
                 //判断项目是否已经存在
-                if (ProjectInfoSP.getInstance().isProjectNameExit(projectName)) {
+                if (ProjectDataManagerDB.getInstance().isProjectNameExit(projectName)) {
                     ToastUtils.showToast("该项目已经存在,无法新建!");
                     return;
                 }
@@ -110,7 +111,7 @@ public class ProjectInfoDetailSetActivity extends BaseActivity implements Projec
                 finish();
                 break;
             case R.id.project_name_et:
-                List<String> allProjectNames = ProjectInfoSP.getInstance().getAllProjectNames();
+                List<String> allProjectNames = ProjectDataManagerDB.getInstance().getAllProjectNames();
                 if (allProjectNames == null || allProjectNames.size() == 0) {
                     return;
                 }
@@ -130,7 +131,7 @@ public class ProjectInfoDetailSetActivity extends BaseActivity implements Projec
                     return;
                 }
                 //判断项目是否已经存在
-                if (!ProjectInfoSP.getInstance().isProjectNameExit(projectName)) {
+                if (!ProjectDataManagerDB.getInstance().isProjectNameExit(projectName)) {
                     ToastUtils.showToast("该项目不存在,需要新建!");
                     return;
                 }

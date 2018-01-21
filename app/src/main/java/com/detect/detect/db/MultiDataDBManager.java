@@ -37,24 +37,24 @@ public class MultiDataDBManager {
     /**
      * 根据数据库的名称，获取对应的数据库对象
      *
-     * @param dbName 数据库的名称，用户的UIUD
+     * @param projectName 数据库的名称，用户的UIUD
      * @return 返回对应的数据库，
      */
-    public static IDataManager getDataDBManager(String dbName) {
+    public static IDataManager getDataDBManager(String projectName) {
         if ((mContext == null) || !(mContext instanceof Application)) {
             throw new IllegalArgumentException("必须先调用initialize方法初始化为全局的Context对象");
         }
-        if (TextUtils.isEmpty(dbName)) {
+        if (TextUtils.isEmpty(projectName)) {
             throw new IllegalArgumentException("数据库的名称不能为空，目前为用户的UUID");
         }
-        IDataManager db = mManagers.get(dbName);
+        IDataManager db = mManagers.get(projectName);
         if (db == null) {
             synchronized (MultiDataDBManager.class) {
-                db = mManagers.get(dbName);
+                db = mManagers.get(projectName);
                 if (db == null) {
-                    db = new DataDBManager(mContext, dbName);
+                    db = new DataDBManager(mContext, projectName);
                     // 加入到集合中进行管理
-                    mManagers.put(dbName, db);
+                    mManagers.put(projectName, db);
                 }
             }
         }

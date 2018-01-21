@@ -3,6 +3,8 @@ package com.detect.detect.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.detect.detect.shared_preferences.TestPoint;
 
@@ -21,7 +23,7 @@ public class ProjectDB {
                                    String instrumentNumber, String picPath, String projectName) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ProjectMetadata.BUILD_SERIAL_NUM, buildSerialNum);
-        contentValues.put(ProjectMetadata.KEY_ID_INT, Arrays.toString(advArr));
+        contentValues.put(ProjectMetadata.ADV_Arr, Arrays.toString(advArr));
         contentValues.put(ProjectMetadata.CONSTRUCTION_ORGANIZATION, constructionOrganization);
         contentValues.put(ProjectMetadata.COORDINATE_INFO, coordinateInfo);
         contentValues.put(ProjectMetadata.DETECT_PERSON, detectPerson);
@@ -50,7 +52,8 @@ public class ProjectDB {
                 ProjectMetadata.FILLER_TYPE,
                 ProjectMetadata.INSTRUMENT_NUMBER,
                 ProjectMetadata.DETECT_PERSON,
-                ProjectMetadata.PIC_PATH
+                ProjectMetadata.PIC_PATH,
+                ProjectMetadata.ADV_Arr
         };
         String selection = null;
         String[] selectionArgs = null;
@@ -71,7 +74,8 @@ public class ProjectDB {
                 String instrument_number = cursor.getString(cursor.getColumnIndex(ProjectMetadata.INSTRUMENT_NUMBER));
                 String detect_person = cursor.getString(cursor.getColumnIndex(ProjectMetadata.DETECT_PERSON));
                 String pic_path = cursor.getString(cursor.getColumnIndex(ProjectMetadata.PIC_PATH));
-                entityList.add(new TestPoint(build_serial_num, coordinate_info, detect_time, project_name, construction_organization, filler_type, instrument_number, detect_person, pic_path));
+                String adv_arr = cursor.getString(cursor.getColumnIndex(ProjectMetadata.ADV_Arr));
+                entityList.add(new TestPoint(build_serial_num, coordinate_info, detect_time, project_name, construction_organization, filler_type, instrument_number, detect_person, pic_path, adv_arr));
             }
         } finally {
             if (cursor != null) {
@@ -126,17 +130,65 @@ public class ProjectDB {
     }
 
     public int queryMaxBuildSerialNum(SQLiteDatabase database) {
-        Cursor cursor = database.rawQuery("SELECT max(" + ProjectMetadata.BUILD_SERIAL_NUM + ") FROM " + ProjectMetadata.PROJECT_DATA, null);
-        int maxSerialNum = 0;
+        int buildSerialNum = -1;
+        Cursor cursor = null;
         try {
+            String sql = "SELECT " + ProjectMetadata.BUILD_SERIAL_NUM +
+                    " FROM " + ProjectMetadata.PROJECT_DATA +
+                    " ORDER BY " + ProjectMetadata.BUILD_SERIAL_NUM + " DESC LIMIT 1";
+            cursor = database.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                maxSerialNum = cursor.getInt(cursor.getColumnIndex(ProjectMetadata.BUILD_SERIAL_NUM));
+                buildSerialNum = cursor.getInt(cursor.getColumnIndex(ProjectMetadata.BUILD_SERIAL_NUM));
             }
+            return buildSerialNum;
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
+            database.close();
         }
-        return maxSerialNum;
+    }
+    private static final String TAG = "ProjectDB";
+    public int queryTableItemNum(SQLiteDatabase database, String dbName) {
+        int count = -1;
+        Cursor cursor = null;
+        try {
+            String sql = " SELECT COUNT FROM " + dbName;
+            cursor = database.rawQuery(sql, null);
+//            count = cursor.getCount();
+//            int columnCount = cursor.getColumnCount();
+//            Log.d(TAG, "queryTableItemNum: columnCount: " + columnCount);
+            while (cursor.moveToNext()) {
+                count = cursor.getInt(0);
+            }
+            return count;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            database.close();
+        }
+    }
+
+    public List<String> getTableNameList(SQLiteDatabase database) {
+        ArrayList<String> tableNameList = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            String sql = " SELECT NAME FROM SQLITE_MASTER WHERE TYPE='TABLE' ORDER BY NAME ";
+
+            cursor = database.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                String tableName = cursor.getString(0);
+                if (!TextUtils.isEmpty(tableName)) {
+                    tableNameList.add(tableName);
+                }
+            }
+            return tableNameList;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            database.close();
+        }
     }
 }

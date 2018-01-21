@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.detect.detect.R;
 import com.detect.detect.shared_preferences.Project;
+import com.detect.detect.shared_preferences.ProjectDataManagerDB;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.PicDisplayUtils;
@@ -170,7 +171,8 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
 
     @Override
     public void initView() {
-        List<Project> allProjects = ProjectInfoSP.getInstance().getAllProjects();
+//        List<Project> allProjects = ProjectInfoSP.getInstance().getAllProjects();
+        List<Project> allProjects = ProjectDataManagerDB.getInstance().getAllProjects();
         if (allProjects == null || allProjects.size() == 0) {
             return;
         }
@@ -231,7 +233,9 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
         if (TextUtils.isEmpty(mProjectName) || mBuildSerialNum < 1) {
             return;
         }
-        String testPointPicPath = ProjectInfoSP.getInstance().getTestPointPicPath(mProjectName
+//        String testPointPicPath = ProjectInfoSP.getInstance().getTestPointPicPath(mProjectName
+//                , mBuildSerialNum);
+        String testPointPicPath = ProjectDataManagerDB.getInstance().getTestPointPicPath(mProjectName
                 , mBuildSerialNum);
         if (TextUtils.isEmpty(testPointPicPath)) {
             return;

@@ -26,6 +26,7 @@ import com.detect.detect.R;
 import com.detect.detect.constant.SkipActivityConstant;
 import com.detect.detect.shared_preferences.LatestTestPointSP;
 import com.detect.detect.shared_preferences.Project;
+import com.detect.detect.shared_preferences.ProjectDataManagerDB;
 import com.detect.detect.shared_preferences.ProjectInfoSP;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.ToastUtils;
@@ -214,7 +215,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                 case ProjectInfoDetailSetActivity.RESULT_CODE_START_DETECT_INSERT:
                     testPointInsert = (TestPoint) intent.getSerializableExtra(ProjectInfoDetailSetActivity.INSERT_TEST_POINT);
                     projectInfoEt.setText(testPointInsert.getProjectName());
-                    int maxBuildSerialNum = ProjectInfoSP.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
+                    int maxBuildSerialNum = ProjectDataManagerDB.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
                     buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
                     Log.d(TAG, "onActivityResult: 2");
                     break;
@@ -253,8 +254,12 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         coordinateInfoEt.setText(latestDetectPoint.getCoordinateInfo());
 //        detectTimeEt.setText(latestDetectPoint.getDetectTime() + "");
         projectInfoEt.setText(latestDetectPoint.getProjectName());
-        int maxBuildSerialNum = ProjectInfoSP.getInstance().getMaxBuildSerialNum(latestDetectPoint.getProjectName());
-        buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
+        int maxBuildSerialNum = ProjectDataManagerDB.getInstance().getMaxBuildSerialNum(latestDetectPoint.getProjectName());
+        if (maxBuildSerialNum <= 0) {
+            buildSerialNumEt.setText("1");
+        }else {
+            buildSerialNumEt.setText(maxBuildSerialNum+1+"");
+        }
         //对详情页面数据进行初始化
         testPointInsert = new TestPoint();
         testPointInsert.setProjectName(latestDetectPoint.getProjectName());
@@ -284,7 +289,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                     return;
                 }
                 LatestTestPointSP.getInstance().setLatestDetectPoint(testPointData);
-                ProjectInfoSP.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
+                ProjectDataManagerDB.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
                 Intent intent = new Intent(this, DetectActivity.class);
                 intent.putExtra(SkipActivityConstant.DETECT_PROJECT_NAME, testPointData.getProjectName());
                 intent.putExtra(SkipActivityConstant.DETECT_TEST_POINT_SERIAL_BUILD_NUM, testPointInsert.getBuildSerialNum());

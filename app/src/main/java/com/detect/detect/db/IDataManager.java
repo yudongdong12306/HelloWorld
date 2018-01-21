@@ -21,4 +21,6 @@ public interface IDataManager {
     String getTestPointPicPath(int buildSerialNum);
 
     int queryMaxBuildSerialNum();
+    int queryTableItemNum();
+    List<String> getTableList();
 }

@@ -273,10 +273,7 @@ public class FileUtils {
         for (File fileT : files) {
             if (fileT != null && file.exists() && file.isDirectory()) {
                 String fileName = fileT.getName().trim();
-                if (fileName.length() == 32) {
-                    fileNameList.add(fileName);
-                }
-
+                fileNameList.add(fileName);
             }
         }
         return fileNameList;

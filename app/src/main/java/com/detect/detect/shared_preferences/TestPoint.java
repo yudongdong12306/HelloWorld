@@ -23,7 +23,7 @@ public class TestPoint implements Serializable {
 
     public TestPoint(int build_serial_num, String coordinate_info, int detect_time,
                      String project_name, String construction_organization, String filler_type,
-                     String instrument_number, String detect_person, String pic_path) {
+                     String instrument_number, String detect_person, String pic_path,String adv_arr) {
         this.buildSerialNum = build_serial_num;
         this.coordinateInfo = coordinate_info;
         this.detectTime = detect_time;
@@ -33,6 +33,7 @@ public class TestPoint implements Serializable {
         this.instrumentNumber = instrument_number;
         this.detectPerson = detect_person;
         this.picPath = pic_path;
+//        this.advArr=adv_arr.getBytes();
     }
 
     public int[] getAdvArr() {
