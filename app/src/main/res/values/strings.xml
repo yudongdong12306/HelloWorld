@@ -48,5 +48,7 @@
     <string name="test_point_pic">图像</string>
     <string name="add_pic">添加图片</string>
     <string name="out_put_data">导出</string>
+    <string name="cancel">取消</string>
+    <string name="remind_delete_title">是否删除该测试点</string>
 
 </resources>

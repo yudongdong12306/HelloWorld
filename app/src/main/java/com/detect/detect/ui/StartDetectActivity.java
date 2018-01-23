@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -25,9 +24,7 @@ import com.bigkoo.pickerview.YMDPickerView;
 import com.detect.detect.R;
 import com.detect.detect.constant.SkipActivityConstant;
 import com.detect.detect.shared_preferences.LatestTestPointSP;
-import com.detect.detect.shared_preferences.Project;
-import com.detect.detect.shared_preferences.ProjectDataManagerDB;
-import com.detect.detect.shared_preferences.ProjectInfoSP;
+import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.widgets.PersonalPopupWindow;
@@ -36,7 +33,6 @@ import java.io.File;
 import java.util.Calendar;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.detect.detect.constant.SkipActivityConstant.PROJECT_INFO_TEST_POINT;
@@ -215,8 +211,12 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                 case ProjectInfoDetailSetActivity.RESULT_CODE_START_DETECT_INSERT:
                     testPointInsert = (TestPoint) intent.getSerializableExtra(ProjectInfoDetailSetActivity.INSERT_TEST_POINT);
                     projectInfoEt.setText(testPointInsert.getProjectName());
-                    int maxBuildSerialNum = ProjectDataManagerDB.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
-                    buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
+                    int maxBuildSerialNum = ProjectDataManager.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
+                    if (maxBuildSerialNum<=0) {
+                        buildSerialNumEt.setText("1");
+                    }else {
+                        buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
+                    }
                     Log.d(TAG, "onActivityResult: 2");
                     break;
             }
@@ -254,7 +254,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         coordinateInfoEt.setText(latestDetectPoint.getCoordinateInfo());
 //        detectTimeEt.setText(latestDetectPoint.getDetectTime() + "");
         projectInfoEt.setText(latestDetectPoint.getProjectName());
-        int maxBuildSerialNum = ProjectDataManagerDB.getInstance().getMaxBuildSerialNum(latestDetectPoint.getProjectName());
+        int maxBuildSerialNum = ProjectDataManager.getInstance().getMaxBuildSerialNum(latestDetectPoint.getProjectName());
         if (maxBuildSerialNum <= 0) {
             buildSerialNumEt.setText("1");
         }else {
@@ -289,7 +289,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                     return;
                 }
                 LatestTestPointSP.getInstance().setLatestDetectPoint(testPointData);
-                ProjectDataManagerDB.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
+                ProjectDataManager.getInstance().insertTestPoint(testPointInsert.getProjectName(), testPointInsert);
                 Intent intent = new Intent(this, DetectActivity.class);
                 intent.putExtra(SkipActivityConstant.DETECT_PROJECT_NAME, testPointData.getProjectName());
                 intent.putExtra(SkipActivityConstant.DETECT_TEST_POINT_SERIAL_BUILD_NUM, testPointInsert.getBuildSerialNum());

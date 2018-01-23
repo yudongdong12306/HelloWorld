@@ -261,4 +261,14 @@ public class ProjectInfoSP implements IProjectDataManager {
     public boolean deleteProject(String projectName) {
         return false;
     }
+
+    @Override
+    public int queryTableItemNum(String projectName) {
+        return 0;
+    }
+
+    @Override
+    public List<String> getTableNameList() {
+        return null;
+    }
 }

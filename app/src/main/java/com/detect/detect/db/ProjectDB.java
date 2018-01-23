@@ -1,6 +1,7 @@
 package com.detect.detect.db;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
@@ -17,10 +18,13 @@ import java.util.List;
  */
 
 public class ProjectDB {
-    public boolean insertTestPoint(SQLiteDatabase database, int buildSerialNum, int[] advArr,
-                                   String constructionOrganization, String coordinateInfo,
-                                   String detectPerson, long detectTime, String fillerType,
-                                   String instrumentNumber, String picPath, String projectName) {
+    public synchronized boolean insertTestPoint(String dbName, SQLiteDatabase database, int buildSerialNum, int[] advArr,
+                                                String constructionOrganization, String coordinateInfo,
+                                                String detectPerson, long detectTime, String fillerType,
+                                                String instrumentNumber, String picPath, String projectName) {
+        if (TextUtils.isEmpty(dbName)) {
+            return false;
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put(ProjectMetadata.BUILD_SERIAL_NUM, buildSerialNum);
         contentValues.put(ProjectMetadata.ADV_Arr, Arrays.toString(advArr));
@@ -33,14 +37,15 @@ public class ProjectDB {
         contentValues.put(ProjectMetadata.PIC_PATH, picPath);
         contentValues.put(ProjectMetadata.PROJECT_NAME, projectName);
 
-        long re = database.insert(ProjectMetadata.PROJECT_DATA, null, contentValues);
+        long re = database.insert(dbName, null, contentValues);
+//        database.close();
         if (re == -1) {
             return false;
         }
         return true;
     }
 
-    public List<TestPoint> queryAllTestPointData(SQLiteDatabase database) {
+    public synchronized List<TestPoint> queryAllTestPointData(String tableName, SQLiteDatabase database) {
 
         ArrayList<TestPoint> entityList = new ArrayList<>();
         String[] columns = new String[]{
@@ -62,7 +67,7 @@ public class ProjectDB {
         String orderBy = ProjectMetadata.BUILD_SERIAL_NUM + " ASC";
         Cursor cursor = null;
         try {
-            cursor = database.query(ProjectMetadata.PROJECT_DATA, columns, selection, selectionArgs,
+            cursor = database.query(tableName, columns, selection, selectionArgs,
                     groupBy, having, orderBy);
             while (cursor.moveToNext()) {
                 int build_serial_num = cursor.getInt(cursor.getColumnIndex(ProjectMetadata.BUILD_SERIAL_NUM));
@@ -82,26 +87,28 @@ public class ProjectDB {
                 cursor.close();
             }
         }
+//        database.close();
         return entityList;
     }
 
 
-    public boolean deleteProject(SQLiteDatabase database) {
-        database.execSQL("DROP TABLE " + ProjectMetadata.PROJECT_DATA);
+    public synchronized boolean deleteProject(String tableName, SQLiteDatabase database) {
+        database.execSQL("DROP TABLE " + tableName);
         return true;
     }
 
-    public boolean deleteTestPoint(SQLiteDatabase database, int buildSerialNum) {
+    public synchronized boolean deleteTestPoint(String tableName, SQLiteDatabase database, int buildSerialNum) {
         if (buildSerialNum < 0) {
             return false;
         }
         String whereClause = ProjectMetadata.BUILD_SERIAL_NUM + " = ?";
         String[] whereArgs = new String[]{buildSerialNum + ""};
-        int flag = database.delete(ProjectMetadata.PROJECT_DATA, whereClause, whereArgs);
+        int flag = database.delete(tableName, whereClause, whereArgs);
+//        database.close();
         return flag >= 0;
     }
 
-    public String getTestPointPicPath(SQLiteDatabase database, int buildSerialNum) {
+    public synchronized String getTestPointPicPath(String tableName, SQLiteDatabase database, int buildSerialNum) {
         if (buildSerialNum < 0) {
             return null;
         }
@@ -116,7 +123,7 @@ public class ProjectDB {
         String orderBy = ProjectMetadata.BUILD_SERIAL_NUM + " ASC";
         Cursor cursor = null;
         try {
-            cursor = database.query(ProjectMetadata.PROJECT_DATA, columns, selection, selectionArgs,
+            cursor = database.query(tableName, columns, selection, selectionArgs,
                     groupBy, having, orderBy);
             while (cursor.moveToNext()) {
                 picPath = cursor.getString(cursor.getColumnIndex(ProjectMetadata.PIC_PATH));
@@ -125,18 +132,22 @@ public class ProjectDB {
             if (cursor != null) {
                 cursor.close();
             }
+            //database.close();
         }
         return picPath;
     }
 
-    public int queryMaxBuildSerialNum(SQLiteDatabase database) {
+    public synchronized int queryMaxBuildSerialNum(String tableName, SQLiteDatabase database) {
         int buildSerialNum = -1;
         Cursor cursor = null;
         try {
             String sql = "SELECT " + ProjectMetadata.BUILD_SERIAL_NUM +
-                    " FROM " + ProjectMetadata.PROJECT_DATA +
+                    " FROM " + tableName +
                     " ORDER BY " + ProjectMetadata.BUILD_SERIAL_NUM + " DESC LIMIT 1";
             cursor = database.rawQuery(sql, null);
+            if (cursor.getCount() < 1) {
+                return buildSerialNum;
+            }
             while (cursor.moveToNext()) {
                 buildSerialNum = cursor.getInt(cursor.getColumnIndex(ProjectMetadata.BUILD_SERIAL_NUM));
             }
@@ -145,38 +156,44 @@ public class ProjectDB {
             if (cursor != null) {
                 cursor.close();
             }
-            database.close();
+//            database.close();
         }
     }
+
     private static final String TAG = "ProjectDB";
-    public int queryTableItemNum(SQLiteDatabase database, String dbName) {
+
+    public synchronized int queryTableItemNum(SQLiteDatabase database, String dbName) {
         int count = -1;
         Cursor cursor = null;
+//        String sql = "select count(*) from info";
+//        Cursor cursor = db.rawQuery(sql, null);
+//        cursor.moveToFirst();
+//        long count = cursor.getLong(0);
+//        cursor.close();
         try {
-            String sql = " SELECT COUNT FROM " + dbName;
+            String sql = "select count(*) from " + dbName;
             cursor = database.rawQuery(sql, null);
-//            count = cursor.getCount();
-//            int columnCount = cursor.getColumnCount();
-//            Log.d(TAG, "queryTableItemNum: columnCount: " + columnCount);
-            while (cursor.moveToNext()) {
-                count = cursor.getInt(0);
-            }
-            return count;
+            cursor.moveToFirst();
+            return cursor.getInt(0);
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
-            database.close();
+//            database.close();
         }
     }
 
     public List<String> getTableNameList(SQLiteDatabase database) {
+//        SQLiteDatabase database = mDbContext.openOrCreateDatabase(DbConstant.TEMPERATURE_DB, Context.MODE_PRIVATE, null);
         ArrayList<String> tableNameList = new ArrayList<>();
         Cursor cursor = null;
         try {
-            String sql = " SELECT NAME FROM SQLITE_MASTER WHERE TYPE='TABLE' ORDER BY NAME ";
+            String sql = " SELECT tbl_name FROM sqlite_master WHERE type = 'table' ";
 
             cursor = database.rawQuery(sql, null);
+            if (cursor.getCount() <= 0) {
+                return null;
+            }
             while (cursor.moveToNext()) {
                 String tableName = cursor.getString(0);
                 if (!TextUtils.isEmpty(tableName)) {
@@ -188,7 +205,7 @@ public class ProjectDB {
             if (cursor != null) {
                 cursor.close();
             }
-            database.close();
+//            database.close();
         }
     }
 }

@@ -1,14 +1,17 @@
 package com.detect.detect.ui;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +22,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.detect.detect.R;
+import com.detect.detect.constant.CommonConstant;
 import com.detect.detect.shared_preferences.Project;
-import com.detect.detect.shared_preferences.ProjectDataManagerDB;
-import com.detect.detect.shared_preferences.ProjectInfoSP;
+import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.PicDisplayUtils;
 import com.detect.detect.utils.ToastUtils;
@@ -38,7 +41,9 @@ import butterknife.OnClick;
  * Created by dongdong.yu on 2018/1/8.
  */
 
-public class DataManagerActivity extends BaseActivity implements IProjectTestPointClickCallback, ITakePhoto {
+public class DataManagerActivity extends BaseActivity implements IProjectTestPointClickCallback, ITakePhoto, ConfirmOrCancelDialog.ConfirmClickCallback {
+    private static final String TAG = "DataManagerActivity";
+    private static final String FRAGMENT_TAG_DELETE = "fragment_tag_delete";
     @BindView(R.id.project_data_lv)
     ExpandableListView projectDataLv;
     @BindView(R.id.project_name_tv)
@@ -59,6 +64,9 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     private int mBuildSerialNum;
     private PersonalPopupWindow popupWindow;
     private DataManagerPresenter mPresenter;
+    private List<String> mProjectNameList;
+    private List<List<Integer>> mAllTestPointList;
+    private ProjectDataAdapter mAdapter;
 
     @Override
     protected void initData() {
@@ -172,15 +180,23 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     @Override
     public void initView() {
 //        List<Project> allProjects = ProjectInfoSP.getInstance().getAllProjects();
-        List<Project> allProjects = ProjectDataManagerDB.getInstance().getAllProjects();
+        if (prepareAdapterData()) return;
+        mAdapter = new ProjectDataAdapter(this, mProjectNameList, mAllTestPointList, this);
+        projectDataLv.setAdapter(mAdapter);
+    }
+
+    private boolean prepareAdapterData() {
+        List<Project> allProjects = ProjectDataManager.getInstance().getAllProjects();
         if (allProjects == null || allProjects.size() == 0) {
-            return;
+            mProjectNameList.clear();
+            mAllTestPointList.clear();
+            return true;
         }
-        List<String> projectNameList = new ArrayList<>();
-        List<List<Integer>> allTestPointList = new ArrayList<>();
+        mProjectNameList = new ArrayList<>();
+        mAllTestPointList = new ArrayList<>();
         for (Project project : allProjects) {
             if (project != null) {
-                projectNameList.add(project.getProjectName());
+                mProjectNameList.add(project.getProjectName());
                 List<TestPoint> testPoints = project.getTestPointList();
                 List<Integer> testPointList = new ArrayList<>();
                 for (TestPoint testPoint : testPoints) {
@@ -188,11 +204,10 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
                         testPointList.add(testPoint.getBuildSerialNum());
                     }
                 }
-                allTestPointList.add(testPointList);
+                mAllTestPointList.add(testPointList);
             }
         }
-
-        projectDataLv.setAdapter(new ProjectDataAdapter(this, projectNameList, allTestPointList, this));
+        return false;
     }
 
     @OnClick({R.id.project_name_tv, R.id.test_point_data_bt, R.id.test_point_pic_bt, R.id.back_bt, R.id.add_pic_bt, R.id.out_put_bt})
@@ -235,7 +250,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
         }
 //        String testPointPicPath = ProjectInfoSP.getInstance().getTestPointPicPath(mProjectName
 //                , mBuildSerialNum);
-        String testPointPicPath = ProjectDataManagerDB.getInstance().getTestPointPicPath(mProjectName
+        String testPointPicPath = ProjectDataManager.getInstance().getTestPointPicPath(mProjectName
                 , mBuildSerialNum);
         if (TextUtils.isEmpty(testPointPicPath)) {
             return;
@@ -251,7 +266,44 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     public void onTestPointSelected(String projectName, int buildSerialNum) {
         this.mProjectName = projectName;
         this.mBuildSerialNum = buildSerialNum;
-        ToastUtils.showToast("选中了: " + projectName + "工程" + buildSerialNum + "节点");
+//        ToastUtils.showToast("选中了: " + projectName + "工程" + buildSerialNum + "节点");
         projectNameTv.setText("工程" + projectName + "构件序号" + buildSerialNum);
+        FragmentTransaction mFragTransaction = getFragmentManager().beginTransaction();
+        ConfirmOrCancelDialog fragment = ((ConfirmOrCancelDialog) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_DELETE));
+        if (fragment == null) {
+            ConfirmOrCancelDialog confirmDialog = new ConfirmOrCancelDialog();
+            Bundle args = new Bundle();
+            args.putString(CommonConstant.PROJECT_NAME, projectName);
+            args.putInt(CommonConstant.BUILD_SERIAL_NUM, buildSerialNum);
+            confirmDialog.setArguments(args);
+            confirmDialog.show(mFragTransaction, FRAGMENT_TAG_DELETE);
+        } else {
+            fragment.show(mFragTransaction, FRAGMENT_TAG_DELETE);
+        }
+    }
+
+    @Override
+    public void onConfirm(String projectName, int buildSerialNum) {
+        if (TextUtils.isEmpty(projectName)) {
+            return;
+        }
+        if (buildSerialNum < 1) {
+            return;
+        }
+        //执行删除逻辑
+        ProjectDataManager dataManager = ProjectDataManager.getInstance();
+        boolean flag = dataManager.deleteTestPoint(projectName, buildSerialNum);
+        if (flag) {
+            ToastUtils.showToast("删除成功!");
+        } else {
+            ToastUtils.showToast("删除失败!");
+        }
+        int itemNum = dataManager.queryTableItemNum(projectName);
+        Log.d(TAG, "onConfirm: 表还有数据条目: " + itemNum);
+        if (itemNum <= 0) {
+            dataManager.deleteProject(projectName);
+        }
+        prepareAdapterData();
+        mAdapter.notifyDataSetChanged();
     }
 }

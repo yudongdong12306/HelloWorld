@@ -23,17 +23,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '26.0.2'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-// Android support
+    // Android support
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
@@ -57,37 +58,44 @@ dependencies {
     compile "jp.wasabeef:glide-transformations:$rootProject.glideTransformationVersion"
 
     //Butterknife
-//    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+
+    //    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     //fragmentation
-//    compile "me.yokeyword:fragmentation:$rootProject.fragmentationVersion"
+
+    //    compile "me.yokeyword:fragmentation:$rootProject.fragmentationVersion"
 
     //Logger
     compile "com.orhanobut:logger:$rootProject.loggerVersion"
     implementation 'pub.devrel:easypermissions:1.1.2'
-
     compile 'com.alibaba:fastjson:1.2.12'
+
     //circle imageview
-//    compile "de.hdodenhof:circleimageview:$rootProject.circleImageviewVersion"
+
+    //    compile "de.hdodenhof:circleimageview:$rootProject.circleImageviewVersion"
 
     //BaseRecyclerViewAdapterHelper
-//    compile "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.BaseRecyclerViewAdapterHelperVersion"
+
+    //    compile "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.BaseRecyclerViewAdapterHelperVersion"
 
     //SwitchButton
-//    compile "com.kyleduo.switchbutton:library:$rootProject.SwtichButtonVersion"
+
+    //    compile "com.kyleduo.switchbutton:library:$rootProject.SwtichButtonVersion"
 
     //PhotoView
-//    compile "com.bm.photoview:library:$rootProject.PhotoViewVersion"
 
-//    compile "com.cocosw:bottomsheet:$rootProject.BottomSheetVersion"
+    //    compile "com.bm.photoview:library:$rootProject.PhotoViewVersion"
+
+    //    compile "com.cocosw:bottomsheet:$rootProject.BottomSheetVersion"
 
     //permissions
     compile "com.tbruyelle.rxpermissions2:rxpermissions:$rootProject.rxPerssionsVersion"
 
     //Bugly
-//    compile 'com.tencent.bugly:crashreport:latest.release'
+
+    //    compile 'com.tencent.bugly:crashreport:latest.release'
     compile project(path: ':pickerview')
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }

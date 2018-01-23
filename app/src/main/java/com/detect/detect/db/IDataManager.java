@@ -10,17 +10,21 @@ import java.util.List;
  * @version 1.1 2015/8/21
  */
 public interface IDataManager {
-    boolean insertTestPoint(TestPoint testPoint);
+    boolean insertTestPoint(TestPoint testPoint, String tableName);
 
-    List<TestPoint> queryAllTestPointData();
+    List<TestPoint> queryAllTestPointData(String tableName);
 
-    boolean deleteProject();
+    boolean deleteProject(String tableName);
 
-    boolean deleteTestPoint(int buildSerialNum);
+    boolean deleteTestPoint(String tableName, int buildSerialNum);
 
-    String getTestPointPicPath(int buildSerialNum);
+    String getTestPointPicPath(String tableName, int buildSerialNum);
 
-    int queryMaxBuildSerialNum();
-    int queryTableItemNum();
-    List<String> getTableList();
+    int queryMaxBuildSerialNum(String tableName);
+
+    int queryTableItemNum(String tableName);
+
+    //    List<String> getTableList();
+    List<String> getTableNameList();
+    boolean isProjectNameExit(String projectName);
 }

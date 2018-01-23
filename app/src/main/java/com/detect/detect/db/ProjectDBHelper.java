@@ -4,15 +4,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * 温度数据库
  * Created by longfei.zhang on 2016/5/17.
  */
-public class ProjectDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
-    private  String TABLE_NAME;
-    private final String create_temperature_table;
+public class ProjectDBHelper/* extends SQLiteOpenHelper*/ {
     //    /**
 //     * 温度数据表
 //     */
@@ -28,13 +26,22 @@ public class ProjectDBHelper extends SQLiteOpenHelper {
 //            ProjectMetadata.PROJECT_NAME + " TEXT NOT NULL,\n" +
 //            ProjectMetadata.ADV_Arr + " TEXT NOT NULL,\n" +
 //            ProjectMetadata.PIC_PATH + " TEXT NOT NULL ); ";
+    private static final String TAG = "ProjectDBHelper";
+
+    public SQLiteDatabase getDatabase() {
+        return mDatabase;
+    }
+
+    private final SQLiteDatabase mDatabase;
 
     public ProjectDBHelper(Context context,String tableName) {
-        super(context, DbConstant.TEMPERATURE_DB, null, DATABASE_VERSION);
+        mDatabase = context.openOrCreateDatabase(DbConstant.TEMPERATURE_DB, Context.MODE_PRIVATE, null);
+//        super(context, DbConstant.TEMPERATURE_DB, null, DATABASE_VERSION);
         if (TextUtils.isEmpty(tableName)) {
             throw new IllegalArgumentException("输入的数据库名称错误");
         }
-        create_temperature_table = "CREATE TABLE IF NOT EXISTS " + tableName + " ( \n" +
+        Log.d(TAG, "ProjectDBHelper() called with: context = [" + context + "], tableName = [" + tableName + "]");
+        String create_temperature_table = "CREATE TABLE IF NOT EXISTS " + tableName + " ( \n" +
                 ProjectMetadata.KEY_ID_INT + " INTEGER PRIMARY KEY ASC ON CONFLICT REPLACE AUTOINCREMENT,\n" +
                 ProjectMetadata.BUILD_SERIAL_NUM + " INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE,\n" +
                 ProjectMetadata.CONSTRUCTION_ORGANIZATION + " INTEGER NOT NULL,\n" +
@@ -46,15 +53,7 @@ public class ProjectDBHelper extends SQLiteOpenHelper {
                 ProjectMetadata.PROJECT_NAME + " TEXT NOT NULL,\n" +
                 ProjectMetadata.ADV_Arr + " TEXT NOT NULL,\n" +
                 ProjectMetadata.PIC_PATH + " TEXT NOT NULL ); ";
+        mDatabase.execSQL(create_temperature_table);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(create_temperature_table);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
 }

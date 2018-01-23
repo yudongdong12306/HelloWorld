@@ -18,8 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.detect.detect.R;
-import com.detect.detect.shared_preferences.ProjectDataManagerDB;
-import com.detect.detect.shared_preferences.ProjectInfoSP;
+import com.detect.detect.shared_preferences.ProjectDataManager;
 
 import java.util.List;
 
@@ -109,7 +108,7 @@ public class ProjectNameSelectDialog extends DialogFragment {
 
 
     private void initView(View view) {
-        ProjectDataManagerDB instance = ProjectDataManagerDB.getInstance();
+        ProjectDataManager instance = ProjectDataManager.getInstance();
         allProjectNames = instance.getAllProjectNames();
         projectNameLv = view.findViewById(R.id.project_name_lv);
         projectNameCustomTv = view.findViewById(R.id.project_name_custom_tv);

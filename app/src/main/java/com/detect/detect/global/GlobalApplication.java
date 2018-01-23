@@ -5,10 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.detect.detect.shared_preferences.LatestTestPointSP;
-import com.detect.detect.shared_preferences.ProjectDataManagerDB;
-import com.detect.detect.shared_preferences.ProjectInfoSP;
-
-import java.util.prefs.Preferences;
+import com.detect.detect.shared_preferences.ProjectDataManager;
+import com.detect.detect.shared_preferences.ProjectNameUUIDSP;
 
 
 /**
@@ -34,9 +32,11 @@ public class GlobalApplication extends Application {
         context = getApplicationContext();
         handler = new Handler();
         mainThreadId = android.os.Process.myTid();
-        ProjectInfoSP.initialize(this);
+//        ProjectInfoSP.initialize(this);
+        ProjectNameUUIDSP.initialize(this);
         LatestTestPointSP.initialize(this);
-        ProjectDataManagerDB.initialize(this);
+        ProjectDataManager.initialize(this);
+        ProjectDataManager.initialize(this);
     }
 
     /**

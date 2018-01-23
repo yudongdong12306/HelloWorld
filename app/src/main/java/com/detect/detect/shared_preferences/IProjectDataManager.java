@@ -23,5 +23,5 @@ public interface IProjectDataManager {
 
     boolean deleteProject(String projectName);
     int queryTableItemNum(String projectName);
-    List<String> getTableList();
+    List<String> getTableNameList();
 }

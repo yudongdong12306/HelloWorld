@@ -5,6 +5,7 @@ import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.TextView;
 
@@ -13,7 +14,7 @@ import com.detect.detect.utils.ToastUtils;
 
 import java.util.List;
 
-public class ProjectDataAdapter implements ExpandableListAdapter {
+public class ProjectDataAdapter extends BaseExpandableListAdapter {
     private IProjectTestPointClickCallback mPointClickCallback;
     private Context context;
     private List<String> groupData;
@@ -110,15 +111,17 @@ public class ProjectDataAdapter implements ExpandableListAdapter {
         }
         final int childData = this.childData.get(groupPosition).get(childPosition);
         holder.testPoint.setText(childData + "");
-        holder.testPoint.setOnClickListener(new View.OnClickListener() {
+        holder.testPoint.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
                 String projectName = ProjectDataAdapter.this.groupData.get(groupPosition);
                 if (mPointClickCallback != null) {
                     mPointClickCallback.onTestPointSelected(projectName, childData);
                 }
+                return true;
             }
         });
+
         return convertView;
     }
 

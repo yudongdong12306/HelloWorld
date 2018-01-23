@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DetectProject.iml" filepath="$PROJECT_DIR$/DetectProject.iml" />
+      <module fileurl="file://D:\androidProject\HelloWorld\DetectProject.iml" filepath="D:\androidProject\HelloWorld\DetectProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HelloWorld.iml" filepath="$PROJECT_DIR$/.idea/HelloWorld.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\androidProject\HelloWorld\app\app.iml" filepath="D:\androidProject\HelloWorld\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/pickerview/pickerview.iml" filepath="$PROJECT_DIR$/pickerview/pickerview.iml" />
+      <module fileurl="file://D:\androidProject\HelloWorld\pickerview\pickerview.iml" filepath="D:\androidProject\HelloWorld\pickerview\pickerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
+      <module fileurl="file://D:\androidProject\HelloWorld\utils\utils.iml" filepath="D:\androidProject\HelloWorld\utils\utils.iml" />
     </modules>
   </component>
 </project>
