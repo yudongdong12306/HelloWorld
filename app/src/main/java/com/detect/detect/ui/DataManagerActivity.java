@@ -23,14 +23,21 @@ import android.widget.TextView;
 
 import com.detect.detect.R;
 import com.detect.detect.constant.CommonConstant;
+import com.detect.detect.db.FileConstant;
 import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.TestPoint;
+import com.detect.detect.utils.CSVUtils;
+import com.detect.detect.utils.FileUtils;
 import com.detect.detect.utils.PicDisplayUtils;
 import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.widgets.PersonalPopupWindow;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -188,8 +195,12 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     private boolean prepareAdapterData() {
         List<Project> allProjects = ProjectDataManager.getInstance().getAllProjects();
         if (allProjects == null || allProjects.size() == 0) {
-            mProjectNameList.clear();
-            mAllTestPointList.clear();
+            if (mProjectNameList != null) {
+                mProjectNameList.clear();
+            }
+            if (mAllTestPointList != null) {
+                mAllTestPointList.clear();
+            }
             return true;
         }
         mProjectNameList = new ArrayList<>();
@@ -227,13 +238,91 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
                 addPic();
                 break;
             case R.id.out_put_bt:
-                outputData();
+                outputData(mProjectName);
                 break;
         }
     }
 
-    private void outputData() {
-        ToastUtils.showToast("导出数据成功!");
+    private void outputData(String projectName) {
+        if (TextUtils.isEmpty(projectName)) {
+            ToastUtils.showToast("请选择工程或者工程节点");
+            return;
+        }
+        File file = new File(FileConstant.OUT_PUT_PATH+ projectName+File.separator);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        String path = FileConstant.OUT_PUT_PATH+ projectName+File.separator + projectName + ".csv";
+        File fileDir = new File(path);
+        if (fileDir.exists()) {
+            fileDir.delete();
+        }
+        try {
+            boolean newFile = fileDir.createNewFile();
+            Log.d(TAG, "outputData: newFile: " + newFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Project> allProjects = ProjectDataManager.getInstance().getAllProjects();
+        if (allProjects != null && allProjects.size() > 0) {
+            for (Project project : allProjects) {
+                if (project == null) {
+                    continue;
+                }
+                List<TestPoint> testPointList = project.getTestPointList();
+                if (testPointList != null && testPointList.size() > 0) {
+                    CSVUtils.writeTestPointListToCSV(fileDir.getAbsolutePath(), testPointList);
+                }
+                //
+                saveTestPointsPic(projectName, testPointList);
+            }
+        }
+    }
+
+    private void saveTestPointsPic(String projectName, List<TestPoint> testPointList) {
+        for (TestPoint testPoint : testPointList) {
+            if (testPoint == null) {
+                continue;
+            }
+            String picPath = testPoint.getPicPath();
+            if (!TextUtils.isEmpty(picPath)) {
+                savePicToLocal(projectName, picPath, testPoint);
+            }
+        }
+    }
+
+    private void savePicToLocal(String projectName, String oldPicPath, TestPoint testPoint) {
+        String newPath = FileConstant.OUT_PUT_PATH + projectName;
+        File fileDir = new File(newPath);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        File newFile = new File(newPath, testPoint.getBuildSerialNum() + ".jpg");
+        if (newFile.exists()) {
+            newFile.delete();
+        }
+        try {
+            newFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        copyPic(oldPicPath, newFile.getAbsolutePath());
+
+    }
+
+    private void copyPic(String oldPicPath, String newPicPath) {
+        int length;
+        try {
+            FileInputStream fis = new FileInputStream(oldPicPath);
+            FileOutputStream fos = new FileOutputStream(newPicPath);
+            byte[] buffer = new byte[1024*8];
+            while ((length = fis.read(buffer)) != -1) {
+                fos.write(buffer, 0, length);
+            }
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addPic() {
@@ -246,6 +335,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
 
     private void showPic() {
         if (TextUtils.isEmpty(mProjectName) || mBuildSerialNum < 1) {
+            dataFl.removeAllViews();
             return;
         }
 //        String testPointPicPath = ProjectInfoSP.getInstance().getTestPointPicPath(mProjectName
@@ -263,11 +353,24 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     }
 
     @Override
-    public void onTestPointSelected(String projectName, int buildSerialNum) {
+    public void onTestPointClicked(String projectName, int buildSerialNum) {
+        this.mProjectName = projectName;
+        this.mBuildSerialNum = buildSerialNum;
+        projectNameTv.setText("工程" + projectName + "构件序号" + buildSerialNum);
+    }
+
+    @Override
+    public void onProjectClicked(String projectName) {
+        this.mProjectName = projectName;
+        this.mBuildSerialNum = -1;
+        projectNameTv.setText("工程" + projectName);
+    }
+
+    @Override
+    public void onTestPointLongClicked(String projectName, int buildSerialNum) {
         this.mProjectName = projectName;
         this.mBuildSerialNum = buildSerialNum;
 //        ToastUtils.showToast("选中了: " + projectName + "工程" + buildSerialNum + "节点");
-        projectNameTv.setText("工程" + projectName + "构件序号" + buildSerialNum);
         FragmentTransaction mFragTransaction = getFragmentManager().beginTransaction();
         ConfirmOrCancelDialog fragment = ((ConfirmOrCancelDialog) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_DELETE));
         if (fragment == null) {

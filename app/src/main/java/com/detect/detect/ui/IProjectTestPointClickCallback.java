@@ -5,5 +5,7 @@ package com.detect.detect.ui;
  */
 
 public interface IProjectTestPointClickCallback {
-    void onTestPointSelected(String projectName, int buildSerialNum);
+    void onTestPointLongClicked(String projectName, int buildSerialNum);
+    void onTestPointClicked(String projectName, int buildSerialNum);
+    void onProjectClicked(String projectName);
 }

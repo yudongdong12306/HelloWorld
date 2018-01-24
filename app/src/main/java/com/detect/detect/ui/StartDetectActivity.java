@@ -223,6 +223,17 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         }
     }
 
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        int maxBuildSerialNum = ProjectDataManager.getInstance().getMaxBuildSerialNum(testPointInsert.getProjectName());
+//        if (maxBuildSerialNum<=0) {
+//            buildSerialNumEt.setText("1");
+//        }else {
+//            buildSerialNumEt.setText(maxBuildSerialNum + 1 + "");
+//        }
+//    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {

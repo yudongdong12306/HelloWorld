@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.TextView;
 
 import com.detect.detect.R;
-import com.detect.detect.utils.ToastUtils;
 
 import java.util.List;
 
@@ -116,12 +114,20 @@ public class ProjectDataAdapter extends BaseExpandableListAdapter {
             public boolean onLongClick(View v) {
                 String projectName = ProjectDataAdapter.this.groupData.get(groupPosition);
                 if (mPointClickCallback != null) {
-                    mPointClickCallback.onTestPointSelected(projectName, childData);
+                    mPointClickCallback.onTestPointLongClicked(projectName, childData);
                 }
                 return true;
             }
         });
-
+        holder.testPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String projectName = ProjectDataAdapter.this.groupData.get(groupPosition);
+                if (mPointClickCallback != null) {
+                    mPointClickCallback.onTestPointClicked(projectName, childData);
+                }
+            }
+        });
         return convertView;
     }
 
@@ -142,12 +148,20 @@ public class ProjectDataAdapter extends BaseExpandableListAdapter {
 
     @Override
     public void onGroupExpanded(int groupPosition) {
-
+        if (groupData != null) {
+            if (mPointClickCallback != null) {
+                mPointClickCallback.onProjectClicked(groupData.get(groupPosition));
+            }
+        }
     }
 
     @Override
     public void onGroupCollapsed(int groupPosition) {
-
+        if (groupData != null) {
+            if (mPointClickCallback != null) {
+                mPointClickCallback.onProjectClicked(groupData.get(groupPosition));
+            }
+        }
     }
 
     @Override
