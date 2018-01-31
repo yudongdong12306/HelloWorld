@@ -272,7 +272,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
                 if (testPointList != null && testPointList.size() > 0) {
                     CSVUtils.writeTestPointListToCSV(fileDir.getAbsolutePath(), testPointList);
                 }
-                //
+                //导出图片到指定文件夹
                 saveTestPointsPic(projectName, testPointList);
             }
         }

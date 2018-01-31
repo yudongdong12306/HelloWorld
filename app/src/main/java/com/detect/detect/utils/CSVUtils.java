@@ -77,7 +77,7 @@ public class CSVUtils {
 
             }
             bw.close();
-            ToastUtils.showToast("导出数据成功!");
+            ToastUtils.showToast("导出数据成功,导出目录:/detect_project/out_put!");
             Log.d(TAG, "---写入成功");
         } catch (IOException e) {
             // 捕获BufferedWriter对象关闭时的异常
