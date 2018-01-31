@@ -28,14 +28,12 @@ import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.CSVUtils;
-import com.detect.detect.utils.FileUtils;
 import com.detect.detect.utils.PicDisplayUtils;
 import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.widgets.PersonalPopupWindow;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -193,6 +191,8 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     }
 
     private boolean prepareAdapterData() {
+        mProjectNameList = new ArrayList<>();
+        mAllTestPointList = new ArrayList<>();
         List<Project> allProjects = ProjectDataManager.getInstance().getAllProjects();
         if (allProjects == null || allProjects.size() == 0) {
             if (mProjectNameList != null) {
@@ -203,8 +203,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
             }
             return true;
         }
-        mProjectNameList = new ArrayList<>();
-        mAllTestPointList = new ArrayList<>();
+
         for (Project project : allProjects) {
             if (project != null) {
                 mProjectNameList.add(project.getProjectName());
@@ -248,11 +247,11 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
             ToastUtils.showToast("请选择工程或者工程节点");
             return;
         }
-        File file = new File(FileConstant.OUT_PUT_PATH+ projectName+File.separator);
+        File file = new File(FileConstant.OUT_PUT_PATH + projectName + File.separator);
         if (!file.exists()) {
             file.mkdirs();
         }
-        String path = FileConstant.OUT_PUT_PATH+ projectName+File.separator + projectName + ".csv";
+        String path = FileConstant.OUT_PUT_PATH + projectName + File.separator + projectName + ".csv";
         File fileDir = new File(path);
         if (fileDir.exists()) {
             fileDir.delete();
@@ -315,7 +314,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
         try {
             FileInputStream fis = new FileInputStream(oldPicPath);
             FileOutputStream fos = new FileOutputStream(newPicPath);
-            byte[] buffer = new byte[1024*8];
+            byte[] buffer = new byte[1024 * 8];
             while ((length = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, length);
             }
@@ -407,6 +406,6 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
             dataManager.deleteProject(projectName);
         }
         prepareAdapterData();
-        mAdapter.notifyDataSetChanged();
+        mAdapter.refreshUi(mProjectNameList, mAllTestPointList);
     }
 }

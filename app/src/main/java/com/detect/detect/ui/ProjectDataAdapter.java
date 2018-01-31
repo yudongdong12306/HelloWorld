@@ -25,15 +25,15 @@ public class ProjectDataAdapter extends BaseExpandableListAdapter {
         this.mPointClickCallback = pointClickCallback;
     }
 
-    @Override
-    public void registerDataSetObserver(DataSetObserver observer) {
-
-    }
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver observer) {
-
-    }
+//    @Override
+//    public void registerDataSetObserver(DataSetObserver observer) {
+//
+//    }
+//
+//    @Override
+//    public void unregisterDataSetObserver(DataSetObserver observer) {
+//
+//    }
 
     //获取分组个数
     @Override
@@ -172,6 +172,12 @@ public class ProjectDataAdapter extends BaseExpandableListAdapter {
     @Override
     public long getCombinedGroupId(long groupId) {
         return 0;
+    }
+
+    public void refreshUi(List<String> projectNameList, List<List<Integer>> allTestPointList) {
+        groupData = projectNameList;
+        childData = allTestPointList;
+        notifyDataSetChanged();
     }
 
     class GroupViewHolder {
