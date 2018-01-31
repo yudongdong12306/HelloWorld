@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:padding="@dimen/size_20dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -13,6 +14,8 @@
         tools:ignore="Suspicious0dp">
 
         <TextView
+            android:layout_marginEnd="@dimen/size_10dp"
+            android:background="@drawable/shape_button_corners"
             android:id="@+id/start_detect_tv"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -23,6 +26,8 @@
             android:textSize="@dimen/size_18sp" />
 
         <TextView
+            android:layout_marginStart="@dimen/size_10dp"
+            android:background="@drawable/shape_button_corners"
             android:id="@+id/data_manage_tv"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -34,6 +39,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:padding="@dimen/size_20dp"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -41,6 +47,8 @@
         tools:ignore="Suspicious0dp">
 
         <TextView
+            android:layout_marginEnd="@dimen/size_10dp"
+            android:background="@drawable/shape_button_corners"
             android:gravity="center"
             android:id="@+id/system_set_tv"
             android:layout_width="0dp"
@@ -51,6 +59,8 @@
             android:textSize="@dimen/size_18sp" />
 
         <TextView
+            android:layout_marginStart="@dimen/size_10dp"
+            android:background="@drawable/shape_button_corners"
             android:gravity="center"
             android:id="@+id/about_us_tv"
             android:layout_width="0dp"
