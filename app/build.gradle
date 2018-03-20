@@ -98,4 +98,5 @@ dependencies {
     //    compile 'com.tencent.bugly:crashreport:latest.release'
     compile project(path: ':pickerview')
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    implementation project(':tcplib')
 }
