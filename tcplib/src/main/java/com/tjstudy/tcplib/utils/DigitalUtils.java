@@ -57,7 +57,7 @@ public class DigitalUtils {
     }
 
     public static int parseMessageInt(byte[] buf, int[] start) {
-        if(buf.length<4){
+        if (buf.length < 4) {
             return -1;
         }
 
@@ -74,7 +74,7 @@ public class DigitalUtils {
     }
 
     public static int parseMessageShort(byte[] buf, int[] start) {
-        if(buf.length<2){
+        if (buf.length < 2) {
             return -1;
         }
         byte[] result = new byte[2];
@@ -153,7 +153,7 @@ public class DigitalUtils {
      * @param res byte[]
      * @return int
      */
-    private static int byte2Short(byte[] res) {
+    public static int byte2Short(byte[] res) {
         return (res[0] & 0xff) | ((res[1] << 8) & 0xff00); // | 表示安位或
     }
 

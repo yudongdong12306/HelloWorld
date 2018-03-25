@@ -1,6 +1,7 @@
 package com.detect.detect.ui;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -8,15 +9,20 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.detect.detect.R;
 import com.detect.detect.constant.SkipActivityConstant;
-import com.detect.detect.socket.ChatMess;
-import com.detect.detect.socket.MyRecParse;
-import com.detect.detect.socket.RecData;
+import com.detect.detect.socket.HexUtils;
 import com.tjstudy.tcplib.RequestCallback;
 import com.tjstudy.tcplib.ResponseCallback;
 import com.tjstudy.tcplib.TCPClient;
+import com.tjstudy.tcplib.utils.DigitalUtils;
 
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -58,38 +64,46 @@ public class DetectActivity extends BaseActivity {
     private static final String IP = "10.10.100.254";
     private static final int PORT = 8899;
     private TCPClient tcpClient;
-    private byte[] heart;
-    private byte[] startbyte;
-    private byte[]  heartqq, confirm;
+    private byte[] heartCommand, confirmCommand, startCommand;
 
     @Override
     protected void initData() {
-        heart = new byte[31];
-        for (int i = 0; i < heart.length; i++) {
-            heart[i] = 0x00;
-        }
-        heart[1] = 0x08;
-        heart[29] = 0x08;
+        initCommond();
 
-        startbyte = new byte[31];
-        for (int i = 0; i < startbyte.length; i++) {
-            startbyte[i] = 0x00;
-        }
-        startbyte[0] = 0x01;
-        startbyte[1] = 0x01;
-        startbyte[29] = 0x02;
         initNet();
 
-        tcpClient.request(/*sendMess.getBytes()*/startbyte, 8000, new RequestCallback() {
+        sendCommand(startCommand);
+    }
+
+    private void initCommond() {
+        heartCommand = new byte[31];
+        heartCommand[1] = 0x08;
+        heartCommand[29] = 0x08;
+
+        confirmCommand = new byte[31];
+        confirmCommand[1] = 0x05;
+        confirmCommand[29] = 0x05;
+
+        startCommand = new byte[31];
+        startCommand[0] = 0x01;
+        startCommand[1] = 0x01;
+        startCommand[29] = 0x02;
+    }
+
+    private void sendCommand(byte[] Command) {
+        tcpClient.request(Command, 8000, new RequestCallback() {
             @Override
             public void onTimeout() {
                 Log.e(TAG, "onTimeout:请求超时，稍后重试 ,关闭连接 ");
                 TCPClient.closeTcp(IP, PORT);
+                //
+                detectStateTv.setText("请求超时，稍后重试");
             }
 
             @Override
             public void onFail(Throwable throwable) {
                 handlerError(throwable);
+                detectStateTv.setText("网络访问失败，稍后重试");
             }
         }, responseCallback);
     }
@@ -97,7 +111,7 @@ public class DetectActivity extends BaseActivity {
     private void initNet() {
         tcpClient = TCPClient.build()
                 .server(IP, PORT)
-                .breath(/*"heart".getBytes()*/heart, 6 * 1000)
+                .breath(heartCommand, 6 * 1000)
                 .connTimeout(10 * 1000);
     }
 
@@ -120,15 +134,19 @@ public class DetectActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.common_back_ll, R.id.cancel_bt})
+    @OnClick({R.id.common_back_ll, R.id.cancel_bt, R.id.detect_state_tv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.common_back_ll:
                 finish();
                 break;
             case R.id.cancel_bt:
-                startActivity(new Intent(this, DetectFinishedActivity.class));
+//                startActivity(new Intent(this, DetectFinishedActivity.class));
                 break;
+            case R.id.detect_state_tv:
+                sendCommand(confirmCommand);
+                break;
+
         }
     }
 
@@ -140,20 +158,121 @@ public class DetectActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         TCPClient.closeTcp(IP, PORT);
+        if (waveDataList != null) {
+            waveDataList.clear();
+            waveDataList = null;
+        }
+        if (waveData != null) {
+            waveData = null;
+        }
     }
 
+    private WaveData waveData = new WaveData();
+    private ArrayList<int[]> waveDataList = new ArrayList<>();
     private ResponseCallback responseCallback = new ResponseCallback() {
         @Override
-        public void onRec() {
-            MyRecParse myRecParse = new MyRecParse();
-            List<RecData> dataList = myRecParse.parse();
-            Log.d(TAG, "onRec: dataList: " + dataList.toString());
-            if (dataList.size() > 0) {
-                for (RecData recData :
-                        dataList) {
-                    Log.d(TAG, "onRec: recData: " + recData);
-                }
+        public void onRec(byte[] receiveData) {
+            if (receiveData == null) {
+                return;
             }
+            if ((receiveData.length == 31) && (receiveData[1] == 0x08) && (receiveData[29] == 0x08)) {
+                //过滤掉心跳数据
+                return;
+            }
+            if (receiveData[0] == 1 && receiveData[1] == 7 && receiveData.length > 31) {
+                //结束标志数据
+                byte[] data = new byte[receiveData.length - 31];
+                System.arraycopy(receiveData, 31, data, 0, data.length);
+                String dataEndStr = null;
+                try {
+                    dataEndStr = new String(data, "gbk");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "onRec: 返回的结束部分数据为: " + dataEndStr);
+                if (waveDataList.size() >= 3) {
+                    //全部测试完成
+                    Log.d(TAG, "onRec: 全部波形数据接收完成");
+                    Intent intent = new Intent(DetectActivity.this, DetectFinishedActivity.class);
+                    intent.putExtra("WAVE_DATA", waveDataList);
+                    startActivity(intent);
+                }
+                return;
+            }
+            Log.d(TAG, "onRec: reveiveData: " + HexUtils.byteToString(receiveData));
+
+            if (waveData.isHasFirstDataArr && waveData.waveArrHasDataSize < 2033) {
+                //当本次获取的数据添加后超过2033时,只取缺少的那部分数据.
+                if (waveData.waveArrHasDataSize + receiveData.length > 2033) {
+                    System.arraycopy(receiveData, 0, waveData.waveDataArr, waveData.waveArrHasDataSize, 2033 - waveData.waveArrHasDataSize);
+                } else {
+                    System.arraycopy(receiveData, 0, waveData.waveDataArr, waveData.waveArrHasDataSize, receiveData.length);
+                }
+                waveData.waveArrHasDataSize += receiveData.length;
+                if (waveData.waveArrHasDataSize == 2033) {
+                    int m = waveDataList.size() + 1;
+                    detectStateTv.setText("接收测试点 " + m + " 数据成功");
+                    //发出确认命令
+                    sendCommand(confirmCommand);
+                    //重置波形数据实例
+                    waveData.isHasFirstDataArr = false;
+                    waveData.waveArrHasDataSize = 0;
+                    byte[] realData = new byte[2000];
+                    System.arraycopy(waveData.waveDataArr, 32, realData, 0, 2000);
+                    int[] finalDataArr = handleRealData(realData);
+                    waveDataList.add(finalDataArr);
+                    Log.d(TAG, "onRec: 波形数据接收完毕: waveData.waveArrHasDataSize: " + 2033 + "waveData.waveDataArr[31]: " + waveData.waveDataArr[31]);
+                    Log.d(TAG, "onRec: 最后获取到的波形数据为: " + Arrays.toString(finalDataArr));
+                }
+                return;
+            }
+            if (receiveData[0] == 1 && receiveData[1] == 6 && receiveData.length > 31) {
+                detectStateTv.setText("获取工程信息成功");
+                //开始数据,参数部分.
+                //todo 报文和数据校验
+                byte[] dataParams = new byte[receiveData.length - 31];
+                System.arraycopy(receiveData, 31, dataParams, 0, dataParams.length);
+                String dataStr = null;
+                try {
+                    dataStr = new String(dataParams, "gbk");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "onRec: 返回的参数部分数据为: " + dataStr);
+                //显示界面信息
+                com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(dataStr);
+                if (jsonObject.containsKey("沉陷值1")) {
+                    Float s1 = jsonObject.getFloat("沉陷值1");
+                    detectDataS1Et.setText(String.valueOf(s1));
+                }
+                if (jsonObject.containsKey("沉陷值2")) {
+                    Float s2 = jsonObject.getFloat("沉陷值2");
+                    detectDataS2Et.setText(String.valueOf(s2));
+                }
+                if (jsonObject.containsKey("沉陷值3")) {
+                    Float s3 = jsonObject.getFloat("沉陷值3");
+                    detectDataS3Et.setText(String.valueOf(s3));
+                }
+                //发出确认命令
+                sendCommand(confirmCommand);
+                //
+                detectStateTv.setText("等待接收设备数据...");
+                //请用户开启下锤数据
+            } else if (receiveData[0] == 2 && receiveData[1] == 6 && (receiveData.length == 1000 || receiveData.length == 1033)) {
+                //获取到了波形数据,而且是第一次波形数据,保存下来.
+                //重置波形数据实例
+                waveData.waveArrHasDataSize = 0;
+                waveData.isHasFirstDataArr = true;
+                System.arraycopy(receiveData, 0, waveData.waveDataArr, 0, receiveData.length);
+                waveData.waveArrHasDataSize = receiveData.length;
+                int count = waveDataList.size() + 1;
+                detectStateTv.setText("正在接收测试点" + count + "数据");
+            }
+        }
+
+        @Override
+        public void onConnectSuccess() {
+//            detectStateTv.setText("请求数据成功");
         }
 
         @Override
@@ -162,4 +281,14 @@ public class DetectActivity extends BaseActivity {
         }
     };
 
+    private int[] handleRealData(byte[] realData) {
+        int[] finalDataArr = new int[1000];
+        for (int i = 0; i < realData.length; i += 2) {
+            byte[] temp = new byte[2];
+            temp[0] = realData[i];
+            temp[1] = realData[i + 1];
+            finalDataArr[i / 2] = DigitalUtils.byte2Short(temp);
+        }
+        return finalDataArr;
+    }
 }

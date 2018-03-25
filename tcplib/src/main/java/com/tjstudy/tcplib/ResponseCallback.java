@@ -5,5 +5,6 @@ package com.tjstudy.tcplib;
  */
 
 public abstract class ResponseCallback implements AbsBaseCallback {
-    public abstract void onRec();
+    public abstract void onRec(byte[] receiveData);
+    public abstract void onConnectSuccess();
 }

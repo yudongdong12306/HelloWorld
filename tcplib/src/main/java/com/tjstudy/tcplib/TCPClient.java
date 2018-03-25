@@ -2,8 +2,8 @@ package com.tjstudy.tcplib;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
-import com.tjstudy.tcplib.utils.LoopBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +18,7 @@ import java.net.SocketTimeoutException;
  */
 
 public class TCPClient {
+    private static final String TAG = "DetectActivity";
     /**
      * 服务器ip
      */
@@ -91,10 +92,14 @@ public class TCPClient {
                     request(socket);
                     receive(socket);
                     sendBreadth(socket);
+                    if (responseCallback != null) {
+                        responseCallback.onConnectSuccess();
+                    }
                     break;
                 case ON_RECEIVE_DATA:
+                    byte[] receiveData = (byte[]) msg.obj;
                     if (responseCallback != null) {
-                        responseCallback.onRec();
+                        responseCallback.onRec(receiveData);
                     }
                     break;
                 case RE_CONN_FAIL:
@@ -320,13 +325,29 @@ public class TCPClient {
                     //接收socket数据
                     try {
                         InputStream is = socket.getInputStream();
-                        byte[] data = new byte[1024];
-                        int len = is.read(data);
-                        byte[] newData = new byte[len];
-                        System.arraycopy(data, 0, newData, 0, len);
-                        LoopBuffer.getInstance().write(newData);
+
+                        byte[] data = new byte[1024 * 10];
+//                        byte[] dataFinal = new byte[1024*8];
+
+                        int len;
+                        len = is.read(data);
+                        Log.d(TAG, "run: len: " + len);
+                        if (len < 0) {
+                            return;
+                        }
+                        byte[] receiveData = new byte[len];
+                        System.arraycopy(data, 0, receiveData, 0, len);
+
+//                        int len = is.read(data);
+//                        byte[] newData = new byte[len];
+//                        System.arraycopy(data, 0, newData, 0, len);
+//                        LoopBuffer.getInstance().write(newData);
                         recTime = System.currentTimeMillis();
-                        mHandler.sendEmptyMessage(ON_RECEIVE_DATA);
+                        Message message = mHandler.obtainMessage();
+                        message.obj = receiveData;
+                        message.what = ON_RECEIVE_DATA;
+                        mHandler.sendMessage(message);
+//                        mHandler.sendEmptyMessage(ON_RECEIVE_DATA);
                     } catch (SocketTimeoutException ignored) {
                     } catch (SocketException e) {
                         if (socket.isClosed()) {
