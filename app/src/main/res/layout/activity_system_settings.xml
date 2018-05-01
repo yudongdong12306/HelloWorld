@@ -2,149 +2,171 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/size_60dp"
-    android:layout_marginRight="@dimen/size_60dp"
-    android:layout_marginTop="@dimen/size_10dp"
-    android:orientation="vertical">
+    android:background="@color/md_white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/size_5dp">
 
     <include layout="@layout/common_title" />
 
-    <LinearLayout
-        android:layout_marginTop="-5dp"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/md_grey_400" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_60dp"
+        android:layout_marginTop="@dimen/size_20dp"
+        android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_10dp">
+        android:paddingEnd="@dimen/size_15dp"
+        android:paddingStart="@dimen/size_15dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:text="@string/settings_wifi"
-            android:textSize="@dimen/size_15sp" />
+            android:textSize="@dimen/size_16sp" />
 
         <EditText
-            android:id="@+id/project_name_et"
+            android:id="@+id/settings_wifi_et"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="41"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="start"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/md_gray_300"
+            android:textSize="@dimen/size_16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/size_60dp"
+        android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_10dp">
+        android:paddingEnd="@dimen/size_15dp"
+        android:paddingStart="@dimen/size_15dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:text="@string/settings_bluetooth"
-            android:textSize="@dimen/size_15sp" />
+            android:textSize="@dimen/size_16sp" />
 
         <EditText
-            android:id="@+id/project_nam_t"
+            android:id="@+id/settings_bluetooth_et"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/md_gray_300"
+            android:textSize="@dimen/size_16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/size_60dp"
+        android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_10dp">
+        android:paddingEnd="@dimen/size_15dp"
+        android:paddingStart="@dimen/size_15dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/instrument_number"
-            android:textSize="@dimen/size_15sp" />
+            android:layout_height="wrap_content"
+            android:text="@string/Instrument_number"
+            android:textSize="@dimen/size_16sp" />
 
         <EditText
-            android:id="@+id/projec_nam_et"
+            android:id="@+id/instrument_number_et"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/md_gray_300"
+            android:textSize="@dimen/size_16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/size_60dp"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_10dp">
+        android:paddingEnd="@dimen/size_15dp"
+        android:paddingStart="@dimen/size_15dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:text="@string/curve_correction"
-            android:textSize="@dimen/size_15sp" />
+            android:textSize="@dimen/size_16sp" />
+
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/size_10dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:text="@string/params_1"
-            android:textSize="@dimen/size_15sp" />
+            android:textSize="@dimen/size_16sp" />
 
         <EditText
-            android:id="@+id/projec_am_et"
+            android:id="@+id/params_1_et"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="start"
+            android:editable="false"
+            android:gravity="start|bottom"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/md_gray_300"
+            android:textSize="@dimen/size_16sp" />
+
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:text="@string/params_2"
-            android:textSize="@dimen/size_15sp" />
+            android:textSize="@dimen/size_16sp" />
 
         <EditText
-            android:id="@+id/projec_am"
+            android:id="@+id/params_2_et"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="start"
+            android:editable="false"
+            android:gravity="start|bottom"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/md_gray_300"
+            android:textSize="@dimen/size_16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/size_60dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/size_15dp"
+        android:paddingStart="@dimen/size_15dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:text="@string/settings_language"
-            android:textSize="@dimen/size_15sp" />
+            android:textSize="@dimen/size_16sp" />
 
         <EditText
-            android:id="@+id/project_nam_et"
+            android:id="@+id/settings_language_et"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
-            android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textColor="@color/md_gray_300"
+            android:textSize="@dimen/size_16sp" />
     </LinearLayout>
 </LinearLayout>

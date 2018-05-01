@@ -20,14 +20,18 @@ public class SystemSettingsActivity extends BaseActivity {
     LinearLayout commonBackLl;
     @BindView(R.id.common_title_tv)
     TextView commonTitleTv;
-    @BindView(R.id.project_name_et)
-    EditText projectNameEt;
-    @BindView(R.id.project_nam_t)
-    EditText projectNamT;
-    @BindView(R.id.projec_nam_et)
-    EditText projecNamEt;
-    @BindView(R.id.project_nam_et)
-    EditText projectNamEt;
+    @BindView(R.id.settings_wifi_et)
+    EditText settings_wifi_et;
+    @BindView(R.id.settings_bluetooth_et)
+    EditText settings_bluetooth_et;
+    @BindView(R.id.instrument_number_et)
+    EditText instrument_number_et;
+    @BindView(R.id.params_1_et)
+    EditText params_1_et;
+    @BindView(R.id.params_2_et)
+    EditText params_2_et;
+    @BindView(R.id.settings_language_et)
+    EditText settings_language_et;
 
     @Override
     protected void initData() {
