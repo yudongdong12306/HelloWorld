@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_40dp"
-    android:layout_marginBottom="@dimen/size_10dp"
+    android:layout_height="@dimen/size_50dp"
+    android:paddingEnd="@dimen/size_15dp"
+    android:paddingStart="@dimen/size_15dp"
     android:gravity="center_vertical">
 
     <LinearLayout

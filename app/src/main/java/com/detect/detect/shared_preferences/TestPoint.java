@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class TestPoint implements Serializable {
-    private int buildSerialNum;
+    private String buildSerialNum;
     private String coordinateInfo;
     private int detectTime;
     private String projectName;
@@ -18,10 +18,20 @@ public class TestPoint implements Serializable {
     private String picPath;
     private int[] advArr = new int[1000];
 
+    public String getProjectUUID() {
+        return projectUUID;
+    }
+
+    public void setProjectUUID(String projectUUID) {
+        this.projectUUID = projectUUID;
+    }
+
+    private String projectUUID;
+
     public TestPoint() {
     }
 
-    public TestPoint(int build_serial_num, String coordinate_info, int detect_time,
+    public TestPoint(String build_serial_num, String coordinate_info, int detect_time,
                      String project_name, String construction_organization, String filler_type,
                      String instrument_number, String detect_person, String pic_path,String adv_arr) {
         this.buildSerialNum = build_serial_num;
@@ -51,11 +61,11 @@ public class TestPoint implements Serializable {
 
     private boolean isLatest;
 
-    public int getBuildSerialNum() {
+    public String getBuildSerialNum() {
         return buildSerialNum;
     }
 
-    public void setBuildSerialNum(int buildSerialNum) {
+    public void setBuildSerialNum(String buildSerialNum) {
         this.buildSerialNum = buildSerialNum;
     }
 

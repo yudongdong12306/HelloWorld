@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 public class ProjectDB {
-    public synchronized boolean insertTestPoint(String dbName, SQLiteDatabase database, int buildSerialNum, int[] advArr,
+    public synchronized boolean insertTestPoint(String dbName, SQLiteDatabase database, String buildSerialNum, int[] advArr,
                                                 String constructionOrganization, String coordinateInfo,
                                                 String detectPerson, long detectTime, String fillerType,
                                                 String instrumentNumber, String picPath, String projectName) {
@@ -70,7 +70,7 @@ public class ProjectDB {
             cursor = database.query(tableName, columns, selection, selectionArgs,
                     groupBy, having, orderBy);
             while (cursor.moveToNext()) {
-                int build_serial_num = cursor.getInt(cursor.getColumnIndex(ProjectMetadata.BUILD_SERIAL_NUM));
+                String build_serial_num = cursor.getString(cursor.getColumnIndex(ProjectMetadata.BUILD_SERIAL_NUM));
                 String coordinate_info = cursor.getString(cursor.getColumnIndex(ProjectMetadata.COORDINATE_INFO));
                 int detect_time = cursor.getInt(cursor.getColumnIndex(ProjectMetadata.DETECT_TIME));
                 String project_name = cursor.getString(cursor.getColumnIndex(ProjectMetadata.PROJECT_NAME));
@@ -97,8 +97,8 @@ public class ProjectDB {
         return true;
     }
 
-    public synchronized boolean deleteTestPoint(String tableName, SQLiteDatabase database, int buildSerialNum) {
-        if (buildSerialNum < 0) {
+    public synchronized boolean deleteTestPoint(String tableName, SQLiteDatabase database, String buildSerialNum) {
+        if (TextUtils.isEmpty(buildSerialNum)) {
             return false;
         }
         String whereClause = ProjectMetadata.BUILD_SERIAL_NUM + " = ?";
@@ -108,8 +108,8 @@ public class ProjectDB {
         return flag >= 0;
     }
 
-    public synchronized String getTestPointPicPath(String tableName, SQLiteDatabase database, int buildSerialNum) {
-        if (buildSerialNum < 0) {
+    public synchronized String getTestPointPicPath(String tableName, SQLiteDatabase database, String buildSerialNum) {
+        if (TextUtils.isEmpty(buildSerialNum)) {
             return null;
         }
         String picPath = null;

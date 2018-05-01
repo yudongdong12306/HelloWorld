@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.detect.detect.db.DataDBManager;
+import com.detect.detect.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class ProjectDataManager implements IProjectDataManager {
     public static void initialize(Context context) {
         mContext = context;
     }
+
     private static ProjectDataManager mProjectDataManager = null;
 
     private ProjectDataManager() {
@@ -40,8 +42,8 @@ public class ProjectDataManager implements IProjectDataManager {
     }
 
     @Override
-    public void insertTestPoint(String projectName, TestPoint testPoint) {
-        mDataDBManager.insertTestPoint(testPoint, projectName);
+    public void insertTestPoint(String tableName, TestPoint testPoint) {
+        mDataDBManager.insertTestPoint(testPoint, tableName);
     }
 
     @Override
@@ -56,21 +58,22 @@ public class ProjectDataManager implements IProjectDataManager {
             if (TextUtils.isEmpty(tableName) || !tableName.startsWith("project")) {
                 continue;
             }
-            int itemNum = queryTableItemNum(ProjectNameUUIDSP.getInstance().getProjectNameFromMd5(tableName));
+//            int itemNum = queryTableItemNum(ProjectNameUUIDSP.getInstance().getProjectNameFromMd5(tableName));
+            int itemNum = queryTableItemNum(tableName);
             if (itemNum <= 0) {
                 //删除
-                deleteProject(ProjectNameUUIDSP.getInstance().getProjectNameFromMd5(tableName));
+                deleteProject(tableName);
                 continue;
             }
-            List<TestPoint> testPoints = mDataDBManager.queryAllTestPointData(ProjectNameUUIDSP.getInstance().getProjectNameFromMd5(tableName));
+            List<TestPoint> testPoints = mDataDBManager.queryAllTestPointData(tableName);
             if (testPoints == null || testPoints.size() == 0) {
                 continue;
             }
             Project project = new Project();
             TestPoint testPoint = testPoints.get(0);
             project.setProjectName(testPoint.getProjectName());
-            int maxBuildSerialNum = mDataDBManager.queryMaxBuildSerialNum(ProjectNameUUIDSP.getInstance().getProjectNameFromMd5(tableName));
-            project.setMaxBuildSerialNum(maxBuildSerialNum);
+//            int maxBuildSerialNum = mDataDBManager.queryMaxBuildSerialNum(ProjectNameUUIDSP.getInstance().getProjectNameFromMd5(tableName));
+//            project.setMaxBuildSerialNum(maxBuildSerialNum);
             List<TestPoint> testPointList = project.getTestPointList();
             testPointList.addAll(testPoints);
             projects.add(project);
@@ -89,44 +92,54 @@ public class ProjectDataManager implements IProjectDataManager {
             if (TextUtils.isEmpty(tableName)) {
                 continue;
             }
-            String projectName = ProjectNameUUIDSP.getInstance().getProjectNameFromMd5(tableName);
-            if (TextUtils.isEmpty(projectName)) {
-                continue;
+            List<ProjectInfo> allProjectInfos = ProjectNameUUIDSP.getInstance().getAllProjectInfos();
+            if (allProjectInfos == null) {
+                ToastUtils.showToast("程序出问题了,请检查,是不是卸载重装了!");
+                return null;
             }
-            projectNameList.add(projectName);
+            for (ProjectInfo allProjectInfo : allProjectInfos) {
+                if (allProjectInfo == null) {
+                    continue;
+                }
+                String uuid = allProjectInfo.getUuid();
+                if (TextUtils.equals(uuid, tableName)) {
+                    projectNameList.add(allProjectInfo.getProjectName());
+                }
+
+            }
         }
         return projectNameList;
     }
 
     @Override
-    public boolean isProjectNameExit(String projectName) {
-        return mDataDBManager.isProjectNameExit(projectName);
+    public boolean isProjectNameExit(String tableName) {
+        return mDataDBManager.isProjectNameExit(tableName);
     }
 
     @Override
-    public int getMaxBuildSerialNum(String projectName) {
-        return mDataDBManager.queryMaxBuildSerialNum(projectName);
+    public int getMaxBuildSerialNum(String tableName) {
+        return mDataDBManager.queryMaxBuildSerialNum(tableName);
     }
 
     @Override
-    public String getTestPointPicPath(String projectName, int buildSerialNum) {
-        return mDataDBManager.getTestPointPicPath(projectName, buildSerialNum);
+    public String getTestPointPicPath(String tableName, String buildSerialNum) {
+        return mDataDBManager.getTestPointPicPath(tableName, buildSerialNum);
     }
 
     @Override
-    public boolean deleteTestPoint(String projectName, int buildSerialNum) {
-        return mDataDBManager.deleteTestPoint(projectName, buildSerialNum);
+    public boolean deleteTestPoint(String tableName, String buildSerialNum) {
+        return mDataDBManager.deleteTestPoint(tableName, buildSerialNum);
 
     }
 
     @Override
-    public boolean deleteProject(String projectName) {
-        return mDataDBManager.deleteProject(projectName);
+    public boolean deleteProject(String tableName) {
+        return mDataDBManager.deleteProject(tableName);
     }
 
     @Override
-    public int queryTableItemNum(String projectName) {
-        return mDataDBManager.queryTableItemNum(projectName);
+    public int queryTableItemNum(String tableName) {
+        return mDataDBManager.queryTableItemNum(tableName);
     }
 
     @Override

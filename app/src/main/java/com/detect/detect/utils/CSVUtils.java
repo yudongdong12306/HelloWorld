@@ -41,7 +41,7 @@ public class CSVUtils {
             for (TestPoint testPoint : list) {
                 String projectName = testPoint.getProjectName();
                 String constructionOrganization = testPoint.getConstructionOrganization();
-                int buildSerialNum = testPoint.getBuildSerialNum();
+                String buildSerialNum = testPoint.getBuildSerialNum();
                 int[] advArr = testPoint.getAdvArr();
                 String coordinateInfo = testPoint.getCoordinateInfo();
                 String detectPerson = testPoint.getDetectPerson();

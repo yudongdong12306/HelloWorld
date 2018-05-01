@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(this, AboutUsActivity.class));
                 break;
             case R.id.start_detect_tv:
-                startActivity(new Intent(this, StartDetectActivity.class));
+                startActivity(new Intent(this, MainActivity1.class));
                 break;
             case R.id.data_manage_tv:
                 startActivity(new Intent(this, DataManagerActivity.class));

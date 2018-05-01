@@ -9,18 +9,18 @@ import java.util.List;
  */
 
 public class Project implements Serializable {
-    private int maxBuildSerialNum;
+//    private int maxBuildSerialNum;
     private String projectName;
     private List<TestPoint> testPointList = new ArrayList<>();
 
 
-    public int getMaxBuildSerialNum() {
-        return maxBuildSerialNum;
-    }
-
-    public void setMaxBuildSerialNum(int maxBuildSerialNum) {
-        this.maxBuildSerialNum = maxBuildSerialNum;
-    }
+//    public int getMaxBuildSerialNum() {
+//        return maxBuildSerialNum;
+//    }
+//
+//    public void setMaxBuildSerialNum(int maxBuildSerialNum) {
+//        this.maxBuildSerialNum = maxBuildSerialNum;
+//    }
 
 
     public String getProjectName() {
@@ -39,7 +39,7 @@ public class Project implements Serializable {
     @Override
     public String toString() {
         return "Project{" +
-                "maxBuildSerialNum='" + maxBuildSerialNum + '\'' +
+//                "maxBuildSerialNum='" + maxBuildSerialNum + '\'' +
                 ", testPointList=" + testPointList +
                 '}';
     }

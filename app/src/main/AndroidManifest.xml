@@ -18,7 +18,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".ui.FlashActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,28 +27,29 @@
         </activity>
         <activity
             android:name=".ui.MainActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.StartDetectActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.AboutUsActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.DataManagerActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.ProjectInfoDetailSetActivity"
-            android:screenOrientation="landscape" />
+            android:name=".ui.ProjectInfoActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.DetectActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SystemSettingsActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.DetectFinishedActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.MainActivity1" />
     </application>
 
 </manifest>

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.detect.detect.shared_preferences.ProjectInfoSP;
-import com.detect.detect.shared_preferences.ProjectNameUUIDSP;
 import com.detect.detect.shared_preferences.TestPoint;
 
 import java.util.List;
@@ -57,18 +55,18 @@ public class DataDBManager implements IDataManager {
     }
 
     @Override
-    public boolean insertTestPoint(TestPoint testPoint, String projectName) {
+    public boolean insertTestPoint(TestPoint testPoint, String tableName) {
         if (testPoint == null) {
             return false;
         }
-        if (TextUtils.isEmpty(projectName)) {
+        if (TextUtils.isEmpty(tableName)) {
             return false;
         }
-        ProjectNameUUIDSP.getInstance().setProjectNameMd5(projectName);
-        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
+//        ProjectNameUUIDSP.getInstance().setProjectNameMd5(projectName);
+//        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
         createTableIfNeed(tableName);
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
-        int buildSerialNum = testPoint.getBuildSerialNum();
+        String buildSerialNum = testPoint.getBuildSerialNum();
         int[] advArr = testPoint.getAdvArr();
         String constructionOrganization = testPoint.getConstructionOrganization();
         String coordinateInfo = testPoint.getCoordinateInfo();
@@ -78,7 +76,7 @@ public class DataDBManager implements IDataManager {
         String instrumentNumber = testPoint.getInstrumentNumber();
         String picPath = testPoint.getPicPath();
         String projectNameT = testPoint.getProjectName();
-        if (buildSerialNum < 1) {
+        if (TextUtils.isEmpty(buildSerialNum)) {
             return false;
         }
         if (advArr == null) {
@@ -102,16 +100,13 @@ public class DataDBManager implements IDataManager {
         if (instrumentNumber == null) {
             return false;
         }
-        if (picPath == null) {
-            return false;
-        }
-        return projectName != null && mProjectDB.insertTestPoint(tableName, mDatabase, buildSerialNum, advArr, constructionOrganization, coordinateInfo, detectPerson, detectTime, fillerType, instrumentNumber, picPath, projectNameT);
+        return tableName != null && mProjectDB.insertTestPoint(tableName, mDatabase, buildSerialNum, advArr, constructionOrganization, coordinateInfo, detectPerson, detectTime, fillerType, instrumentNumber, picPath, projectNameT);
     }
 
     private void createTableIfNeed(String tableName) {
         String create_temperature_table = "CREATE TABLE IF NOT EXISTS " + tableName + " ( \n" +
                 ProjectMetadata.KEY_ID_INT + " INTEGER PRIMARY KEY ASC ON CONFLICT REPLACE AUTOINCREMENT,\n" +
-                ProjectMetadata.BUILD_SERIAL_NUM + " INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE,\n" +
+                ProjectMetadata.BUILD_SERIAL_NUM + " TEXT NOT NULL,\n" +
                 ProjectMetadata.CONSTRUCTION_ORGANIZATION + " INTEGER NOT NULL,\n" +
                 ProjectMetadata.COORDINATE_INFO + " INTEGER NOT NULL,\n" +
                 ProjectMetadata.DETECT_PERSON + " INTEGER NOT NULL,\n" +
@@ -120,72 +115,72 @@ public class DataDBManager implements IDataManager {
                 ProjectMetadata.INSTRUMENT_NUMBER + " TEXT NOT NULL,\n" +
                 ProjectMetadata.PROJECT_NAME + " TEXT NOT NULL,\n" +
                 ProjectMetadata.ADV_Arr + " TEXT NOT NULL,\n" +
-                ProjectMetadata.PIC_PATH + " TEXT NOT NULL ); ";
+                ProjectMetadata.PIC_PATH + " TEXT  ); ";
         mDatabase.execSQL(create_temperature_table);
     }
 
     @Override
-    public List<TestPoint> queryAllTestPointData(String projectName) {
+    public List<TestPoint> queryAllTestPointData(String tableName) {
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
-        boolean isExit = isProjectNameExit(projectName);
+        boolean isExit = isProjectNameExit(tableName);
         if (!isExit) {
             return null;
         }
-        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
+//        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
         return mProjectDB.queryAllTestPointData(tableName, mDatabase);
     }
 
     @Override
-    public boolean deleteProject(String projectName) {
-        boolean isExit = isProjectNameExit(projectName);
+    public boolean deleteProject(String tableName) {
+        boolean isExit = isProjectNameExit(tableName);
         if (!isExit) {
             return true;
         }
-        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
+//        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
         return mProjectDB.deleteProject(tableName, mDatabase);
     }
 
     @Override
-    public boolean deleteTestPoint(String projectName, int buildSerialNum) {
-        boolean isExit = isProjectNameExit(projectName);
+    public boolean deleteTestPoint(String tableName, String buildSerialNum) {
+        boolean isExit = isProjectNameExit(tableName);
         if (!isExit) {
             return true;
         }
-        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
+//        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
         return mProjectDB.deleteTestPoint(tableName, mDatabase, buildSerialNum);
     }
 
     @Override
-    public String getTestPointPicPath(String projectName, int buildSerialNum) {
-        boolean isExit = isProjectNameExit(projectName);
+    public String getTestPointPicPath(String tableName, String buildSerialNum) {
+        boolean isExit = isProjectNameExit(tableName);
         if (!isExit) {
             return null;
         }
-        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
+//        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
         return mProjectDB.getTestPointPicPath(tableName, mDatabase, buildSerialNum);
     }
 
     @Override
-    public int queryMaxBuildSerialNum(String projectName) {
-        boolean isExit = isProjectNameExit(projectName);
+    public int queryMaxBuildSerialNum(String tableName) {
+        boolean isExit = isProjectNameExit(tableName);
         if (!isExit) {
             return -1;
         }
-        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
+//        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
         return mProjectDB.queryMaxBuildSerialNum(tableName, mDatabase);
     }
 
     @Override
-    public int queryTableItemNum(String projectName) {
-        boolean isExit = isProjectNameExit(projectName);
+    public int queryTableItemNum(String tableName) {
+        boolean isExit = isProjectNameExit(tableName);
         if (!isExit) {
             return 0;
         }
-        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
+//        String tableName = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
         return mProjectDB.queryTableItemNum(mDatabase, tableName);
     }
@@ -196,17 +191,16 @@ public class DataDBManager implements IDataManager {
     }
 
     @Override
-    public boolean isProjectNameExit(String projectName) {
+    public boolean isProjectNameExit(String tableName) {
         List<String> tableNameList = getTableNameList();
         if (tableNameList == null || tableNameList.size() == 0) {
             return false;
         }
-        for (String tableName : tableNameList) {
-            if (TextUtils.isEmpty(tableName)) {
+        for (String tableNameT : tableNameList) {
+            if (TextUtils.isEmpty(tableNameT)) {
                 continue;
             }
-            String uuid = ProjectNameUUIDSP.getInstance().getUUIDFromProjectName(projectName);
-            if (!TextUtils.isEmpty(tableName) && tableName.equals(uuid)) {
+            if (!TextUtils.isEmpty(tableName) && tableName.equals(tableNameT)) {
                 return true;
             }
 

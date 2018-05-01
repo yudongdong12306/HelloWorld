@@ -77,11 +77,11 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     @BindView(R.id.out_put_bt)
     Button outPutBt;
     private String mProjectName;
-    private int mBuildSerialNum;
+    private String mBuildSerialNum;
     private PersonalPopupWindow popupWindow;
     private DataManagerPresenter mPresenter;
     private List<String> mProjectNameList;
-    private List<List<Integer>> mAllTestPointList;
+    private List<List<String>> mAllTestPointList;
     private ProjectDataAdapter mAdapter;
     private LineChart mChart;
     private ArrayList<int[]> waveDataList;
@@ -383,7 +383,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
             if (project != null) {
                 mProjectNameList.add(project.getProjectName());
                 List<TestPoint> testPoints = project.getTestPointList();
-                List<Integer> testPointList = new ArrayList<>();
+                List<String> testPointList = new ArrayList<>();
                 for (TestPoint testPoint : testPoints) {
                     if (testPoint != null) {
                         testPointList.add(testPoint.getBuildSerialNum());
@@ -502,7 +502,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     }
 
     private void addPic() {
-        if (TextUtils.isEmpty(mProjectName) || mBuildSerialNum < 1) {
+        if (TextUtils.isEmpty(mProjectName) || TextUtils.isEmpty(mBuildSerialNum)) {
             ToastUtils.showToast("未选择构件,无法添加图片!");
             return;
         }
@@ -511,7 +511,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
 
     private void showPic() {
         dataFl.removeAllViews();
-        if (TextUtils.isEmpty(mProjectName) || mBuildSerialNum < 1) {
+        if (TextUtils.isEmpty(mProjectName) || TextUtils.isEmpty(mBuildSerialNum)) {
             return;
         }
 //        String testPointPicPath = ProjectInfoSP.getInstance().getTestPointPicPath(mProjectName
@@ -529,7 +529,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     }
 
     @Override
-    public void onTestPointClicked(String projectName, int buildSerialNum) {
+    public void onTestPointClicked(String projectName, String buildSerialNum) {
         this.mProjectName = projectName;
         this.mBuildSerialNum = buildSerialNum;
         projectNameTv.setText("工程" + projectName + "构件序号" + buildSerialNum);
@@ -538,12 +538,12 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     @Override
     public void onProjectClicked(String projectName) {
         this.mProjectName = projectName;
-        this.mBuildSerialNum = -1;
+        this.mBuildSerialNum = null;
         projectNameTv.setText("工程" + projectName);
     }
 
     @Override
-    public void onTestPointLongClicked(String projectName, int buildSerialNum) {
+    public void onTestPointLongClicked(String projectName, String buildSerialNum) {
         this.mProjectName = projectName;
         this.mBuildSerialNum = buildSerialNum;
 //        ToastUtils.showToast("选中了: " + projectName + "工程" + buildSerialNum + "节点");
@@ -553,7 +553,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
             ConfirmOrCancelDialog confirmDialog = new ConfirmOrCancelDialog();
             Bundle args = new Bundle();
             args.putString(CommonConstant.PROJECT_NAME, projectName);
-            args.putInt(CommonConstant.BUILD_SERIAL_NUM, buildSerialNum);
+            args.putString(CommonConstant.BUILD_SERIAL_NUM, buildSerialNum);
             confirmDialog.setArguments(args);
             confirmDialog.show(mFragTransaction, FRAGMENT_TAG_DELETE);
         } else {
@@ -562,11 +562,11 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     }
 
     @Override
-    public void onConfirm(String projectName, int buildSerialNum) {
+    public void onConfirm(String projectName, String buildSerialNum) {
         if (TextUtils.isEmpty(projectName)) {
             return;
         }
-        if (buildSerialNum < 1) {
+        if (TextUtils.isEmpty(buildSerialNum)) {
             return;
         }
         //执行删除逻辑

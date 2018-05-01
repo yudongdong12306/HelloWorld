@@ -16,9 +16,9 @@ public class ProjectDataAdapter extends BaseExpandableListAdapter {
     private IProjectTestPointClickCallback mPointClickCallback;
     private Context context;
     private List<String> groupData;
-    private List<List<Integer>> childData;
+    private List<List<String>> childData;
 
-    public ProjectDataAdapter(Context context, List<String> groupData, List<List<Integer>> childData, IProjectTestPointClickCallback pointClickCallback) {
+    public ProjectDataAdapter(Context context, List<String> groupData, List<List<String>> childData, IProjectTestPointClickCallback pointClickCallback) {
         this.context = context;
         this.groupData = groupData;
         this.childData = childData;
@@ -107,7 +107,7 @@ public class ProjectDataAdapter extends BaseExpandableListAdapter {
         } else {
             holder = (ChildViewHolder) convertView.getTag();
         }
-        final int childData = this.childData.get(groupPosition).get(childPosition);
+        final String childData = this.childData.get(groupPosition).get(childPosition);
         holder.testPoint.setText(childData + "");
         holder.testPoint.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -174,7 +174,7 @@ public class ProjectDataAdapter extends BaseExpandableListAdapter {
         return 0;
     }
 
-    public void refreshUi(List<String> projectNameList, List<List<Integer>> allTestPointList) {
+    public void refreshUi(List<String> projectNameList, List<List<String>> allTestPointList) {
         groupData = projectNameList;
         childData = allTestPointList;
         notifyDataSetChanged();

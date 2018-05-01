@@ -17,9 +17,9 @@ public interface IProjectDataManager {
 
     int getMaxBuildSerialNum(String projectName);
 
-    String getTestPointPicPath(String projectName, int buildSerialNum);
+    String getTestPointPicPath(String projectName, String buildSerialNum);
 
-    boolean deleteTestPoint(String projectName, int buildSerialNum);
+    boolean deleteTestPoint(String projectName, String buildSerialNum);
 
     boolean deleteProject(String projectName);
     int queryTableItemNum(String projectName);

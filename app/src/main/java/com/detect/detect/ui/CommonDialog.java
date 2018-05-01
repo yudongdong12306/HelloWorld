@@ -7,39 +7,33 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.detect.detect.R;
 import com.detect.detect.constant.CommonConstant;
-import com.detect.detect.shared_preferences.TestPoint;
 
 /**
  * 固件更新需要点击确认的提示对话框
  * Created by dongdong.yu on 2017/9/15.
  */
 
-public class ConfirmOrCancelDialog extends DialogFragment {
-    private static final String TAG = "ConfirmOrCancelDialog";
+public class CommonDialog extends DialogFragment {
     private TextView mConfirmBt;
-    private TextView mCancelBt;
-    private String mProjectName;
-    private String mBuildSerialNum;
+    private TextView mCancelBt, title_tv;
+    private String title, leftText, rightText;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_confirm_cancel, container, false);
-        Bundle arguments = getArguments();
-        mProjectName = arguments.getString(CommonConstant.PROJECT_NAME);
-        mBuildSerialNum = arguments.getString(CommonConstant.BUILD_SERIAL_NUM);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_common, container, false);
         initView(view);
         initClick();
         return view;
@@ -52,7 +46,7 @@ public class ConfirmOrCancelDialog extends DialogFragment {
                 Activity activity = getActivity();
                 if (activity != null && activity instanceof ConfirmClickCallback) {
                     ConfirmClickCallback callback = (ConfirmClickCallback) activity;
-                    callback.onConfirm(mProjectName,mBuildSerialNum);
+                    callback.onConfirm();
                 }
                 //点击确认后,弹框消失
                 dismiss();
@@ -62,6 +56,11 @@ public class ConfirmOrCancelDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 //点击确认后,弹框消失
+                Activity activity = getActivity();
+                if (activity != null && activity instanceof ConfirmClickCallback) {
+                    ConfirmClickCallback callback = (ConfirmClickCallback) activity;
+                    callback.onCancel();
+                }
                 dismiss();
             }
         });
@@ -80,20 +79,43 @@ public class ConfirmOrCancelDialog extends DialogFragment {
             Window window = dialog.getWindow();
             if (window != null) {
                 window.setDimAmount(0.25f);
-                window.setLayout((int) (dm.widthPixels * 0.4), (int) (dm.heightPixels * 0.4) /*ViewGroup.LayoutParams.WRAP_CONTENT*/);
+                window.setLayout((int) (dm.widthPixels * 0.7), (int) (dm.heightPixels * 0.23) /*ViewGroup.LayoutParams.WRAP_CONTENT*/);
             }
         }
     }
 
 
+    public void setContent(String title, String leftText, String rightText) {
+        this.title = title;
+        this.leftText = leftText;
+        this.rightText = rightText;
+    }
+
     private void initView(View view) {
         mConfirmBt = view.findViewById(R.id.confirm_bt);
         mCancelBt = view.findViewById(R.id.cancel_bt);
+        title_tv = view.findViewById(R.id.title_tv);
+        if (!TextUtils.isEmpty(title)) {
+            title_tv.setText(title);
+        } else {
+            throw new IllegalArgumentException("没有title");
+        }
+        if (!TextUtils.isEmpty(leftText)) {
+            mConfirmBt.setText(leftText);
+        } else {
+            mConfirmBt.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(rightText)) {
+            mCancelBt.setText(rightText);
+        } else {
+            mCancelBt.setVisibility(View.GONE);
+        }
     }
 
     interface ConfirmClickCallback {
-        void onConfirm(String projectName, String buildSerialNum);
+        void onConfirm();
 
-//        void onCancel(String trim);
+        void onCancel();
+
     }
 }

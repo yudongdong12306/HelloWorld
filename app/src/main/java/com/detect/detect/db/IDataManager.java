@@ -16,9 +16,9 @@ public interface IDataManager {
 
     boolean deleteProject(String tableName);
 
-    boolean deleteTestPoint(String tableName, int buildSerialNum);
+    boolean deleteTestPoint(String tableName, String buildSerialNum);
 
-    String getTestPointPicPath(String tableName, int buildSerialNum);
+    String getTestPointPicPath(String tableName, String buildSerialNum);
 
     int queryMaxBuildSerialNum(String tableName);
 

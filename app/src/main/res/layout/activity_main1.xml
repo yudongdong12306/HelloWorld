@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/size_5dp">
+
+    <include
+        android:id="@+id/common_title_layout"
+        layout="@layout/common_title" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/md_grey_400" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/project_name_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/size_30dp"
+        android:layout_marginStart="@dimen/size_30dp"
+        android:layout_marginTop="25dp"
+        android:paddingEnd="@dimen/size_15dp"
+        android:paddingStart="@dimen/size_15dp" />
+    <Button
+        android:layout_marginBottom="@dimen/size_80dp"
+        android:id="@+id/new_build_bt"
+        android:paddingStart="@dimen/size_10dp"
+        android:paddingEnd="@dimen/size_10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/shape_bottom_corners"
+        android:text="@string/newly_build_project"
+        android:textColor="@color/md_gray_300"
+        android:textSize="@dimen/size_16sp" />
+</LinearLayout>

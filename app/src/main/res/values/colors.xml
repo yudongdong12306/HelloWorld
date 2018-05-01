@@ -73,12 +73,14 @@
     <color name="md_brown_700">#5d4037</color>
 
     <!-- grey -->
+    <color name="md_grey_400">#d9d9d9</color>
     <color name="md_grey_500">#9e9e9e</color>
     <color name="md_grey">#D8D8D8</color>
     <color name="md_grey_700">#616161</color>
     <!-- <color name="md_grey_1000">#000000</color> -->
     <!-- <color name="md_grey_1000">#ffffff</color> -->
     <color name="md_white">#ffffff</color>
+    <color name="md_gray_300">#424242</color>
 
     <!-- blue_grey -->
     <color name="md_blue_grey_500">#607d8b</color>

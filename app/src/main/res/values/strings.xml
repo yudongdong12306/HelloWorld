@@ -24,8 +24,9 @@
     <string name="construction_organization">施工单位: </string>
     <string name="filler_type">填料类型: </string>
     <string name="instrument_number">仪器编号: </string>
-    <string name="detect_person">检测人: </string>
+    <string name="detect_person">检&#160;&#160;测&#160;&#160;人: </string>
     <string name="newly_build">新建</string>
+    <string name="newly_build_project">新建项目</string>
     <string name="press_again">再按一次退出</string>
     <string name="confirm">确认</string>
     <string name="check_update">检测更新</string>
