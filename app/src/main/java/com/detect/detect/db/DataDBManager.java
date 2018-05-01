@@ -67,7 +67,8 @@ public class DataDBManager implements IDataManager {
         createTableIfNeed(tableName);
         //SQLiteDatabase database = mProjectDBHelper.getDatabase();
         String buildSerialNum = testPoint.getBuildSerialNum();
-        int[] advArr = testPoint.getAdvArr();
+        String waveListStr = testPoint.getWaveListStr();
+        String subsidence = testPoint.getSubsidence();
         String constructionOrganization = testPoint.getConstructionOrganization();
         String coordinateInfo = testPoint.getCoordinateInfo();
         String detectPerson = testPoint.getDetectPerson();
@@ -79,7 +80,10 @@ public class DataDBManager implements IDataManager {
         if (TextUtils.isEmpty(buildSerialNum)) {
             return false;
         }
-        if (advArr == null) {
+        if (TextUtils.isEmpty(waveListStr)) {
+            return false;
+        }
+        if (TextUtils.isEmpty(subsidence)) {
             return false;
         }
         if (constructionOrganization == null) {
@@ -100,7 +104,7 @@ public class DataDBManager implements IDataManager {
         if (instrumentNumber == null) {
             return false;
         }
-        return tableName != null && mProjectDB.insertTestPoint(tableName, mDatabase, buildSerialNum, advArr, constructionOrganization, coordinateInfo, detectPerson, detectTime, fillerType, instrumentNumber, picPath, projectNameT);
+        return tableName != null && mProjectDB.insertTestPoint(tableName, mDatabase, buildSerialNum, waveListStr, subsidence,constructionOrganization, coordinateInfo, detectPerson, detectTime, fillerType, instrumentNumber, picPath, projectNameT);
     }
 
     private void createTableIfNeed(String tableName) {
@@ -115,6 +119,7 @@ public class DataDBManager implements IDataManager {
                 ProjectMetadata.INSTRUMENT_NUMBER + " TEXT NOT NULL,\n" +
                 ProjectMetadata.PROJECT_NAME + " TEXT NOT NULL,\n" +
                 ProjectMetadata.ADV_Arr + " TEXT NOT NULL,\n" +
+                ProjectMetadata.SUBSIDENCE + " TEXT NOT NULL,\n" +
                 ProjectMetadata.PIC_PATH + " TEXT  ); ";
         mDatabase.execSQL(create_temperature_table);
     }

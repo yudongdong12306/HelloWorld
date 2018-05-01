@@ -16,7 +16,26 @@ public class TestPoint implements Serializable {
     private String instrumentNumber;
     private String detectPerson;
     private String picPath;
-    private int[] advArr = new int[1000];
+
+    public String getWaveListStr() {
+        return waveListStr;
+    }
+
+    public void setWaveListStr(String waveListStr) {
+        this.waveListStr = waveListStr;
+    }
+
+    public String getSubsidence() {
+        return subsidence;
+    }
+
+    public void setSubsidence(String subsidence) {
+        this.subsidence = subsidence;
+    }
+
+    private String waveListStr;
+    private String subsidence;
+//    private int[] advArr = new int[1000];
 
     public String getProjectUUID() {
         return projectUUID;
@@ -33,7 +52,7 @@ public class TestPoint implements Serializable {
 
     public TestPoint(String build_serial_num, String coordinate_info, int detect_time,
                      String project_name, String construction_organization, String filler_type,
-                     String instrument_number, String detect_person, String pic_path,String adv_arr) {
+                     String instrument_number, String detect_person, String pic_path, String adv_arr) {
         this.buildSerialNum = build_serial_num;
         this.coordinateInfo = coordinate_info;
         this.detectTime = detect_time;
@@ -43,12 +62,13 @@ public class TestPoint implements Serializable {
         this.instrumentNumber = instrument_number;
         this.detectPerson = detect_person;
         this.picPath = pic_path;
+        this.waveListStr = adv_arr;
 //        this.advArr=adv_arr.getBytes();
     }
 
-    public int[] getAdvArr() {
-        return advArr;
-    }
+//    public int[] getAdvArr() {
+//        return advArr;
+//    }
 
 
     public boolean isLatest() {

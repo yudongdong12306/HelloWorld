@@ -18,16 +18,19 @@ import java.util.List;
  */
 
 public class ProjectDB {
-    public synchronized boolean insertTestPoint(String dbName, SQLiteDatabase database, String buildSerialNum, int[] advArr,
-                                                String constructionOrganization, String coordinateInfo,
-                                                String detectPerson, long detectTime, String fillerType,
-                                                String instrumentNumber, String picPath, String projectName) {
+    public synchronized boolean insertTestPoint(String dbName, SQLiteDatabase database, String buildSerialNum
+            , String advArr, String subsidence
+            , String constructionOrganization, String coordinateInfo
+            , String detectPerson, long detectTime
+            , String fillerType, String instrumentNumber
+            , String picPath, String projectName) {
         if (TextUtils.isEmpty(dbName)) {
             return false;
         }
         ContentValues contentValues = new ContentValues();
         contentValues.put(ProjectMetadata.BUILD_SERIAL_NUM, buildSerialNum);
-        contentValues.put(ProjectMetadata.ADV_Arr, Arrays.toString(advArr));
+        contentValues.put(ProjectMetadata.ADV_Arr, advArr);
+        contentValues.put(ProjectMetadata.SUBSIDENCE, subsidence);
         contentValues.put(ProjectMetadata.CONSTRUCTION_ORGANIZATION, constructionOrganization);
         contentValues.put(ProjectMetadata.COORDINATE_INFO, coordinateInfo);
         contentValues.put(ProjectMetadata.DETECT_PERSON, detectPerson);

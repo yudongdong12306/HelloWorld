@@ -1,6 +1,5 @@
 package com.detect.detect.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
@@ -8,15 +7,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.detect.detect.R;
-import com.detect.detect.shared_preferences.Project;
-import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.ProjectInfo;
 import com.detect.detect.shared_preferences.ProjectNameUUIDSP;
 import com.detect.detect.utils.UIUtils;
+import com.gsh.dialoglibrary.RaiingAlertDialog;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,11 +23,13 @@ import butterknife.OnClick;
 /**
  * Created by dongdong.yu on 2018/1/7.
  */
-public class MainActivity1 extends BaseActivity implements CommonDialog.ConfirmClickCallback {
+public class ShowHistoryActivity extends BaseActivity {
     @BindView(R.id.project_name_rv)
     RecyclerView projectName_Rv;
     @BindView(R.id.new_build_bt)
     Button newBuildBt;
+    @BindView(R.id.common_title_tv)
+    TextView common_title_tv;
     private ProjectNamesListAdapter adapter;
     private static final String FRAGMENT_TAG_NO_DAT = "fragment_tag_no_dat";
 
@@ -40,13 +40,13 @@ public class MainActivity1 extends BaseActivity implements CommonDialog.ConfirmC
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_main1;
+        return R.layout.activity_show_history;
     }
 
 
     @Override
     public void initView() {
-
+        common_title_tv.setText("历史工程");
 
     }
 
@@ -58,12 +58,26 @@ public class MainActivity1 extends BaseActivity implements CommonDialog.ConfirmC
             //新建项目
             projectName_Rv.setVisibility(View.GONE);
             newBuildBt.setVisibility(View.GONE);
-            CommonDialog fragment = ((CommonDialog) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_NO_DAT));
-            if (fragment == null) {
-                fragment = new CommonDialog();
-                fragment.setContent("当前没有历史工程,点击确认新建", "确认", "取消");
-            }
-            fragment.show(getFragmentManager().beginTransaction(), FRAGMENT_TAG_NO_DAT);
+//            CommonDialog fragment = ((CommonDialog) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_NO_DAT));
+//            if (fragment == null) {
+//                fragment = new CommonDialog();
+//                fragment.setContent("当前没有历史工程,点击确认新建", "确认", "取消");
+//            }
+//            fragment.show(getFragmentManager().beginTransaction(), FRAGMENT_TAG_NO_DAT);
+
+            new RaiingAlertDialog(this, "提示"
+                    , "当前没有历史工程,点击确认新建", "确认", "取消", new RaiingAlertDialog.CallbackRaiingAlertDialog() {
+                @Override
+                public void onPositive() {
+                    UIUtils.intentActivity(ProjectInfoActivity.class, null);
+                }
+
+                @Override
+                public void onNegative() {
+                    finish();
+                }
+            }).show();
+
 
         } else {
             newBuildBt.setVisibility(View.VISIBLE);
@@ -81,7 +95,7 @@ public class MainActivity1 extends BaseActivity implements CommonDialog.ConfirmC
                 public void onItemClick(View v, ProjectInfo project) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("TO_TEST_POINT", project);
-                    UIUtils.intentActivity(StartDetectActivity.class, bundle);
+                    UIUtils.intentActivity(NewTestPointActivity.class, bundle);
                 }
 
                 @Override
@@ -105,16 +119,14 @@ public class MainActivity1 extends BaseActivity implements CommonDialog.ConfirmC
                 break;
         }
     }
-
-
-    @Override
-    public void onConfirm() {
-//        ToastUtils.showToast("进入新建工程界面");
-        UIUtils.intentActivity(ProjectInfoActivity.class, null);
-    }
-
-    @Override
-    public void onCancel() {
-        finish();
-    }
+//    @Override
+//    public void onConfirm() {
+////        ToastUtils.showToast("进入新建工程界面");
+//        UIUtils.intentActivity(ProjectInfoActivity.class, null);
+//    }
+//
+//    @Override
+//    public void onCancel() {
+//        finish();
+//    }
 }

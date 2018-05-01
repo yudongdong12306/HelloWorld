@@ -1,6 +1,5 @@
 package com.detect.detect.ui;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,20 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.detect.detect.R;
-import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.ProjectInfo;
 import com.detect.detect.shared_preferences.ProjectNameUUIDSP;
-import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.utils.UIUtils;
-
-import java.io.Serializable;
-import java.util.List;
+import com.gsh.dialoglibrary.RaiingAlertDialog;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.detect.detect.constant.SkipActivityConstant.PROJECT_INFO_TEST_POINT;
 
 /**
  * Created by yu on 18/1/13.
@@ -54,7 +47,7 @@ public class ProjectInfoActivity extends BaseActivity implements ProjectNameSele
     EditText detectPersonEt;
     @BindView(R.id.newly_build_bt)
     Button newlyBuildBt;
-//    @BindView(R.id.confirm_bt)
+    //    @BindView(R.id.confirm_bt)
 //    Button confirmBt;
 //    private String projectName;
 
@@ -64,8 +57,10 @@ public class ProjectInfoActivity extends BaseActivity implements ProjectNameSele
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_project_info_detail_set;
+        return R.layout.activity_project_info;
     }
+
+    boolean isFirstEdit;
 
     @Override
     public void initView() {
@@ -73,16 +68,20 @@ public class ProjectInfoActivity extends BaseActivity implements ProjectNameSele
     }
 
     private void initUI() {
+        commonTitleTv.setText("工程信息");
         Intent intent = getIntent();
         if (intent == null) {
             return;
         }
         ProjectInfo projectInfoToEdit = (ProjectInfo) intent.getSerializableExtra("PROJECT_INFO_TO_EDIT");
         if (projectInfoToEdit == null) {
+            isFirstEdit = true;
             return;
         }
         //取上次的,对界面进行恢复,仅仅是恢复,方便用户修改再用
         projectNameEt.setText(projectInfoToEdit.getProjectName());
+        //进来修改的,不允许修改工程名称了
+        projectNameEt.setEnabled(false);
         constructionOrganizationTv.setText(projectInfoToEdit.getConstructionOrganization());
         fillerTypeEt.setText(projectInfoToEdit.getFillerType());
         instrumentNumberEt.setText(projectInfoToEdit.getInstrumentNumber());
@@ -91,11 +90,11 @@ public class ProjectInfoActivity extends BaseActivity implements ProjectNameSele
 
     @OnClick({R.id.newly_build_bt, R.id.common_back_ll})
     public void onViewClicked(View view) {
-        String projectName = projectNameEt.getText().toString().trim();
-        String constructionOrganization = constructionOrganizationTv.getText().toString().trim();
-        String fillerType = fillerTypeEt.getText().toString().trim();
-        String instrumentNumber = instrumentNumberEt.getText().toString().trim();
-        String detectPerson = detectPersonEt.getText().toString().trim();
+        final String projectName = projectNameEt.getText().toString().trim();
+        final String constructionOrganization = constructionOrganizationTv.getText().toString().trim();
+        final String fillerType = fillerTypeEt.getText().toString().trim();
+        final String instrumentNumber = instrumentNumberEt.getText().toString().trim();
+        final String detectPerson = detectPersonEt.getText().toString().trim();
         switch (view.getId()) {
             case R.id.newly_build_bt:
                 if (!checkEmpty(projectName, constructionOrganization,
@@ -107,12 +106,29 @@ public class ProjectInfoActivity extends BaseActivity implements ProjectNameSele
 //                    ToastUtils.showToast("该项目已经存在,无法新建!");
 //                    return;
 //                }
-                //新建项目测试点
-                setNewBuildPointResult(projectName, constructionOrganization, fillerType, instrumentNumber, detectPerson);
-                //进入新建节点页面
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("TO_TEST_POINT", ProjectNameUUIDSP.getInstance().getProjectInfo(projectName));
-                UIUtils.intentActivity(StartDetectActivity.class, bundle);
+//                isFirstEdit
+                //选择新建项目,但是输入的项目名称已经存在
+                if (ProjectNameUUIDSP.getInstance().checkIsExist(projectName) && isFirstEdit) {
+                    new RaiingAlertDialog(this, "提示",
+                            "要新建的项目已经存在,是否修改该项目信息?",
+                            "修改", "取消",
+                            new RaiingAlertDialog.CallbackRaiingAlertDialog() {
+                                @Override
+                                public void onPositive() {
+                                    savaProjectInfo(projectName, constructionOrganization, fillerType, instrumentNumber, detectPerson);
+
+                                }
+
+                                @Override
+                                public void onNegative() {
+
+                                }
+                            }).show();
+                } else {
+                    savaProjectInfo(projectName, constructionOrganization, fillerType, instrumentNumber, detectPerson);
+
+                }
+
 
                 break;
             case R.id.common_back_ll:
@@ -149,6 +165,29 @@ public class ProjectInfoActivity extends BaseActivity implements ProjectNameSele
 //                break;
         }
     }
+
+    private void savaProjectInfo(String projectName, String constructionOrganization, String fillerType, String instrumentNumber, String detectPerson) {
+        //新建项目测试点
+        setNewBuildPointResult(projectName, constructionOrganization, fillerType, instrumentNumber, detectPerson);
+        //进入新建节点页面
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("TO_TEST_POINT", ProjectNameUUIDSP.getInstance().getProjectInfo(projectName));
+        UIUtils.intentActivity(NewTestPointActivity.class, bundle);
+    }
+
+//    private boolean checkIsExist(String projectName) {
+//
+//
+//        List<String> allProjectNames = ProjectNameUUIDSP.getInstance().getAllProjectNames();
+//        if (allProjectNames != null) {
+//            for (String projectN : allProjectNames) {
+//                if (TextUtils.equals(projectN, projectName)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
 
 //    /**

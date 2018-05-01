@@ -2,6 +2,7 @@ package com.detect.detect.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,10 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.detect.detect.R;
 import com.detect.detect.constant.SkipActivityConstant;
+import com.detect.detect.shared_preferences.ProjectDataManager;
+import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.socket.HexUtils;
+import com.detect.detect.utils.ToastUtils;
 import com.tjstudy.tcplib.RequestCallback;
 import com.tjstudy.tcplib.ResponseCallback;
 import com.tjstudy.tcplib.TCPClient;
@@ -41,22 +45,22 @@ public class DetectActivity extends BaseActivity {
     TextView commonTitleTv;
     @BindView(R.id.build_serial_num_et)
     EditText buildSerialNumEt;
-    @BindView(R.id.rr_1)
-    LinearLayout rr1;
-    @BindView(R.id.detect_data_s1_et)
+    //    @BindView(R.id.rr_1)
+//    LinearLayout rr1;
+    @BindView(R.id.s1_et)
     EditText detectDataS1Et;
     @BindView(R.id.detect_state_tv)
     TextView detectStateTv;
-    @BindView(R.id.rr_2)
-    LinearLayout rr2;
-    @BindView(R.id.detect_data_s2_et)
+    //    @BindView(R.id.rr_2)
+//    LinearLayout rr2;
+    @BindView(R.id.s2_et)
     EditText detectDataS2Et;
-    @BindView(R.id.rr_3)
-    LinearLayout rr3;
-    @BindView(R.id.detect_data_s3_et)
+    //    @BindView(R.id.rr_3)
+//    LinearLayout rr3;
+    @BindView(R.id.s3_et)
     EditText detectDataS3Et;
-    @BindView(R.id.rr_4)
-    LinearLayout rr4;
+    //    @BindView(R.id.rr_4)
+//    LinearLayout rr4;
     @BindView(R.id.cancel_bt)
     Button cancelBt;
     private String mProjectName;
@@ -65,13 +69,12 @@ public class DetectActivity extends BaseActivity {
     private static final int PORT = 8899;
     private TCPClient tcpClient;
     private byte[] heartCommand, confirmCommand, startCommand;
+    private TestPoint mTestPoint;
 
     @Override
     protected void initData() {
         initCommond();
-
         initNet();
-
         sendCommand(startCommand);
     }
 
@@ -122,14 +125,13 @@ public class DetectActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        commonTitleTv.setText("检测");
+        ToastUtils.showToast("将开始三次撞击测试");
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra(SkipActivityConstant.DETECT_PROJECT_NAME)) {
-                mProjectName = intent.getStringExtra(SkipActivityConstant.DETECT_PROJECT_NAME);
-            }
-            if (intent.hasExtra(SkipActivityConstant.DETECT_TEST_POINT_SERIAL_BUILD_NUM)) {
-                mBuildSerialNum = intent.getIntExtra(SkipActivityConstant.DETECT_TEST_POINT_SERIAL_BUILD_NUM, -1);
-                buildSerialNumEt.setText(mBuildSerialNum + "");
+            if (intent.hasExtra(SkipActivityConstant.DETECT_TEST_POINT_TEST_POINT)) {
+                mTestPoint = (TestPoint) intent.getSerializableExtra(SkipActivityConstant.DETECT_TEST_POINT_TEST_POINT);
+                buildSerialNumEt.setText(mTestPoint.getBuildSerialNum());
             }
         }
     }
@@ -196,6 +198,21 @@ public class DetectActivity extends BaseActivity {
                     Intent intent = new Intent(DetectActivity.this, DetectFinishedActivity.class);
                     intent.putExtra("WAVE_DATA", waveDataList);
                     startActivity(intent);
+                    String waveListStr = JSON.toJSONString(waveDataList);
+                    //保存数据到数据库
+                    String str1 = detectDataS1Et.getText().toString();
+                    String str2 = detectDataS2Et.getText().toString();
+                    String str3 = detectDataS3Et.getText().toString();
+                    if (!TextUtils.isEmpty(str1)
+                            && !TextUtils.isEmpty(str2)
+                            && !TextUtils.isEmpty(str3)) {
+                        mTestPoint.setWaveListStr(waveListStr);
+                        mTestPoint.setSubsidence(str1.trim().concat("_").concat(str2.trim()).concat("_").concat(str3.trim()));
+                        ProjectDataManager.getInstance().insertTestPoint(mTestPoint.getProjectUUID(), mTestPoint);
+                    } else {
+                        detectStateTv.setText("获取沉陷值失败,请重试");
+                    }
+
                 }
                 return;
             }

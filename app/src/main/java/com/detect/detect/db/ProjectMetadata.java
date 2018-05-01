@@ -20,4 +20,5 @@ public class ProjectMetadata {
     public static final String DETECT_PERSON = "detect_person";
     public static final String PIC_PATH = "pic_path";
     public static final String ADV_Arr = "adv_arr";
+    public static final String SUBSIDENCE = "subsidence";
 }

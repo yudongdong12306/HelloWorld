@@ -283,7 +283,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
 
     @Override
     public void showPopupView() {
-        View parent = LayoutInflater.from(this).inflate(R.layout.activity_start_detect, null);
+        View parent = LayoutInflater.from(this).inflate(R.layout.activity_new_build_test_point, null);
         popupWindow.showAtLocation(parent, Gravity.BOTTOM | Gravity.LEFT, 0, 0);
     }
 

@@ -3,12 +3,15 @@ package com.detect.detect.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.detect.detect.db.WaveData;
 import com.detect.detect.shared_preferences.TestPoint;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,7 +45,9 @@ public class CSVUtils {
                 String projectName = testPoint.getProjectName();
                 String constructionOrganization = testPoint.getConstructionOrganization();
                 String buildSerialNum = testPoint.getBuildSerialNum();
-                int[] advArr = testPoint.getAdvArr();
+//                int[] advArr = testPoint.getWaveListStr();
+                String waveListStr = testPoint.getWaveListStr();
+
                 String coordinateInfo = testPoint.getCoordinateInfo();
                 String detectPerson = testPoint.getDetectPerson();
                 long detectTime = testPoint.getDetectTime();
@@ -62,18 +67,24 @@ public class CSVUtils {
                         + buildSerialNum + "," + coordinateInfo + "," + detectPerson + ","
                         + detectTime + "," + fillerType + "," + instrumentNumber);
                 bw.newLine();
-                for (int i = 0; i < 100; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        if (j != 9) {
-                            stringBuilder.append(advArr[i * 10 + j] + ",");
-                        } else {
-                            stringBuilder.append(advArr[i * 10 + j]);
+                List<WaveData> arrayLists = JSON.parseArray(waveListStr, WaveData.class);
+                for (int j = 0; j < arrayLists.size(); j++) {
+                    WaveData waveData = arrayLists.get(j);
+                    int[] waveArr = waveData.waveArr;
+                    for (int i = 0; i < 100; i++) {
+                        for (int m = 0; m < 10; m++) {
+                            StringBuilder stringBuilder = new StringBuilder();
+                            if (j != 9) {
+                                stringBuilder.append(waveArr[i * 10 + m] + ",");
+                            } else {
+                                stringBuilder.append(waveArr[i * 10 + m]);
+                            }
+                            bw.write(stringBuilder.toString());
                         }
-                        bw.write(stringBuilder.toString());
+                        bw.newLine();
                     }
-                    bw.newLine();
                 }
+
 
             }
             bw.close();

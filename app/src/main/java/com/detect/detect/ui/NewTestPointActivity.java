@@ -4,31 +4,34 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.YMDPickerView;
 import com.detect.detect.R;
 import com.detect.detect.constant.SkipActivityConstant;
-import com.detect.detect.shared_preferences.LatestTestPointSP;
 import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.ProjectInfo;
 import com.detect.detect.shared_preferences.TestPoint;
+import com.detect.detect.utils.AppUtils;
+import com.detect.detect.utils.FileUtils;
 import com.detect.detect.utils.StringUtils;
 import com.detect.detect.utils.ToastUtils;
+import com.detect.detect.utils.UIUtils;
 import com.detect.detect.widgets.PersonalPopupWindow;
 
 import java.io.File;
@@ -40,20 +43,18 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.detect.detect.constant.SkipActivityConstant.PROJECT_INFO_TEST_POINT;
+import static com.detect.detect.constant.HeadConstant.HEAD_IMAGE_NAME;
 
 /**
  * Created by dongdong.yu on 2018/1/7.
  */
 
-public class StartDetectActivity extends BaseActivity implements ITakePhoto {
+public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
     private static final String TAG = "StartDetect";
     @BindView(R.id.common_back_ll)
     LinearLayout commonBackLl;
-    @BindView(R.id.common_title_tv)
-    TextView commonTitleTv;
-    @BindView(R.id.project_info_tv)
-    TextView projectInfoTt;
+    @BindView(R.id.project_info_et)
+    EditText projectInfoEt;
     @BindView(R.id.build_serial_num_et)
     EditText buildSerialNumEt;
     @BindView(R.id.coordinate_info_et)
@@ -64,7 +65,10 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     Button takePhotoBt;
     @BindView(R.id.confirm_bt)
     Button confirmBt;
-
+    @BindView(R.id.common_title_tv)
+    TextView commonTitleTv;
+    @BindView(R.id.test_point_pic_iv)
+    ImageView testPointPicIv;
     private PersonalPopupWindow popupWindow;
     private StartDetectPresenter mPresenter;
     private TestPoint testPointInsert;
@@ -102,11 +106,13 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
     @Override
     public void showHead(Bitmap bitmap) {
 //        civHead.setImageBitmap(bitmap);
+        testPointPicIv.setImageBitmap(bitmap);
+
     }
 
     @Override
     public void showPopupView() {
-        View parent = LayoutInflater.from(this).inflate(R.layout.activity_start_detect, null);
+        View parent = LayoutInflater.from(this).inflate(R.layout.activity_new_build_test_point, null);
         popupWindow.showAtLocation(parent, Gravity.BOTTOM | Gravity.LEFT, 0, 0);
     }
 
@@ -127,7 +133,19 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
             return;
         }
         this.picPath = path;
-        ToastUtils.showToast("获取照片成功,图片路径: " + path);
+//        ToastUtils.showToast("获取照片成功,图片路径: " + path);
+        showImage(picPath);
+    }
+
+    public void showImage(String picPath) {
+        //此处实际应用中替换成服务器拉取图片
+        Uri headUri = Uri.fromFile(new File(picPath));
+        if (headUri != null) {
+            String cropImagePath = FileUtils.getRealFilePathFromUri(AppUtils.getContext(), headUri);
+            Bitmap bitMap = BitmapFactory.decodeFile(cropImagePath);
+            if (bitMap != null)
+                testPointPicIv.setImageBitmap(bitMap);
+        }
     }
 
     @Override
@@ -177,11 +195,12 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_start_detect;
+        return R.layout.activity_new_build_test_point;
     }
 
     @Override
     public void initView() {
+        commonTitleTv.setText("新建测试点");
         //初始化
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -196,7 +215,7 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
         if (projectInfo == null) {
             throw new IllegalArgumentException("projectInfo为null,请检查逻辑!");
         }
-        projectInfoTt.setText(projectInfo.getProjectName());
+        projectInfoEt.setText(projectInfo.getProjectName());
         //对详情页面数据进行初始化
         testPointInsert = new TestPoint();
         testPointInsert.setProjectName(projectInfo.getProjectName());
@@ -226,11 +245,12 @@ public class StartDetectActivity extends BaseActivity implements ITakePhoto {
                 if (testPointData == null) {
                     return;
                 }
-                ProjectDataManager.getInstance().insertTestPoint(testPointInsert.getProjectUUID(), testPointInsert);
-                Intent intent = new Intent(this, DetectActivity.class);
-                intent.putExtra(SkipActivityConstant.DETECT_PROJECT_NAME, testPointData.getProjectName());
-                intent.putExtra(SkipActivityConstant.DETECT_TEST_POINT_SERIAL_BUILD_NUM, testPointInsert.getBuildSerialNum());
-                startActivity(intent);
+//                ProjectDataManager.getInstance().insertTestPoint(testPointInsert.getProjectUUID(), testPointInsert);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(SkipActivityConstant.DETECT_TEST_POINT_TEST_POINT, testPointInsert);
+                UIUtils.intentActivity(DetectActivity.class, bundle);
+//                intent.putExtra(SkipActivityConstant.DETECT_PROJECT_NAME, testPointData.getProjectName());
+//                intent.putExtra(SkipActivityConstant.DETECT_TEST_POINT_SERIAL_BUILD_NUM, testPointInsert.getBuildSerialNum());
                 break;
         }
     }
