@@ -10,10 +10,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.detect.detect.R;
+import com.detect.detect.shared_preferences.CommonSP;
 import com.detect.detect.shared_preferences.ProjectInfo;
 import com.detect.detect.shared_preferences.ProjectNameUUIDSP;
 import com.detect.detect.utils.UIUtils;
 import com.gsh.dialoglibrary.RaiingAlertDialog;
+import com.gsh.dialoglibrary.RaiingGetDialog;
 
 import java.util.List;
 
@@ -80,6 +82,24 @@ public class ShowHistoryActivity extends BaseActivity {
 
 
         } else {
+            if (!CommonSP.getInstance().getRememberChoice()) {
+                new RaiingGetDialog(this, "提示"
+                        , "长按项目名称可修改项目信息",
+                        "知道了", null
+                        , new RaiingGetDialog.CallbackRaiingAlertDialog() {
+                    @Override
+                    public void onPositive(boolean isChecked) {
+                        if (isChecked) {
+                            CommonSP.getInstance().setRememberChoice();
+                        }
+                    }
+
+                    @Override
+                    public void onNegative() {
+
+                    }
+                }).show();
+            }
             newBuildBt.setVisibility(View.VISIBLE);
             projectName_Rv.setVisibility(View.VISIBLE);
             projectName_Rv.setLayoutManager(new LinearLayoutManager(this));

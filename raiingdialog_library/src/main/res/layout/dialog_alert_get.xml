@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_corner_background"
+    android:orientation="vertical">
+
+    <!--标题和正文-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--头部的空白区域-->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!--标题区域-->
+        <TextView
+            android:id="@+id/dialog_alert_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <!--标题和正文之间的空白间隔区域-->
+        <ImageView
+            android:id="@+id/dialog_title_content_space"
+            android:layout_width="match_parent"
+            android:layout_height="4dp" />
+
+        <!--正文-->
+        <TextView
+            android:id="@+id/dialog_alert_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="13dp" />
+
+        <!--空白间隔区域-->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!--分割线-->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/divider" />
+    </LinearLayout>
+
+    <!--单个"取消"按钮布局-->
+    <Button
+        android:id="@+id/dialog_alert_cancle1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/ok_cancel"
+        android:textSize="15dp"
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:layout_marginLeft="20dp"
+        android:id="@+id/not_remind_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="不再提示" />
+    <!--单个"确定"按钮布局-->
+    <Button xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dialog_alert_ok1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/ok_cancel"
+        android:textSize="15dp" />
+
+    <!--取消和确定都有的按钮的布局-->
+    <LinearLayout
+        android:id="@+id/dialog_alert_all_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <!--取消-->
+        <Button
+            android:id="@+id/dialog_alert_cancle2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/ok_cancel"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <!--竖线-->
+        <ImageView
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/divider" />
+
+        <!--确认-->
+        <Button xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/dialog_alert_ok2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/ok_cancel"
+            android:textSize="15dp" />
+    </LinearLayout>
+
+</LinearLayout>

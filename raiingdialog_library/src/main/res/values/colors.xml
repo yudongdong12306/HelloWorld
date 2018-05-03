@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="divider">#333333</color>
+    <color name="ok_cancel">#ff1a7ff9</color>
+
+    <color name="notice_bg">#FFFFFF</color>
+    <color name="notice_black_0">#000000</color>
+    <color name="notice_black_3">#333333</color>
+    <color name="notice_gray">#F0F0F0</color>
+    <color name="notice_gray_c">#CCCCCC</color>
+    <color name="notice_gray_87">#878787</color>
+    <color name="notice_green">#46AC8B</color>
+    <color name="notice_blue">#197FF8</color>
+</resources>
