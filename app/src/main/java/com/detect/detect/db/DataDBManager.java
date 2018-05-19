@@ -104,7 +104,7 @@ public class DataDBManager implements IDataManager {
         if (instrumentNumber == null) {
             return false;
         }
-        return tableName != null && mProjectDB.insertTestPoint(tableName, mDatabase, buildSerialNum, waveListStr, subsidence,constructionOrganization, coordinateInfo, detectPerson, detectTime, fillerType, instrumentNumber, picPath, projectNameT);
+        return tableName != null && mProjectDB.insertTestPoint(tableName, mDatabase, buildSerialNum, waveListStr, subsidence, constructionOrganization, coordinateInfo, detectPerson, detectTime, fillerType, instrumentNumber, picPath, projectNameT);
     }
 
     private void createTableIfNeed(String tableName) {
@@ -211,5 +211,23 @@ public class DataDBManager implements IDataManager {
 
         }
         return false;
+    }
+
+    @Override
+    public boolean updatePicPath(String tableName, String buildSerialNum, String path) {
+        if (TextUtils.isEmpty(path)) {
+            return false;
+        }
+        if (TextUtils.isEmpty(tableName)) {
+            return false;
+        }
+        if (TextUtils.isEmpty(buildSerialNum)) {
+            return false;
+        }
+        boolean isExit = isProjectNameExit(tableName);
+        if (!isExit) {
+            return false;
+        }
+        return mProjectDB.updatePicPath(mDatabase, tableName, buildSerialNum, path);
     }
 }

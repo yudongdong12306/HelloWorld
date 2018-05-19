@@ -27,4 +27,6 @@ public interface IDataManager {
     //    List<String> getTableList();
     List<String> getTableNameList();
     boolean isProjectNameExit(String projectName);
+
+    boolean updatePicPath(String tableName, String buildSerialNum, String path);
 }

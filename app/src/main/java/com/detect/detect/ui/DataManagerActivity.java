@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.detect.detect.R;
 import com.detect.detect.constant.CommonConstant;
+import com.detect.detect.db.DataDBManager;
 import com.detect.detect.db.FileConstant;
 import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectDataManager;
@@ -67,6 +68,8 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     ExpandableListView projectDataLv;
     @BindView(R.id.project_name_tv)
     TextView projectNameTv;
+    @BindView(R.id.common_title_tv)
+    TextView titleNameTv;
     @BindView(R.id.test_point_data_bt)
     Button testPointDataBt;
     @BindView(R.id.test_point_pic_bt)
@@ -306,7 +309,23 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
             ToastUtils.showToast("获取图片失败,请重试!");
             return;
         }
+        if (TextUtils.isEmpty(mBuildSerialNum)) {
+            ToastUtils.showToast("获取图片失败,请选择对应测试节点!");
+            return;
+        }
+
+
+        ProjectInfo projectInfo = ProjectNameUUIDSP.getInstance().getProjectInfo(mProjectName);
+        if (projectInfo == null) {
+            return;
+        }
+        String tableName = projectInfo.getUuid();
+        if (TextUtils.isEmpty(tableName)) {
+            return;
+        }
+        ProjectDataManager.getInstance().updatePicPath(tableName, mBuildSerialNum, path);
         ToastUtils.showToast("添加图片成功,图片路径: " + path);
+        testPointPicBt.performClick();
     }
 
     @Override
@@ -362,6 +381,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
 
     @Override
     public void initView() {
+        titleNameTv.setText("数据管理");
 //        List<Project> allProjects = ProjectInfoSP.getInstance().getAllProjects();
         if (prepareAdapterData()) return;
         mAdapter = new ProjectDataAdapter(this, mProjectNameList, mAllTestPointList, this);

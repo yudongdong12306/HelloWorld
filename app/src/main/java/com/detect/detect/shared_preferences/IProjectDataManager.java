@@ -22,6 +22,10 @@ public interface IProjectDataManager {
     boolean deleteTestPoint(String projectName, String buildSerialNum);
 
     boolean deleteProject(String projectName);
+
     int queryTableItemNum(String projectName);
+
     List<String> getTableNameList();
+
+    boolean updatePicPath(String tableName, String buildSerialNum, String path);
 }

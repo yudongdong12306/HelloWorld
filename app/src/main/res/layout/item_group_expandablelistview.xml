@@ -10,5 +10,5 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:maxLines="1"
-        android:textSize="@dimen/size_14sp" />
+        android:textSize="@dimen/size_16sp" />
 </LinearLayout>

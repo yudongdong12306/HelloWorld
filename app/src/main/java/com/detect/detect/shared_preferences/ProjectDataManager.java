@@ -146,4 +146,9 @@ public class ProjectDataManager implements IProjectDataManager {
     public List<String> getTableNameList() {
         return mDataDBManager.getTableNameList();
     }
+
+    @Override
+    public boolean updatePicPath(String tableName, String buildSerialNum, String path) {
+        return mDataDBManager.updatePicPath(tableName, buildSerialNum, path);
+    }
 }

@@ -211,4 +211,13 @@ public class ProjectDB {
 //            database.close();
         }
     }
+
+    public boolean updatePicPath(SQLiteDatabase mDatabase, String tableName, String buildSerialNum, String path) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ProjectMetadata.PIC_PATH, path);
+        String whereClause = ProjectMetadata.BUILD_SERIAL_NUM + " = ?";
+        String[] whereArgs = new String[]{buildSerialNum + ""};
+        int updateFlag = mDatabase.update(tableName, contentValues, whereClause, whereArgs);
+        return updateFlag > 0;
+    }
 }
