@@ -40,7 +40,7 @@ public class ProjectDB {
         contentValues.put(ProjectMetadata.PIC_PATH, picPath);
         contentValues.put(ProjectMetadata.PROJECT_NAME, projectName);
 
-        long re = database.insert(dbName, null, contentValues);
+        long re = database.replace(dbName, null, contentValues);
 //        database.close();
         if (re == -1) {
             return false;

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.YMDPickerView;
 import com.detect.detect.R;
 import com.detect.detect.constant.SkipActivityConstant;
+import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.ProjectInfo;
 import com.detect.detect.shared_preferences.TestPoint;
@@ -33,12 +34,14 @@ import com.detect.detect.utils.StringUtils;
 import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.utils.UIUtils;
 import com.detect.detect.widgets.PersonalPopupWindow;
+import com.gsh.dialoglibrary.RaiingAlertDialog;
 
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -244,6 +247,40 @@ public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
                 TestPoint testPointData = getTestPointData();
                 if (testPointData == null) {
                     return;
+                }
+                List<Project> allProjects = ProjectDataManager.getInstance().getAllProjects();
+                if (allProjects != null && allProjects.size() > 0) {
+                    for (Project allProject : allProjects) {
+                        if (allProject == null) {
+                            continue;
+                        }
+                        if (TextUtils.equals(allProject.getProjectName(), testPointData.getProjectName())) {
+                            List<TestPoint> testPointList = allProject.getTestPointList();
+                            if (testPointList != null) {
+                                for (TestPoint testPoint : testPointList) {
+                                    if (testPoint == null) {
+                                        continue;
+                                    }
+                                    if (TextUtils.equals(testPoint.getBuildSerialNum(), testPointData.getBuildSerialNum())) {
+                                        new RaiingAlertDialog(NewTestPointActivity.this, "提示", "该节点已检测过,是否重新检测?", "确定", "取消", new RaiingAlertDialog.CallbackRaiingAlertDialog() {
+                                            @Override
+                                            public void onPositive() {
+                                                Bundle bundle = new Bundle();
+                                                bundle.putSerializable(SkipActivityConstant.DETECT_TEST_POINT_TEST_POINT, testPointInsert);
+                                                UIUtils.intentActivity(DetectActivity.class, bundle);
+                                            }
+
+                                            @Override
+                                            public void onNegative() {
+
+                                            }
+                                        }).show();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 //                ProjectDataManager.getInstance().insertTestPoint(testPointInsert.getProjectUUID(), testPointInsert);
                 Bundle bundle = new Bundle();

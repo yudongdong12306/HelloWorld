@@ -110,7 +110,7 @@ public class DataDBManager implements IDataManager {
     private void createTableIfNeed(String tableName) {
         String create_temperature_table = "CREATE TABLE IF NOT EXISTS " + tableName + " ( \n" +
                 ProjectMetadata.KEY_ID_INT + " INTEGER PRIMARY KEY ASC ON CONFLICT REPLACE AUTOINCREMENT,\n" +
-                ProjectMetadata.BUILD_SERIAL_NUM + " TEXT NOT NULL,\n" +
+                ProjectMetadata.BUILD_SERIAL_NUM + " TEXT NOT NULL UNIQUE,\n" +
                 ProjectMetadata.CONSTRUCTION_ORGANIZATION + " INTEGER NOT NULL,\n" +
                 ProjectMetadata.COORDINATE_INFO + " INTEGER NOT NULL,\n" +
                 ProjectMetadata.DETECT_PERSON + " INTEGER NOT NULL,\n" +
