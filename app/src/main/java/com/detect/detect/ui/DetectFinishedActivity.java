@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 
 import com.detect.detect.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -33,7 +35,12 @@ public class DetectFinishedActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        findViewById(R.id.confirm_bt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -80,7 +87,6 @@ public class DetectFinishedActivity extends BaseActivity {
 
         mChart.setDrawGridBackground(false);
         mChart.setMaxHighlightDistance(300);
-
 //        XAxis x = mChart.getXAxis();
 //        x.setEnabled(false);
         XAxis xAxis = mChart.getXAxis();

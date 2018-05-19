@@ -22,6 +22,7 @@ import com.tjstudy.tcplib.ResponseCallback;
 import com.tjstudy.tcplib.TCPClient;
 import com.tjstudy.tcplib.utils.DigitalUtils;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -198,7 +199,15 @@ public class DetectActivity extends BaseActivity {
                     Intent intent = new Intent(DetectActivity.this, DetectFinishedActivity.class);
                     intent.putExtra("WAVE_DATA", waveDataList);
                     startActivity(intent);
-                    String waveListStr = JSON.toJSONString(waveDataList);
+                    ArrayList<com.detect.detect.db.WaveData> waveDataArr = new ArrayList<>();
+
+                    for (int[] ints : waveDataList) {
+                        com.detect.detect.db.WaveData waveData = new com.detect.detect.db.WaveData();
+                        waveData.setWaveArr(ints);
+                        waveDataArr.add(waveData);
+                    }
+                    String waveListStr =  JSON.toJSONString(waveDataArr) ;
+
                     //保存数据到数据库
                     String str1 = detectDataS1Et.getText().toString();
                     String str2 = detectDataS2Et.getText().toString();
@@ -209,6 +218,8 @@ public class DetectActivity extends BaseActivity {
                         mTestPoint.setWaveListStr(waveListStr);
                         mTestPoint.setSubsidence(str1.trim().concat("_").concat(str2.trim()).concat("_").concat(str3.trim()));
                         ProjectDataManager.getInstance().insertTestPoint(mTestPoint.getProjectUUID(), mTestPoint);
+                        //成功跳转后销毁本界面
+                        finish();
                     } else {
                         detectStateTv.setText("获取沉陷值失败,请重试");
                     }
@@ -228,7 +239,7 @@ public class DetectActivity extends BaseActivity {
                 waveData.waveArrHasDataSize += receiveData.length;
                 if (waveData.waveArrHasDataSize == 2033) {
                     int m = waveDataList.size() + 1;
-                    detectStateTv.setText("接收测试点 " + m + " 数据成功");
+                    detectStateTv.setText("测试点 " + m + " 数据接收成功");
                     //发出确认命令
                     sendCommand(confirmCommand);
                     //重置波形数据实例

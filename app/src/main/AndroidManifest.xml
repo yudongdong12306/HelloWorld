@@ -36,7 +36,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.DataManagerActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.ProjectInfoActivity"
             android:screenOrientation="portrait" />
@@ -48,7 +48,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.DetectFinishedActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
         <activity android:name=".ui.ShowHistoryActivity" />
     </application>
 

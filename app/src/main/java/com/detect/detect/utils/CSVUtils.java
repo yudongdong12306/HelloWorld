@@ -11,7 +11,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -41,7 +43,9 @@ public class CSVUtils {
             File csv = new File(path);
             BufferedWriter bw = new BufferedWriter(new FileWriter(csv, true));
             // 新增一行数据
-            for (TestPoint testPoint : list) {
+            for (int s = 0; s < list.size(); s++) {
+                TestPoint testPoint = list.get(s);
+//            for (TestPoint testPoint : list) {
                 String projectName = testPoint.getProjectName();
                 String constructionOrganization = testPoint.getConstructionOrganization();
                 String buildSerialNum = testPoint.getBuildSerialNum();
@@ -63,9 +67,15 @@ public class CSVUtils {
 //                    bw.newLine();
 //                }
                 bw.newLine();
-                bw.write(projectName + "," + constructionOrganization + ","
-                        + buildSerialNum + "," + coordinateInfo + "," + detectPerson + ","
-                        + detectTime + "," + fillerType + "," + instrumentNumber);
+                bw.newLine();
+                bw.newLine();
+                bw.newLine();
+                bw.newLine();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+                String formatData = simpleDateFormat.format(new Date(detectTime * 1000L));
+                bw.write("第 " + (s + 1) + " 个节点信息:  工程名称: " + projectName + "  ,施工单位: " + constructionOrganization + "  ,构建序号: "
+                        + buildSerialNum + "  ,坐标信息: " + coordinateInfo + "  ,检测人: " + detectPerson + "  ,检测时间: "
+                        + formatData + "  ,填料类型: " + fillerType + "  ,仪器编号: " + instrumentNumber);
                 bw.newLine();
                 List<WaveData> arrayLists = JSON.parseArray(waveListStr, WaveData.class);
                 for (int j = 0; j < arrayLists.size(); j++) {
@@ -74,7 +84,7 @@ public class CSVUtils {
                     for (int i = 0; i < 100; i++) {
                         for (int m = 0; m < 10; m++) {
                             StringBuilder stringBuilder = new StringBuilder();
-                            if (j != 9) {
+                            if (m != 9) {
                                 stringBuilder.append(waveArr[i * 10 + m] + ",");
                             } else {
                                 stringBuilder.append(waveArr[i * 10 + m]);

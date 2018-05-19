@@ -13,6 +13,7 @@
     <!-- 下方背景色-->
     <color name="pickervier_bottom_bg">#B7B7B7</color>
     <color name="black">#333333</color>
+    <color name="gray">#A9A9A9</color>
     <color name="divider">#C0C0C0</color>
     <!-- c0_1  黑体-->
     <color name="picker_black_center">#CC000000</color>

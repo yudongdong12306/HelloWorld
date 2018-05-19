@@ -2,118 +2,128 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <ExpandableListView
-        android:id="@+id/project_data_lv"
-        android:layout_width="@dimen/size_120dp"
-        android:layout_height="match_parent" />
-
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/md_grey" />
+    <include layout="@layout/common_title" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/size_15dp"
+        android:paddingEnd="@dimen/size_15dp"
+        android:paddingStart="@dimen/size_15dp">
 
-        <TextView
-            android:id="@+id/project_name_tv"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_40dp"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/size_15sp" />
+        <ExpandableListView
+            android:id="@+id/project_data_lv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
 
-        <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/md_blue_grey_500" />-->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/md_grey" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_40dp"
-            android:orientation="horizontal">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/test_point_data_bt"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+            <TextView
+                android:id="@+id/project_name_tv"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_30dp"
                 android:gravity="center"
-                android:text="@string/test_point_data"
+                android:textColor="@color/black"
                 android:textSize="@dimen/size_15sp" />
 
             <!--<View-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="match_parent"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
             <!--android:background="@color/md_blue_grey_500" />-->
 
-            <Button
-                android:id="@+id/test_point_pic_bt"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingLeft="@dimen/size_15dp"
-                android:text="@string/test_point_pic"
-                android:textSize="@dimen/size_15sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_40dp"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <Button
+                    android:layout_marginEnd="@dimen/size_10dp"
+                    android:layout_marginStart="@dimen/size_25dp"
+                    android:id="@+id/test_point_data_bt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/test_point_data"
+                    android:textSize="@dimen/size_15sp" />
 
-        <FrameLayout
-            android:id="@+id/data_fl"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+                <!--<View-->
+                <!--android:layout_width="1dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/md_blue_grey_500" />-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_40dp"
-            android:orientation="horizontal">
+                <Button
+                    android:layout_marginEnd="@dimen/size_25dp"
+                    android:layout_marginStart="@dimen/size_10dp"
+                    android:id="@+id/test_point_pic_bt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/size_15dp"
+                    android:text="@string/test_point_pic"
+                    android:textSize="@dimen/size_15sp" />
 
-            <Button
-                android:id="@+id/back_bt"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/back"
-                android:textSize="@dimen/size_10sp" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/data_fl"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_40dp"
+                android:orientation="horizontal">
+
+                <!--<View-->
+                <!--android:layout_width="1dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/md_blue_grey_500" />-->
+
+                <Button
+                    android:layout_marginEnd="@dimen/size_10dp"
+                    android:layout_marginStart="@dimen/size_25dp"
+                    android:id="@+id/add_pic_bt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/add_pic"
+                    android:textSize="@dimen/size_10sp" />
+
+                <Button
+                    android:layout_marginEnd="@dimen/size_25dp"
+                    android:layout_marginStart="@dimen/size_10dp"
+                    android:id="@+id/out_put_bt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/out_put_data"
+                    android:textSize="@dimen/size_10sp" />
+
+            </LinearLayout>
 
             <!--<View-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="match_parent"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
             <!--android:background="@color/md_blue_grey_500" />-->
-
-            <Button
-                android:id="@+id/add_pic_bt"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/add_pic"
-                android:textSize="@dimen/size_10sp" />
-
-            <Button
-                android:id="@+id/out_put_bt"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/out_put_data"
-                android:textSize="@dimen/size_10sp" />
-
         </LinearLayout>
-
-        <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/md_blue_grey_500" />-->
-
     </LinearLayout>
 
 </LinearLayout>

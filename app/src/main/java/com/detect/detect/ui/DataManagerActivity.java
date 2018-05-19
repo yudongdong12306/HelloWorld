@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.detect.detect.R;
@@ -70,8 +71,8 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
     Button testPointPicBt;
     @BindView(R.id.data_fl)
     FrameLayout dataFl;
-    @BindView(R.id.back_bt)
-    Button backBt;
+    @BindView(R.id.common_back_ll)
+    LinearLayout backBt;
     @BindView(R.id.add_pic_bt)
     Button addPicBt;
     @BindView(R.id.out_put_bt)
@@ -395,7 +396,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
         return false;
     }
 
-    @OnClick({R.id.project_name_tv, R.id.test_point_data_bt, R.id.test_point_pic_bt, R.id.back_bt, R.id.add_pic_bt, R.id.out_put_bt})
+    @OnClick({R.id.project_name_tv, R.id.test_point_data_bt, R.id.test_point_pic_bt, R.id.common_back_ll, R.id.add_pic_bt, R.id.out_put_bt})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.project_name_tv:
@@ -407,7 +408,7 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
             case R.id.test_point_pic_bt:
                 showPic();
                 break;
-            case R.id.back_bt:
+            case R.id.common_back_ll:
                 finish();
                 break;
             case R.id.add_pic_bt:
@@ -445,12 +446,14 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
                 if (project == null) {
                     continue;
                 }
-                List<TestPoint> testPointList = project.getTestPointList();
-                if (testPointList != null && testPointList.size() > 0) {
-                    CSVUtils.writeTestPointListToCSV(fileDir.getAbsolutePath(), testPointList);
+                if (TextUtils.equals(project.getProjectName(), projectName)) {
+                    List<TestPoint> testPointList = project.getTestPointList();
+                    if (testPointList != null && testPointList.size() > 0) {
+                        CSVUtils.writeTestPointListToCSV(fileDir.getAbsolutePath(), testPointList);
+                    }
+                    //导出图片到指定文件夹
+                    saveTestPointsPic(projectName, testPointList);
                 }
-                //导出图片到指定文件夹
-                saveTestPointsPic(projectName, testPointList);
             }
         }
     }

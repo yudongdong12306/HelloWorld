@@ -1,5 +1,14 @@
 package com.detect.detect.db;
 
 public class WaveData {
-   public int[] waveArr = new int[1000];
+    public int[] getWaveArr() {
+        return waveArr;
+    }
+
+    public void setWaveArr(int[] waveArr) {
+        this.waveArr = waveArr;
+    }
+
+    public int[] waveArr;
+
 }

@@ -5,8 +5,9 @@
     android:orientation="vertical">
 
     <TextView
+        android:maxLines="1"
         android:gravity="center"
-        android:textSize="@dimen/size_18dp"
+        android:textSize="@dimen/size_12dp"
         android:id="@+id/item_test_point_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
