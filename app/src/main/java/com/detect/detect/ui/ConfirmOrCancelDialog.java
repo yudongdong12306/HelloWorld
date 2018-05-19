@@ -12,12 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.detect.detect.R;
 import com.detect.detect.constant.CommonConstant;
-import com.detect.detect.shared_preferences.TestPoint;
 
 /**
  * 固件更新需要点击确认的提示对话框
@@ -38,7 +36,7 @@ public class ConfirmOrCancelDialog extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_confirm_cancel, container, false);
         Bundle arguments = getArguments();
-        mProjectName = arguments.getString(CommonConstant.PROJECT_NAME);
+        mProjectName = arguments.getString(CommonConstant.TABLE_NAME);
         mBuildSerialNum = arguments.getString(CommonConstant.BUILD_SERIAL_NUM);
         initView(view);
         initClick();

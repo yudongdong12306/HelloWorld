@@ -28,6 +28,8 @@ import com.detect.detect.constant.CommonConstant;
 import com.detect.detect.db.FileConstant;
 import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectDataManager;
+import com.detect.detect.shared_preferences.ProjectInfo;
+import com.detect.detect.shared_preferences.ProjectNameUUIDSP;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.utils.CSVUtils;
 import com.detect.detect.utils.PicDisplayUtils;
@@ -517,9 +519,17 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
         if (TextUtils.isEmpty(mProjectName) || TextUtils.isEmpty(mBuildSerialNum)) {
             return;
         }
+        ProjectInfo projectInfo = ProjectNameUUIDSP.getInstance().getProjectInfo(mProjectName);
+        if (projectInfo == null) {
+            return;
+        }
+        String tableName = projectInfo.getUuid();
+        if (TextUtils.isEmpty(tableName)) {
+            return;
+        }
 //        String testPointPicPath = ProjectInfoSP.getInstance().getTestPointPicPath(mProjectName
 //                , mBuildSerialNum);
-        String testPointPicPath = ProjectDataManager.getInstance().getTestPointPicPath(mProjectName
+        String testPointPicPath = ProjectDataManager.getInstance().getTestPointPicPath(tableName
                 , mBuildSerialNum);
         if (TextUtils.isEmpty(testPointPicPath)) {
             return;
@@ -555,7 +565,15 @@ public class DataManagerActivity extends BaseActivity implements IProjectTestPoi
         if (fragment == null) {
             ConfirmOrCancelDialog confirmDialog = new ConfirmOrCancelDialog();
             Bundle args = new Bundle();
-            args.putString(CommonConstant.PROJECT_NAME, projectName);
+            ProjectInfo projectInfo = ProjectNameUUIDSP.getInstance().getProjectInfo(mProjectName);
+            if (projectInfo == null) {
+                return;
+            }
+            String tableName = projectInfo.getUuid();
+            if (TextUtils.isEmpty(tableName)) {
+                return;
+            }
+            args.putString(CommonConstant.TABLE_NAME, tableName);
             args.putString(CommonConstant.BUILD_SERIAL_NUM, buildSerialNum);
             confirmDialog.setArguments(args);
             confirmDialog.show(mFragTransaction, FRAGMENT_TAG_DELETE);

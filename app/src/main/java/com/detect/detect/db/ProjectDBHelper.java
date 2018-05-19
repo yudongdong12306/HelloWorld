@@ -23,7 +23,7 @@ public class ProjectDBHelper/* extends SQLiteOpenHelper*/ {
 //            ProjectMetadata.DETECT_TIME + " INTEGER NOT NULL,\n" +
 //            ProjectMetadata.FILLER_TYPE + " INTEGER NOT NULL,\n" +
 //            ProjectMetadata.INSTRUMENT_NUMBER + " TEXT NOT NULL,\n" +
-//            ProjectMetadata.PROJECT_NAME + " TEXT NOT NULL,\n" +
+//            ProjectMetadata.TABLE_NAME + " TEXT NOT NULL,\n" +
 //            ProjectMetadata.ADV_Arr + " TEXT NOT NULL,\n" +
 //            ProjectMetadata.PIC_PATH + " TEXT NOT NULL ); ";
     private static final String TAG = "ProjectDBHelper";
