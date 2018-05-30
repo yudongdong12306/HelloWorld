@@ -102,4 +102,7 @@ dependencies {
     implementation project(':tcplib')
 
     compile project(path: ':raiingdialog_library')
+    compile 'pub.devrel:easypermissions:1.1.2'
+    //高德
+    compile 'com.amap.api:location:latest.integration'
 }

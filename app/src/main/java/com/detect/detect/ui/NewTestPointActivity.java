@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.YMDPickerView;
 import com.detect.detect.R;
 import com.detect.detect.constant.SkipActivityConstant;
+import com.detect.detect.shared_preferences.CommonSP;
 import com.detect.detect.shared_preferences.Project;
 import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.ProjectInfo;
@@ -203,6 +204,10 @@ public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
 
     @Override
     public void initView() {
+        String longitude = CommonSP.getInstance().getLongitude();
+        String latitude = CommonSP.getInstance().getLatitude();
+        boolean isWrong = TextUtils.equals(longitude, "0") && TextUtils.equals(latitude, "0");
+        coordinateInfoEt.setText(isWrong ? "定位失败" : longitude.concat(" , ").concat(latitude));
         commonTitleTv.setText("新建测试点");
         //初始化
         Calendar calendar = Calendar.getInstance();

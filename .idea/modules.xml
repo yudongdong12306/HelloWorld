@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DetectProject.iml" filepath="$PROJECT_DIR$/DetectProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HelloWorld.iml" filepath="$PROJECT_DIR$/.idea/HelloWorld.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/pickerview/pickerview.iml" filepath="$PROJECT_DIR$/pickerview/pickerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/raiingdialog_library/raiingdialog_library.iml" filepath="$PROJECT_DIR$/raiingdialog_library/raiingdialog_library.iml" />

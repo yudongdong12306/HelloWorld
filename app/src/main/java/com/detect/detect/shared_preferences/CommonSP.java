@@ -10,6 +10,9 @@ public class CommonSP {
     private static final String TAG = "CommonSP";
     private static final String SHARED_NAME_COMMON_DATA = "common_data";
     private static final String SHARED_KEY_REMEMBER_CHOICE = "remember_choice";
+    //用户自己得属性
+    public static final String SHARED_KEY_LONGITUDE = "longitude";//经度
+    public static final String SHARED_KEY_LATITUDE = "latitude";//纬度
 
     /**
      * 初始化
@@ -47,5 +50,21 @@ public class CommonSP {
 
     public boolean getRememberChoice() {
         return preferences.getBoolean(SHARED_KEY_REMEMBER_CHOICE, false);
+    }
+
+
+    public void setLongitude(double longitude) {
+        preferences.edit().putString(SHARED_KEY_LONGITUDE, String.valueOf(longitude)).apply();
+    }
+
+    public void setLatitude(double latitude) {
+        preferences.edit().putString(SHARED_KEY_LATITUDE, String.valueOf(latitude)).apply();
+    }
+
+    public String getLongitude() {
+        return preferences.getString(SHARED_KEY_LONGITUDE, "0");
+    }
+    public String getLatitude() {
+        return preferences.getString(SHARED_KEY_LATITUDE, "0");
     }
 }
