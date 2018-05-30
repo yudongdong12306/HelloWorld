@@ -65,6 +65,9 @@ public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
     EditText coordinateInfoEt;
     @BindView(R.id.detect_time_et)
     EditText detectTimeEt;
+
+    @BindView(R.id.detect_person_et)
+    EditText detect_person_et;
     @BindView(R.id.take_photo_bt)
     Button takePhotoBt;
     @BindView(R.id.confirm_bt)
@@ -224,6 +227,7 @@ public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
             throw new IllegalArgumentException("projectInfo为null,请检查逻辑!");
         }
         projectInfoEt.setText(projectInfo.getProjectName());
+        detect_person_et.setText(projectInfo.getDetectPerson());
         //对详情页面数据进行初始化
         testPointInsert = new TestPoint();
         testPointInsert.setProjectName(projectInfo.getProjectName());
@@ -327,6 +331,7 @@ public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
     }
 
     private TestPoint getTestPointData() {
+        buildSerialNumEt.setText("ddd");
         String buildSerialNum = buildSerialNumEt.getText().toString().trim();
         String coordinateInfo = coordinateInfoEt.getText().toString().trim();
         String detectTime = detectTimeEt.getText().toString().trim();
@@ -346,10 +351,10 @@ public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
             ToastUtils.showToast("构件序号不能包含特殊字符");
             return null;
         }
-        if (!StringUtils.filterCharToNormal(coordinateInfo)) {
-            ToastUtils.showToast("坐标信息不能包含特殊字符");
-            return null;
-        }
+//        if (!StringUtils.filterCharToNormal(coordinateInfo)) {
+//            ToastUtils.showToast("坐标信息不能包含特殊字符");
+//            return null;
+//        }
         if (!StringUtils.filterCharToNormal(detectTime)) {
             ToastUtils.showToast("测试时间不能包含特殊字符");
             return null;

@@ -14,9 +14,8 @@
         android:background="@color/md_grey_400" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/size_60dp"
-        android:layout_gravity="bottom"
+        android:layout_width="170dp"
+        android:layout_height="@dimen/size_30dp"
         android:layout_marginTop="@dimen/size_20dp"
         android:orientation="horizontal"
         android:paddingEnd="@dimen/size_15dp"
@@ -25,6 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="@string/build_serial_num"
             android:textSize="@dimen/size_16sp" />
 
@@ -33,113 +33,131 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@null"
             android:editable="false"
-            android:gravity="start"
+            android:gravity="start|bottom"
             android:imeOptions="actionNext"
             android:singleLine="true"
             android:textColor="@color/md_gray_300"
             android:textSize="@dimen/size_16sp" />
     </LinearLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_char"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/size_15dp"
+        android:layout_marginStart="@dimen/size_15dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_60dp"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:paddingEnd="@dimen/size_15dp"
-        android:paddingStart="@dimen/size_15dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_20dp"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/s1"
-            android:textSize="@dimen/size_16sp" />
-
-        <EditText
-            android:id="@+id/s1_et"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:editable="false"
-            android:gravity="start"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:textColor="@color/md_gray_300"
-            android:textSize="@dimen/size_16sp" />
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/size_15dp"
+            android:paddingStart="@dimen/size_15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/s1"
+                android:textSize="@dimen/size_16sp" />
+
+            <EditText
+                android:id="@+id/s1_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:editable="false"
+                android:gravity="start"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:textColor="@color/md_gray_300"
+                android:textSize="@dimen/size_16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/size_15dp"
+            android:paddingStart="@dimen/size_15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/s2"
+                android:textSize="@dimen/size_16sp" />
+
+            <EditText
+                android:id="@+id/s2_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:editable="false"
+                android:gravity="start"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:textColor="@color/md_gray_300"
+                android:textSize="@dimen/size_16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/size_5dp"
+            android:paddingEnd="@dimen/size_15dp"
+            android:paddingStart="@dimen/size_15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/s3"
+                android:textSize="@dimen/size_16sp" />
+
+            <EditText
+                android:id="@+id/s3_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:editable="false"
+                android:singleLine="true"
+                android:textColor="@color/md_gray_300"
+                android:textSize="@dimen/size_16sp" />
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/size_60dp"
-        android:orientation="horizontal"
-        android:paddingEnd="@dimen/size_15dp"
-        android:paddingStart="@dimen/size_15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/s2"
-            android:textSize="@dimen/size_16sp" />
-
-        <EditText
-            android:id="@+id/s2_et"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:editable="false"
-            android:gravity="start"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:textColor="@color/md_gray_300"
-            android:textSize="@dimen/size_16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/size_60dp"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/size_5dp"
-        android:paddingEnd="@dimen/size_15dp"
-        android:paddingStart="@dimen/size_15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/s3"
-            android:textSize="@dimen/size_16sp" />
-
-        <EditText
-            android:id="@+id/s3_et"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:editable="false"
-            android:gravity="start"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:textColor="@color/md_gray_300"
-            android:textSize="@dimen/size_16sp" />
-    </LinearLayout>
 
     <TextView
         android:id="@+id/detect_state_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_20dp"
         android:layout_marginTop="@dimen/size_20dp"
         android:gravity="center"
+        android:text="@string/app_name"
         android:textSize="@dimen/size_16sp" />
-
-    <Button
-        android:id="@+id/cancel_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/size_80dp"
-        android:layout_marginTop="@dimen/size_40dp"
-        android:background="@drawable/shape_bottom_corners"
-        android:paddingEnd="@dimen/size_10dp"
-        android:paddingStart="@dimen/size_10dp"
-        android:text="@string/cancel_detect"
-        android:textColor="@color/md_gray_300"
-        android:textSize="@dimen/size_16sp" />
+    <!--<Button-->
+    <!--android:layout_marginTop="@dimen/size_20dp"-->
+    <!--android:id="@+id/cancel_bt"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:layout_marginBottom="@dimen/size_20dp"-->
+    <!--android:background="@drawable/shape_bottom_corners"-->
+    <!--android:paddingEnd="@dimen/size_10dp"-->
+    <!--android:paddingStart="@dimen/size_10dp"-->
+    <!--android:text="@string/cancel_detect"-->
+    <!--android:textColor="@color/md_gray_300"-->
+    <!--android:textSize="@dimen/size_16sp" />-->
 </LinearLayout>
