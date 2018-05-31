@@ -15,6 +15,8 @@ import com.detect.detect.constant.SkipActivityConstant;
 import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.socket.HexUtils;
+import com.detect.detect.utils.AppUtils;
+import com.detect.detect.utils.DisplayUtils;
 import com.detect.detect.utils.ToastUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -194,8 +196,8 @@ public class DetectActivity extends BaseActivity {
 //        });
 //    }
 
-    private void initChar1(){
-        mChart.setViewPortOffsets(60, 0, 0, 60);
+    private void initChar1(int[] dataArr) {
+        mChart.setViewPortOffsets(DisplayUtils.dp2px(28), 0, 0, 60);
 //        mChart.setExtraLeftOffset();
 //        mChart.setExtraRightOffset(0);
         mChart.setBackgroundColor(Color.WHITE);
@@ -231,8 +233,9 @@ public class DetectActivity extends BaseActivity {
 
         mChart.getAxisRight().setEnabled(false);
         mChart.getLegend().setEnabled(false);
-        setData();
+        setData(dataArr);
     }
+
     private void initChart() {
         mChart.setViewPortOffsets(0, 0, 0, 0);
         mChart.setBackgroundColor(Color.WHITE);
@@ -271,7 +274,7 @@ public class DetectActivity extends BaseActivity {
 
         xAxis.setAxisLineColor(Color.BLACK);//设置x轴线颜色
         xAxis.setAxisLineWidth(0.5f);//设置x轴线宽度
-        xAxis.setYOffset(mChart.getMeasuredHeight()/10f);
+        xAxis.setYOffset(mChart.getMeasuredHeight() / 10f);
 
 //        xAxis.setEnabled(true);//显示X轴
 //        xAxis.setDrawLabels(true);
@@ -298,7 +301,7 @@ public class DetectActivity extends BaseActivity {
         mChart.getAxisRight().setEnabled(false);
 
         // add data
-        setData();
+//        setData();
 
         mChart.getLegend().setEnabled(false);
 
@@ -311,13 +314,17 @@ public class DetectActivity extends BaseActivity {
         mChart.invalidate();
     }
 
-    private void setData() {
+    private void setData(int[] dataArr) {
+        if (dataArr == null || dataArr.length < 1) {
+            return;
+        }
+
         LineData chartData = mChart.getData();
         if (chartData == null) {
             chartData = new LineData();
             ArrayList<Entry> values1 = new ArrayList<>();
-            for (int i = 0; i < 100; i++) {
-                values1.add(new Entry(i, (float) (Math.random() * 1000f)));
+            for (int i = 0; i < dataArr.length; i++) {
+                values1.add(new Entry(i, dataArr[i]));
             }
             LineDataSet set1 = new LineDataSet(values1, "DataSet 1");
             getSetList(set1, 0);
@@ -328,8 +335,8 @@ public class DetectActivity extends BaseActivity {
             int dataSetCount = chartData.getDataSetCount();
             if (dataSetCount == 1) {
                 ArrayList<Entry> values1 = new ArrayList<>();
-                for (int i = 0; i < 1000; i++) {
-                    values1.add(new Entry(i, (float) (Math.random() * 1000f)));
+                for (int i = 0; i < dataArr.length; i++) {
+                    values1.add(new Entry(i, dataArr[i]));
                 }
                 LineDataSet set2 = new LineDataSet(values1, "DataSet 2");
                 getSetList(set2, 1);
@@ -384,7 +391,11 @@ public class DetectActivity extends BaseActivity {
 //                break;
             case R.id.detect_state_tv:
 //                sendCommand(confirmCommand);
-                initChar1();
+                int[] ints = new int[1000];
+                for (int i = 0; i < ints.length; i++) {
+                    ints[i] = (int) (Math.random() * 200);
+                }
+                initChar1(ints);
                 break;
 
         }
@@ -486,6 +497,8 @@ public class DetectActivity extends BaseActivity {
                     System.arraycopy(waveData.waveDataArr, 32, realData, 0, 2000);
                     int[] finalDataArr = handleRealData(realData);
                     waveDataList.add(finalDataArr);
+                    //set
+                    initChar1(finalDataArr);
                     Log.d(TAG, "onRec: 波形数据接收完毕: waveData.waveArrHasDataSize: " + 2033 + "waveData.waveDataArr[31]: " + waveData.waveDataArr[31]);
                     Log.d(TAG, "onRec: 最后获取到的波形数据为: " + Arrays.toString(finalDataArr));
                 }
