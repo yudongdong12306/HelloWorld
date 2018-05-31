@@ -194,9 +194,49 @@ public class DetectActivity extends BaseActivity {
 //        });
 //    }
 
+    private void initChar1(){
+        mChart.setViewPortOffsets(60, 0, 0, 60);
+//        mChart.setExtraLeftOffset();
+//        mChart.setExtraRightOffset(0);
+        mChart.setBackgroundColor(Color.WHITE);
+        mChart.getDescription().setEnabled(false);
+
+        // if more than 60 entries are displayed in the chart, no values will be
+        // drawn
+//        mChart.setMaxVisibleValueCount(60);
+
+        // scaling can now only be done on x- and y-axis separately
+        mChart.setPinchZoom(false);
+
+//        mChart.setDrawBarShadow(false);
+        mChart.setDrawGridBackground(false);
+
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+
+        mChart.getAxisLeft().setDrawGridLines(false);
+        // setting data
+//        mSeekBarX.setProgress(10);
+//        mSeekBarY.setProgress(100);
+
+        // add a nice and smooth animation
+//        mChart.animateY(2500);
+        YAxis y = mChart.getAxisLeft();
+//        y.setTypeface(mTfLight);
+        y.setLabelCount(15, false);
+        y.setTextColor(Color.BLACK);
+//        y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        y.setDrawGridLines(false);
+
+        mChart.getAxisRight().setEnabled(false);
+        mChart.getLegend().setEnabled(false);
+        setData();
+    }
     private void initChart() {
         mChart.setViewPortOffsets(0, 0, 0, 0);
         mChart.setBackgroundColor(Color.WHITE);
+
 
         // no description text
         mChart.getDescription().setEnabled(false);
@@ -216,19 +256,44 @@ public class DetectActivity extends BaseActivity {
 //        XAxis x = mChart.getXAxis();
 //        x.setEnabled(false);
         XAxis xAxis = mChart.getXAxis();
-        xAxis.setLabelCount(16);
-        xAxis.setTextColor(Color.BLACK);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
-        xAxis.setDrawGridLines(false);
-        xAxis.setAxisLineColor(Color.BLACK);
+        xAxis.setLabelCount(10);  //设置X轴的显示个数
+//        XAxis xAxis = mLineChart.getXAxis();       //获取x轴线
+        xAxis.setDrawAxisLine(true);//是否绘制轴线
+        xAxis.setDrawGridLines(false);//设置x轴上每个点对应的线
+//        xAxis.setDrawLabels(true);//绘制标签  指x轴上的对应数值
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);//设置x轴的显示位置
+        xAxis.setTextSize(12f);//设置文字大小
+//        xAxis.setLabelRotationAngle(-20);//设置x轴字体显示角度
+//        xAxis.setAxisMinimum(0f);//设置x轴的最小值 //`
+//        xAxis.setAxisMaximum(31f);//设置最大值 //
+
+        xAxis.setAvoidFirstLastClipping(true);//图表将避免第一个和最后一个标签条目被减掉在图表或屏幕的边缘
+
+        xAxis.setAxisLineColor(Color.BLACK);//设置x轴线颜色
+        xAxis.setAxisLineWidth(0.5f);//设置x轴线宽度
+        xAxis.setYOffset(mChart.getMeasuredHeight()/10f);
+
+//        xAxis.setEnabled(true);//显示X轴
+//        xAxis.setDrawLabels(true);
+//        xAxis.setLabelCount(16);
+//        xAxis.setTextColor(Color.BLACK);
+//
+//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//        xAxis.setDrawGridLines(false);
+//        xAxis.setDrawAxisLine(true);//是否绘制轴线
+//        xAxis.setAxisLineColor(Color.BLACK);
+
+
+//        mChart.setDrawBorders(true);//是否禁止绘制图表边框的线
+//        mChart.setBorderColor(Color.BLACK); //设置 chart 边框线的颜色。
+//        mChart.setBorderWidth(3f); //设置 chart 边界线的宽度，单位 dp。
 
         YAxis y = mChart.getAxisLeft();
 //        y.setTypeface(mTfLight);
-        y.setLabelCount(6, false);
+        y.setLabelCount(10, false);
         y.setTextColor(Color.BLACK);
-        y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+//        y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         y.setDrawGridLines(false);
-        y.setAxisLineColor(Color.BLACK);
 
         mChart.getAxisRight().setEnabled(false);
 
@@ -251,7 +316,7 @@ public class DetectActivity extends BaseActivity {
         if (chartData == null) {
             chartData = new LineData();
             ArrayList<Entry> values1 = new ArrayList<>();
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 100; i++) {
                 values1.add(new Entry(i, (float) (Math.random() * 1000f)));
             }
             LineDataSet set1 = new LineDataSet(values1, "DataSet 1");
@@ -294,7 +359,7 @@ public class DetectActivity extends BaseActivity {
         set.setDrawCircles(false);
         set.setLineWidth(1.8f);
         set.setCircleRadius(4f);
-        set.setCircleColor(Color.WHITE);
+        set.setCircleColor(Color.BLACK);
         set.setHighLightColor(Color.rgb(244, 117, 117));
         if (index == 0) {
             set.setColor(Color.RED);
@@ -303,7 +368,7 @@ public class DetectActivity extends BaseActivity {
         } else if (index == 2) {
             set.setColor(Color.YELLOW);
         }
-        set.setFillColor(Color.WHITE);
+        set.setFillColor(Color.BLACK);
         set.setFillAlpha(100);
         set.setDrawHorizontalHighlightIndicator(false);
     }
@@ -319,7 +384,7 @@ public class DetectActivity extends BaseActivity {
 //                break;
             case R.id.detect_state_tv:
 //                sendCommand(confirmCommand);
-                initChart();
+                initChar1();
                 break;
 
         }
