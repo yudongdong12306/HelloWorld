@@ -331,7 +331,6 @@ public class NewTestPointActivity extends BaseActivity implements ITakePhoto {
     }
 
     private TestPoint getTestPointData() {
-        buildSerialNumEt.setText("ddd");
         String buildSerialNum = buildSerialNumEt.getText().toString().trim();
         String coordinateInfo = coordinateInfoEt.getText().toString().trim();
         String detectTime = detectTimeEt.getText().toString().trim();

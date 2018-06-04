@@ -35,6 +35,7 @@
     <string name="s3">s3:</string>
     <string name="state_start">开始</string>
     <string name="cancel_detect">取消测试</string>
+    <string name="print_data">打印</string>
     <string name="settings_wifi">WIFI设置: </string>
     <string name="settings_bluetooth">蓝牙设置: </string>
     <string name="settings_params">参数设置: </string>
@@ -51,5 +52,26 @@
     <string name="out_put_data">导出</string>
     <string name="cancel">取消</string>
     <string name="remind_delete_title">是否删除该测试点</string>
+    <string name="String_judge1">禁止开钱箱</string>
+    <string name="String_judge2">打印前开钱箱</string>
+    <string name="String_judge3">打印后开钱箱</string>
+    <string name="String_judge4">禁止蜂鸣器</string>
+    <string name="String_judge5">打印前蜂鸣器响</string>
+    <string name="String_judge6">打印后蜂鸣器响</string>
+    <string name="printerName">设备名称:未连接</string>
+    <string name="printerAddress">设备地址:未连接</string>
+    <string name="settingactivitty_toast_bluetooth_set_tspl_successful">蓝牙方式TSPL指令设置成功</string>
+    <string name="settingactivity_toast_usb_set_tspl_succefful">USB方式TSPL指令设置成功</string>
+    <string name="conn_failed">连接失败</string>
+    <string name="conn_closed">连接关闭</string>
+    <string name="conn_no">没有可连接的设备</string>
+    <string name="has_paired">已配对</string>
+    <string name="not_paired">未配对</string>
+    <string-array name="interface_type">
+        <item>Bluetooth</item>
+        <item>USB</item>
+        <item>Wifi</item>
+        <item>Serial port</item>
+    </string-array>
 
 </resources>

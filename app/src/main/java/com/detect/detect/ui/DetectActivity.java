@@ -1,35 +1,67 @@
 package com.detect.detect.ui;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.detect.detect.BuildConfig;
 import com.detect.detect.R;
+import com.detect.detect.constant.GlobalContants;
 import com.detect.detect.constant.SkipActivityConstant;
+import com.detect.detect.global.GlobalApplication;
 import com.detect.detect.shared_preferences.ProjectDataManager;
 import com.detect.detect.shared_preferences.TestPoint;
 import com.detect.detect.socket.HexUtils;
 import com.detect.detect.utils.AppUtils;
 import com.detect.detect.utils.DisplayUtils;
+import com.detect.detect.utils.PrefUtils;
 import com.detect.detect.utils.ToastUtils;
+import com.detect.detect.utils.UIUtils;
+import com.detect.detect.widgets.DrawView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.printer.sdk.CanvasPrint;
+import com.printer.sdk.FontProperty;
+import com.printer.sdk.PrinterConstants;
+import com.printer.sdk.PrinterInstance;
+import com.printer.sdk.exception.ParameterErrorException;
+import com.printer.sdk.exception.PrinterPortNullException;
+import com.printer.sdk.exception.WriteException;
 import com.tjstudy.tcplib.RequestCallback;
 import com.tjstudy.tcplib.ResponseCallback;
 import com.tjstudy.tcplib.TCPClient;
 import com.tjstudy.tcplib.utils.DigitalUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Timer;
@@ -44,6 +76,11 @@ import butterknife.OnClick;
  */
 
 public class DetectActivity extends BaseActivity {
+    //todo 测试模式
+    private boolean isCanPrint = true;
+    private final static int SCANNIN_GREQUEST_CODE = 2;
+    public static final int CONNECT_DEVICE = 1;
+    public static final int ENABLE_BT = 3;
     private static final String TAG = "DetectActivity";
 
     @BindView(R.id.common_back_ll)
@@ -58,6 +95,9 @@ public class DetectActivity extends BaseActivity {
     EditText detectDataS1Et;
     @BindView(R.id.detect_state_tv)
     TextView detectStateTv;
+
+    @BindView(R.id.ddd)
+    ImageView ddddImage;
     //    @BindView(R.id.rr_2)
 //    LinearLayout rr2;
     @BindView(R.id.s2_et)
@@ -66,6 +106,11 @@ public class DetectActivity extends BaseActivity {
 //    LinearLayout rr3;
     @BindView(R.id.s3_et)
     EditText detectDataS3Et;
+    @BindView(R.id.draw_view)
+    DrawView drawView;
+
+    @BindView(R.id.print_data_bt)
+    Button print_data_bt;
     //    @BindView(R.id.rr_4)
 //    LinearLayout rr4;
 //    @BindView(R.id.cancel_bt)
@@ -77,14 +122,18 @@ public class DetectActivity extends BaseActivity {
     private TCPClient tcpClient;
     private byte[] heartCommand, confirmCommand, startCommand;
     private TestPoint mTestPoint;
-    private LineChart mChart;
-    private LiuHandler handler;
-    private ExecutorService service = Executors.newSingleThreadExecutor();
-    private Timer timer;
-    private LineData data;
+    private BluetoothAdapter mBtAdapter;
+    private String devicesAddress;
+    private String devicesName;
+    private BluetoothDevice mDevice;
+    private PrinterInstance myPrinter;
+    private boolean isConnected;
+    private ProgressDialog dialog;
 
+    //    private LineChart mChart;
     @Override
     protected void initData() {
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         initCommond();
         initNet();
         sendCommand(startCommand);
@@ -137,23 +186,14 @@ public class DetectActivity extends BaseActivity {
 
     @Override
     public void initView() {
-//        initHandler();
-//        timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                int[] ints = new int[10];
-//                for (int i = 0; i < ints.length; i++) {
-//                    ints[i] = (int) (Math.random() * 2000);
-//                }
-//                waveDataList.add(ints);
-//                if (waveDataList.size() >= 3) {
-//                    timer.cancel();
-//                }
-//                setData1();
-//            }
-//        }, 1000);
         commonTitleTv.setText("检测");
+        // 初始化对话框
+        dialog = new ProgressDialog(this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setTitle("正在连接");
+        dialog.setMessage("请稍等");
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(false);
         ToastUtils.showToast("将开始三次撞击测试");
         Intent intent = getIntent();
         if (intent != null) {
@@ -162,225 +202,13 @@ public class DetectActivity extends BaseActivity {
                 buildSerialNumEt.setText(mTestPoint.getBuildSerialNum());
             }
         }
-        mChart = findViewById(R.id.line_char);
+//        mChart = findViewById(R.id.line_char);
 //        initChart();
 //        handler.sendEmptyMessage(0);
     }
 
-//    private void initHandler() {
-//        handler = new LiuHandler(this, new IHandleMessage() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                service.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        int[] ints = new int[1000];
-//                        for (int i = 0; i < ints.length; i++) {
-//                            ints[i] = (int) (Math.random() * 2000);
-//                        }
-//                        waveDataList.add(ints);
-//                        setData1();
-//                        if (waveDataList.size() < 3) {
-//                            handler.sendEmptyMessageDelayed(0, 3000);
-//                        }
-////                    DetectActivity.this.runOnUiThread(new Runnable() {
-////                        @Override
-////                        public void run() {
-////
-////                        }
-////                    });
-//                    }
-//                });
-//
-//            }
-//        });
-//    }
 
-    private void initChar1(int[] dataArr) {
-        mChart.setViewPortOffsets(DisplayUtils.dp2px(28), 0, 0, 60);
-//        mChart.setExtraLeftOffset();
-//        mChart.setExtraRightOffset(0);
-        mChart.setBackgroundColor(Color.WHITE);
-        mChart.getDescription().setEnabled(false);
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
-//        mChart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-
-//        mChart.setDrawBarShadow(false);
-        mChart.setDrawGridBackground(false);
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-
-        mChart.getAxisLeft().setDrawGridLines(false);
-        // setting data
-//        mSeekBarX.setProgress(10);
-//        mSeekBarY.setProgress(100);
-
-        // add a nice and smooth animation
-//        mChart.animateY(2500);
-        YAxis y = mChart.getAxisLeft();
-//        y.setTypeface(mTfLight);
-        y.setLabelCount(15, false);
-        y.setTextColor(Color.BLACK);
-//        y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        y.setDrawGridLines(false);
-
-        mChart.getAxisRight().setEnabled(false);
-        mChart.getLegend().setEnabled(false);
-        setData(dataArr);
-    }
-
-    private void initChart() {
-        mChart.setViewPortOffsets(0, 0, 0, 0);
-        mChart.setBackgroundColor(Color.WHITE);
-
-
-        // no description text
-        mChart.getDescription().setEnabled(false);
-
-        // enable touch gestures
-//        mChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-//        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(false);
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-
-        mChart.setDrawGridBackground(false);
-        mChart.setMaxHighlightDistance(300);
-//        XAxis x = mChart.getXAxis();
-//        x.setEnabled(false);
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setLabelCount(10);  //设置X轴的显示个数
-//        XAxis xAxis = mLineChart.getXAxis();       //获取x轴线
-        xAxis.setDrawAxisLine(true);//是否绘制轴线
-        xAxis.setDrawGridLines(false);//设置x轴上每个点对应的线
-//        xAxis.setDrawLabels(true);//绘制标签  指x轴上的对应数值
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);//设置x轴的显示位置
-        xAxis.setTextSize(12f);//设置文字大小
-//        xAxis.setLabelRotationAngle(-20);//设置x轴字体显示角度
-//        xAxis.setAxisMinimum(0f);//设置x轴的最小值 //`
-//        xAxis.setAxisMaximum(31f);//设置最大值 //
-
-        xAxis.setAvoidFirstLastClipping(true);//图表将避免第一个和最后一个标签条目被减掉在图表或屏幕的边缘
-
-        xAxis.setAxisLineColor(Color.BLACK);//设置x轴线颜色
-        xAxis.setAxisLineWidth(0.5f);//设置x轴线宽度
-        xAxis.setYOffset(mChart.getMeasuredHeight() / 10f);
-
-//        xAxis.setEnabled(true);//显示X轴
-//        xAxis.setDrawLabels(true);
-//        xAxis.setLabelCount(16);
-//        xAxis.setTextColor(Color.BLACK);
-//
-//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//        xAxis.setDrawGridLines(false);
-//        xAxis.setDrawAxisLine(true);//是否绘制轴线
-//        xAxis.setAxisLineColor(Color.BLACK);
-
-
-//        mChart.setDrawBorders(true);//是否禁止绘制图表边框的线
-//        mChart.setBorderColor(Color.BLACK); //设置 chart 边框线的颜色。
-//        mChart.setBorderWidth(3f); //设置 chart 边界线的宽度，单位 dp。
-
-        YAxis y = mChart.getAxisLeft();
-//        y.setTypeface(mTfLight);
-        y.setLabelCount(10, false);
-        y.setTextColor(Color.BLACK);
-//        y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        y.setDrawGridLines(false);
-
-        mChart.getAxisRight().setEnabled(false);
-
-        // add data
-//        setData();
-
-        mChart.getLegend().setEnabled(false);
-
-//        mChart.animateXY(2000, 2000);
-        mChart.setVisibleXRange(0.0f, 1000f);
-
-//        for (IDataSet set : mChart.getData().getDataSets())
-//            set.setDrawValues(!set.isDrawValuesEnabled());
-        // dont forget to refresh the drawing
-        mChart.invalidate();
-    }
-
-    private void setData(int[] dataArr) {
-        if (dataArr == null || dataArr.length < 1) {
-            return;
-        }
-
-        LineData chartData = mChart.getData();
-        if (chartData == null) {
-            chartData = new LineData();
-            ArrayList<Entry> values1 = new ArrayList<>();
-            for (int i = 0; i < dataArr.length; i++) {
-                values1.add(new Entry(i, dataArr[i]));
-            }
-            LineDataSet set1 = new LineDataSet(values1, "DataSet 1");
-            getSetList(set1, 0);
-            chartData.addDataSet(set1);
-            mChart.setData(chartData);
-            mChart.invalidate();
-        } else {
-            int dataSetCount = chartData.getDataSetCount();
-            if (dataSetCount == 1) {
-                ArrayList<Entry> values1 = new ArrayList<>();
-                for (int i = 0; i < dataArr.length; i++) {
-                    values1.add(new Entry(i, dataArr[i]));
-                }
-                LineDataSet set2 = new LineDataSet(values1, "DataSet 2");
-                getSetList(set2, 1);
-                chartData.addDataSet(set2);
-                mChart.getData().notifyDataChanged();
-                mChart.notifyDataSetChanged();
-                mChart.invalidate();
-            } else if (dataSetCount == 2) {
-                ArrayList<Entry> values1 = new ArrayList<>();
-                for (int i = 0; i < 1000; i++) {
-                    values1.add(new Entry(i, (float) (Math.random() * 1000f)));
-                }
-                LineDataSet set3 = new LineDataSet(values1, "DataSet 3");
-                getSetList(set3, 2);
-                chartData.addDataSet(set3);
-                mChart.getData().notifyDataChanged();
-                mChart.notifyDataSetChanged();
-                mChart.invalidate();
-            }
-        }
-    }
-
-    private void getSetList(LineDataSet set, int index) {
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        set.setCubicIntensity(0.2f);
-        //set1.setDrawFilled(true);
-        set.setDrawCircles(false);
-        set.setLineWidth(1.8f);
-        set.setCircleRadius(4f);
-        set.setCircleColor(Color.BLACK);
-        set.setHighLightColor(Color.rgb(244, 117, 117));
-        if (index == 0) {
-            set.setColor(Color.RED);
-        } else if (index == 1) {
-            set.setColor(Color.BLUE);
-        } else if (index == 2) {
-            set.setColor(Color.YELLOW);
-        }
-        set.setFillColor(Color.BLACK);
-        set.setFillAlpha(100);
-        set.setDrawHorizontalHighlightIndicator(false);
-    }
-
-    @OnClick({R.id.common_back_ll, R.id.detect_state_tv})
+    @OnClick({R.id.common_back_ll, R.id.detect_state_tv, R.id.print_data_bt})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.common_back_ll:
@@ -395,10 +223,45 @@ public class DetectActivity extends BaseActivity {
                 for (int i = 0; i < ints.length; i++) {
                     ints[i] = (int) (Math.random() * 200);
                 }
-                initChar1(ints);
+                drawView.viewSaveToImage();
+//                initChar1(ints);
+                break;
+            case R.id.print_data_bt:
+                if (!isCanPrint) {
+                    ToastUtils.showToast("测试尚未完成,请稍后打印");
+                    return;
+                }
+                printData();
                 break;
 
         }
+    }
+
+    private void printData() {
+        if (!(mBtAdapter == null)) {
+            if (isConnected) {
+                printTheData(myPrinter);
+                return;
+            }
+            // 判断设备蓝牙功能是否打开
+            if (!mBtAdapter.isEnabled()) {
+                // 打开蓝牙功能
+                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableIntent, ENABLE_BT);
+            } else {
+                // mDevice
+                devicesAddress = PrefUtils.getString(this, GlobalContants.DEVICEADDRESS, "");
+                if (devicesAddress == null || devicesAddress.length() <= 0) {
+                    Intent intent = new Intent(DetectActivity.this, SearchDeviceActivity.class);
+                    startActivityForResult(intent, CONNECT_DEVICE);
+//                    Toast.makeText(SettingActivity.this, "您是第一次启动程序，请选择重新搜索连接！",
+//                            Toast.LENGTH_SHORT).show();
+                } else {
+                    connect2BlueToothdevice();
+                }
+            }
+        }
+
     }
 
     private void handlerError(Throwable throwable) {
@@ -442,11 +305,12 @@ public class DetectActivity extends BaseActivity {
                 }
                 Log.d(TAG, "onRec: 返回的结束部分数据为: " + dataEndStr);
                 if (waveDataList.size() >= 3) {
+                    isCanPrint = true;
                     //全部测试完成
                     Log.d(TAG, "onRec: 全部波形数据接收完成");
-                    Intent intent = new Intent(DetectActivity.this, DetectFinishedActivity.class);
-                    intent.putExtra("WAVE_DATA", waveDataList);
-                    startActivity(intent);
+//                    Intent intent = new Intent(DetectActivity.this, DetectFinishedActivity.class);
+//                    intent.putExtra("WAVE_DATA", waveDataList);
+//                    startActivity(intent);
                     ArrayList<com.detect.detect.db.WaveData> waveDataArr = new ArrayList<>();
 
                     for (int[] ints : waveDataList) {
@@ -467,7 +331,7 @@ public class DetectActivity extends BaseActivity {
                         mTestPoint.setSubsidence(str1.trim().concat("_").concat(str2.trim()).concat("_").concat(str3.trim()));
                         ProjectDataManager.getInstance().insertTestPoint(mTestPoint.getProjectUUID(), mTestPoint);
                         //成功跳转后销毁本界面
-                        finish();
+//                        finish();
                     } else {
                         detectStateTv.setText("获取沉陷值失败,请重试");
                     }
@@ -498,7 +362,8 @@ public class DetectActivity extends BaseActivity {
                     int[] finalDataArr = handleRealData(realData);
                     waveDataList.add(finalDataArr);
                     //set
-                    initChar1(finalDataArr);
+//                    initChar1(finalDataArr);
+                    drawView.setData(finalDataArr);
                     Log.d(TAG, "onRec: 波形数据接收完毕: waveData.waveArrHasDataSize: " + 2033 + "waveData.waveDataArr[31]: " + waveData.waveDataArr[31]);
                     Log.d(TAG, "onRec: 最后获取到的波形数据为: " + Arrays.toString(finalDataArr));
                 }
@@ -568,5 +433,414 @@ public class DetectActivity extends BaseActivity {
             finalDataArr[i / 2] = DigitalUtils.byte2Short(temp);
         }
         return finalDataArr;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONNECT_DEVICE) {// 连接设备
+            devicesAddress = data.getExtras().getString(SearchDeviceActivity.EXTRA_DEVICE_ADDRESS);
+            devicesName = data.getExtras().getString(SearchDeviceActivity.EXTRA_DEVICE_NAME);
+            connect2BlueToothdevice();
+        }
+    }
+
+    private void connect2BlueToothdevice() {
+        // dialog.show();
+        mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(devicesAddress);
+        devicesName = mDevice.getName();
+        myPrinter = PrinterInstance.getPrinterInstance(mDevice, mHandler);
+        if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {// 未绑定
+            // IntentFilter boundFilter = new IntentFilter();
+            // boundFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            // mContext.registerReceiver(boundDeviceReceiver, boundFilter);
+            PairOrConnect(true);
+        } else {
+            PairOrConnect(false);
+        }
+    }
+
+    private BroadcastReceiver boundDeviceReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (!mDevice.equals(device)) {
+                    return;
+                }
+                switch (device.getBondState()) {
+                    case BluetoothDevice.BOND_BONDING:
+                        Log.i(TAG, "bounding......");
+                        break;
+                    case BluetoothDevice.BOND_BONDED:
+                        Log.i(TAG, "bound success");
+                        // if bound success, auto init BluetoothPrinter. open
+                        // connect.
+                        unregisterReceiver(boundDeviceReceiver);
+                        dialog.show();
+                        // 配对完成开始连接
+                        if (myPrinter != null) {
+                            new connectThread().start();
+                        }
+                        break;
+                    case BluetoothDevice.BOND_NONE:
+                        Log.i(TAG, "执行顺序----4");
+                        unregisterReceiver(boundDeviceReceiver);
+                        Log.i(TAG, "bound cancel");
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        }
+    };
+
+    private void PairOrConnect(boolean pair) {
+        if (pair) {
+            IntentFilter boundFilter = new IntentFilter();
+            boundFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            registerReceiver(boundDeviceReceiver, boundFilter);
+            boolean success = false;
+            try {
+                // // 自动设置pin值
+                // Method autoBondMethod =
+                // BluetoothDevice.class.getMethod("setPin", new Class[] {
+                // byte[].class });
+                // boolean result = (Boolean) autoBondMethod.invoke(mDevice, new
+                // Object[] { "1234".getBytes() });
+                // Log.i(TAG, "setPin is success? : " + result);
+
+                // 开始配对 这段代码打开输入配对密码的对话框
+                Method createBondMethod = BluetoothDevice.class.getMethod("createBond");
+                success = (Boolean) createBondMethod.invoke(mDevice);
+                // // 取消用户输入
+                // Method cancelInputMethod =
+                // BluetoothDevice.class.getMethod("cancelPairingUserInput");
+                // boolean cancleResult = (Boolean)
+                // cancelInputMethod.invoke(mDevice);
+                // Log.i(TAG, "cancle is success? : " + cancleResult);
+
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            Log.i(TAG, "createBond is success? : " + success);
+        } else {
+            new connectThread().start();
+
+        }
+    }
+
+    private class connectThread extends Thread {
+        @Override
+        public void run() {
+            if (myPrinter != null) {
+                isConnected = myPrinter.openConnection();
+            }
+        }
+    }
+
+    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
+
+                if (device != null && myPrinter != null && isConnected && device.equals(mDevice)) {
+                    myPrinter.closeConnection();
+                    mHandler.obtainMessage(PrinterConstants.Connect.CLOSED).sendToTarget();
+                }
+            }
+
+        }
+    };
+
+    /**
+     * 设置TSPL指令打印机
+     *
+     * @param mPrinter
+     * @return 是否设置成功
+     */
+    private boolean setPrinterTSPL(final PrinterInstance mPrinter) {
+        boolean isSettingSuccess = false;
+        String gapWidth = "";
+        String gapOffset = "";
+        String printSpeed = "";
+        String printLevel = "";
+        String printLabelOffset = "";
+        String printNumbers = "";
+        String printLeftMargin = "";
+        String printTopMargin = "";
+        for (int i = 0; i < 1; i++) {
+            try {
+                // 处于TSPL指令模式下
+//                if (llTSPL.getVisibility() == View.VISIBLE) {
+                // 设置标签间的缝隙大小
+                if (gapWidth == null || gapWidth.equals("") || gapOffset == null || gapOffset.equals("")) {
+//                    Toast.makeText(GlobalApplication.getContext(), "间隙宽度和间隙偏移量不能为空",  Toast.LENGTH_SHORT).show();
+//                    break;
+                } else {
+                    int gapWidthTSPL = Integer.parseInt(gapWidth);
+                    int gapOffsetTSPL = Integer.parseInt(gapOffset);
+                    mPrinter.setGAPTSPL(gapWidthTSPL, gapOffsetTSPL);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "gapwidthtspl", gapWidthTSPL);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "gapoffsettspl", gapOffsetTSPL);
+                }
+                // 设置打印机打印速度
+                if (printSpeed == null || printSpeed.equals("")) {
+//                    Toast.makeText(GlobalApplication.getContext(), "打印机打印速度不能设置为空",  Toast.LENGTH_SHORT).show();
+//                    break;
+                } else {
+                    int printSpeedTSPL = Integer.parseInt(printSpeed);
+                    mPrinter.setPrinterTSPL(PrinterConstants.CommandTSPL.SPEED, printSpeedTSPL);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "printspeed", printSpeedTSPL);
+                }
+                // 设置打印机打印浓度
+                if (printLevel == null || printLevel.equals("")) {
+//                    Toast.makeText(GlobalApplication.getContext(), "打印机打印浓度不能设置为空", Toast.LENGTH_SHORT).show();
+//                    break;
+                } else {
+                    int printLevelSpeedTSPL = Integer.parseInt(printLevel);
+                    mPrinter.setPrinterTSPL(PrinterConstants.CommandTSPL.DENSITY, printLevelSpeedTSPL);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "printlevel", printLevelSpeedTSPL);
+                }
+                // 设置标签偏移量
+                if (printLabelOffset == null || printLabelOffset.equals("")) {
+//                    Toast.makeText(GlobalApplication.getContext(), "标签偏移量不能设置为空", Toast.LENGTH_SHORT).show();
+//                    break;
+                } else {
+                    // 标签偏移量（点数）
+                    int labelOffsetTSPL = Integer.parseInt(printLabelOffset) * 8;
+                    mPrinter.setPrinterTSPL(PrinterConstants.CommandTSPL.SHIFT, labelOffsetTSPL);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "labeloffsettspl", labelOffsetTSPL / 8);
+
+                }
+                // 设置打印机打印份数
+                if (printNumbers == null || printNumbers.equals("")) {
+//                    Toast.makeText(GlobalApplication.getContext(), "打印机打印数量不能设置为空或者为负数", Toast.LENGTH_SHORT).show();
+//                    break;
+                } else {
+                    int printNumbersTSPL = Integer.parseInt(printNumbers);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "printnumbers", printNumbersTSPL);
+                }
+
+                // 设置打印内容初始位置
+                if (printLeftMargin == null || printLeftMargin.equals("") || printTopMargin == null
+                        || printLeftMargin.equals("")) {
+//                    Toast.makeText(GlobalApplication.getContext(), "标签偏移量不能为空或者为负数", Toast.LENGTH_SHORT).show();
+//                    break;
+                } else {
+                    int marginLeft = Integer.parseInt(printLeftMargin);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "leftmargin", marginLeft);
+                    int marginTop = Integer.parseInt(printTopMargin);
+                    PrefUtils.setInt(GlobalApplication.getContext(), "topmargin", marginTop);
+
+                }
+
+                // // 撕纸设置
+                // if (tearSet == null || tearSet.equals("")) {
+                // break;
+                // } else if (tearSet.equals("撕纸")) {
+                // mPrinter.setPrinterTSPL(CommandTSPL.TEAR, 1);
+                // mPrinter.setPrinterTSPL(CommandTSPL.PEEL, 0);
+                // PrefUtils.setInt(mContext, "tearAndpeel", 0);
+                // } else if (tearSet.equals("剥纸")) {
+                // mPrinter.setPrinterTSPL(CommandTSPL.PEEL, 1);
+                // PrefUtils.setInt(mContext, "tearAndpeel", 1);
+                // } else if (tearSet.equals("关")) {
+                // mPrinter.setPrinterTSPL(CommandTSPL.TEAR, 0);
+                // mPrinter.setPrinterTSPL(CommandTSPL.PEEL, 0);
+                // PrefUtils.setInt(mContext, "tearAndpeel", 2);
+//                //
+//                // }
+//                // 开关钱箱设置
+//                if (OpenCashSet == null || OpenCashSet.equals("")) {
+//                    break;
+//                } else if (OpenCashSet.equals(R.string.String_judge1)) {
+//                    PrefUtils.setInt(mContext, "isOpenCash", 0);
+//                } else if (OpenCashSet.equals(R.string.String_judge2)) {
+//                    PrefUtils.setInt(mContext, "isOpenCash", 1);
+//                } else if (OpenCashSet.equals(R.string.String_judge3)) {
+//                    PrefUtils.setInt(mContext, "isOpenCash", 2);
+//                }
+//                // 开关蜂鸣器设置
+//                if (IsBeepSet == null || IsBeepSet.equals("")) {
+//                    break;
+//                } else if (IsBeepSet.equals(R.string.String_judge4)) {
+//                    PrefUtils.setInt(mContext, "isBeep", 2);
+//                } else if (IsBeepSet.equals(R.string.String_judge5)) {
+//                    PrefUtils.setInt(mContext, "isBeep", 1);
+//                } else if (IsBeepSet.equals(R.string.String_judge6)) {
+//                    PrefUtils.setInt(mContext, "isBeep", 0);
+//
+//                }
+
+                isSettingSuccess = true;
+
+//                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } catch (WriteException e) {
+                Toast.makeText(GlobalApplication.getContext(), "向打印机写入数据异常", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            } catch (PrinterPortNullException e) {
+                Toast.makeText(GlobalApplication.getContext(), "打印机为空异常", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            } catch (ParameterErrorException e) {
+                Toast.makeText(GlobalApplication.getContext(), "传入参数异常", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            } catch (Exception e) {
+                Toast.makeText(GlobalApplication.getContext(), "其他未知异常", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }
+
+        return isSettingSuccess;
+    }
+
+    private IntentFilter bluDisconnectFilter;
+    // 用于接受连接状态消息的 Handler
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @SuppressLint("ShowToast")
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case PrinterConstants.Connect.SUCCESS:
+                    ToastUtils.showToast("打印中,请稍等");
+                    isConnected = true;
+                    GlobalContants.ISCONNECTED = isConnected;
+                    GlobalContants.DEVICENAME = devicesName;
+                    PrefUtils.setString(DetectActivity.this, GlobalContants.DEVICEADDRESS, devicesAddress);
+                    bluDisconnectFilter = new IntentFilter();
+                    bluDisconnectFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+                    registerReceiver(myReceiver, bluDisconnectFilter);
+//                    hasRegDisconnectReceiver = true;
+                    // TOTO 暂时将TSPL指令设置参数的设置放在这
+                    if (setPrinterTSPL(myPrinter)) {
+//                        Toast.makeText(DetectActivity.this, R.string.settingactivitty_toast_bluetooth_set_tspl_successful, Toast.LENGTH_SHORT)
+//                                .show();
+                    }
+                    printTheData(myPrinter);
+                    break;
+                case PrinterConstants.Connect.FAILED:
+                    isConnected = false;
+                    Toast.makeText(DetectActivity.this, "连接失败,稍后重试", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "连接失败,稍后重试");
+                    break;
+                case PrinterConstants.Connect.CLOSED:
+                    isConnected = false;
+                    GlobalContants.ISCONNECTED = isConnected;
+                    GlobalContants.DEVICENAME = devicesName;
+                    Toast.makeText(DetectActivity.this, "连接关闭,稍后重试", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "连接关闭,稍后重试");
+                    break;
+                case PrinterConstants.Connect.NODEVICE:
+                    isConnected = false;
+                    Toast.makeText(DetectActivity.this, R.string.conn_no, Toast.LENGTH_SHORT).show();
+                    break;
+                case 0:
+                    Toast.makeText(DetectActivity.this, "打印机通信正常!", Toast.LENGTH_SHORT).show();
+                    break;
+                case -1:
+                    Toast.makeText(DetectActivity.this, "打印机通信异常常，请检查蓝牙连接!", Toast.LENGTH_SHORT).show();
+//                    vibrator();
+                    break;
+                case -2:
+                    Toast.makeText(DetectActivity.this, "打印机缺纸!", Toast.LENGTH_SHORT).show();
+//                    vibrator();
+                    break;
+                case -3:
+                    Toast.makeText(DetectActivity.this, "打印机开盖!", Toast.LENGTH_SHORT).show();
+//                    vibrator();
+                    break;
+                // case 10:
+                // if (setPrinterTSPL(myPrinter)) {
+                // Toast.makeText(GlobalApplication.getContext(), "蓝牙连接设置TSPL指令成功", 0).show();
+                // }
+                default:
+                    break;
+            }
+
+            updateButtonState(isConnected);
+
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+
+    };
+
+    private void printTheData(final PrinterInstance myPrinter) {
+        final String picPath = drawView.viewSaveToImage();
+        String space = "\r\n" + "\r\n";
+//        String subsidence = mTestPoint.getSubsidence();
+        String str1 = detectDataS1Et.getText().toString().trim();
+        String str2 = detectDataS2Et.getText().toString().trim();
+        String str3 = detectDataS3Et.getText().toString().trim();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        final String text = space + "仪器编号" + space + mTestPoint.getInstrumentNumber()
+                + space + "检测人" + space + mTestPoint.getDetectPerson() + space
+                + "工程名称/测试点" + space + mTestPoint.getProjectName()
+                + space + "施工单位" + space
+                + mTestPoint.getConstructionOrganization() + space
+                + "填料类型" + space + mTestPoint.getFillerType() + space +
+                "测试时间" + space + format.format(mTestPoint.getDetectTime()) + space
+                + "测试序号" + space + mTestPoint.getBuildSerialNum() + space +
+                "S1=" + str1 + space +
+                "S2=" + str2 + space +
+                "S3=" + str3 + space;
+        new Thread(new Runnable() {
+            public void run() {
+                myPrinter.printText(text + "\r\n");
+                Bitmap bitmap = null;
+                if (!TextUtils.isEmpty(picPath)) {
+                    bitmap = resizeBitmap(BitmapFactory.decodeFile(picPath));
+                    //创建画布
+                    CanvasPrint cp = new CanvasPrint();
+                    //初始化画布，POS88系列用T9参数即可
+                    cp.init(PrinterConstants.PrinterType.T9);
+                    //将二维码画到画布上（0,0）处坐标
+                    cp.drawImage(0, 0, bitmap);
+                    //将画布保存成图片并进行打印
+                    myPrinter.printImage(cp.getCanvasImage(), PrinterConstants.PAlign.NONE, 0, false);
+                    String space1 = "\r\n" + "\r\n";
+                    myPrinter.printText(space1);
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 使用Matrix将Bitmap压缩到指定大小
+     *
+     * @param bitmap
+     * @return
+     */
+    public static Bitmap resizeBitmap(Bitmap bitmap) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        Matrix matrix = new Matrix();
+        matrix.postScale(0.35f, 0.35f);
+
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width,
+                height, matrix, true);
+        return resizedBitmap;
+    }
+
+    private void updateButtonState(boolean isConnected) {
+        if (isConnected) {
+        } else {
+
+        }
+        PrefUtils.setBoolean(DetectActivity.this, GlobalContants.CONNECTSTATE, isConnected);
     }
 }
