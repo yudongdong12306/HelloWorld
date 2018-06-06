@@ -219,11 +219,6 @@ public class DetectActivity extends BaseActivity {
 //                break;
             case R.id.detect_state_tv:
 //                sendCommand(confirmCommand);
-                int[] ints = new int[1000];
-                for (int i = 0; i < ints.length; i++) {
-                    ints[i] = (int) (Math.random() * 200);
-                }
-                drawView.viewSaveToImage();
 //                initChar1(ints);
                 break;
             case R.id.print_data_bt:
@@ -733,6 +728,7 @@ public class DetectActivity extends BaseActivity {
                     break;
                 case PrinterConstants.Connect.FAILED:
                     isConnected = false;
+                    GlobalContants.ISCONNECTED = isConnected;
                     Toast.makeText(DetectActivity.this, "连接失败,稍后重试", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "连接失败,稍后重试");
                     break;
@@ -745,6 +741,7 @@ public class DetectActivity extends BaseActivity {
                     break;
                 case PrinterConstants.Connect.NODEVICE:
                     isConnected = false;
+                    GlobalContants.ISCONNECTED = isConnected;
                     Toast.makeText(DetectActivity.this, R.string.conn_no, Toast.LENGTH_SHORT).show();
                     break;
                 case 0:

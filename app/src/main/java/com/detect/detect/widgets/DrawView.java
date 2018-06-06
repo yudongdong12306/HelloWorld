@@ -20,6 +20,7 @@ import java.util.Calendar;
 
 
 public class DrawView extends View {
+    private static final boolean isTestMode = true;
     private Context context;
     private Paint linePaint;
     private Paint linePaint2;
@@ -31,7 +32,7 @@ public class DrawView extends View {
     private int[] data1;
     private int[] data2;
     private int[] data3;
-    private static final int dataSize = 20;
+    private static final int dataSize = 100;
     private Path path1;
     private Path path2;
     private Path path3;
@@ -48,7 +49,9 @@ public class DrawView extends View {
     public DrawView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
-        setData1();
+        if (isTestMode) {
+            setData1();
+        }
     }
 
     public String viewSaveToImage() {

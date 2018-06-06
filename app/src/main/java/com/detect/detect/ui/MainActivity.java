@@ -82,7 +82,8 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                 startActivity(new Intent(this, ShowHistoryActivity.class));
                 break;
             case R.id.data_manage_tv:
-                startActivity(new Intent(this, DataManagerActivity.class));
+                startActivity(new Intent(this, DataProjectNameActivity.class));
+//                startActivity(new Intent(this, DataManagerActivity.class));
                 break;
             case R.id.system_set_tv:
                 startActivity(new Intent(this, SystemSettingsActivity.class));

@@ -80,6 +80,9 @@
             android:name=".ui.SearchDeviceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme1" />
+        <activity android:name=".ui.DataProjectNameActivity" />
+        <activity android:name=".ui.DataSelectPointActivity" />
+        <activity android:name=".ui.DataPointDetailActivity" />
 
         <service android:name="com.amap.api.location.APSService" />
         <meta-data
