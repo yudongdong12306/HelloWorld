@@ -16,6 +16,7 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.detect.detect.R;
 import com.detect.detect.shared_preferences.CommonSP;
+import com.detect.detect.utils.UIUtils;
 import com.gsh.dialoglibrary.RaiingAlertDialog;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     TextView aboutUsTv;
     private static final int LOCATION_TAG = 1011;
     private static final String TAG = "MainActivity";
+
     @Override
     protected void initData() {
 
@@ -76,17 +78,16 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.about_us_tv:
-                startActivity(new Intent(this, AboutUsActivity.class));
+                UIUtils.intentActivity(AboutUsActivity.class, null, this);
                 break;
             case R.id.start_detect_tv:
-                startActivity(new Intent(this, ShowHistoryActivity.class));
+                UIUtils.intentActivity(ShowHistoryActivity.class, null, this);
                 break;
             case R.id.data_manage_tv:
-                startActivity(new Intent(this, DataProjectNameActivity.class));
-//                startActivity(new Intent(this, DataManagerActivity.class));
+                UIUtils.intentActivity(DataProjectNameActivity.class, null, this);
                 break;
             case R.id.system_set_tv:
-                startActivity(new Intent(this, SystemSettingsActivity.class));
+                UIUtils.intentActivity(SystemSettingsActivity.class, null, this);
                 break;
         }
     }

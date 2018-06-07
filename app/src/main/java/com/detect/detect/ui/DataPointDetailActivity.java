@@ -310,6 +310,9 @@ public class DataPointDetailActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CONNECT_DEVICE) {// 连接设备
+            if (data == null) {
+                return;
+            }
             devicesAddress = data.getExtras().getString(SearchDeviceActivity.EXTRA_DEVICE_ADDRESS);
             devicesName = data.getExtras().getString(SearchDeviceActivity.EXTRA_DEVICE_NAME);
             connect2BlueToothdevice();
