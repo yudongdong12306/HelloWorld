@@ -76,7 +76,7 @@ public class SystemSettingsActivity extends BaseActivity {
 
     @Override
     public void initView() {
-
+        commonTitleTv.setText("设置");
     }
 
 
