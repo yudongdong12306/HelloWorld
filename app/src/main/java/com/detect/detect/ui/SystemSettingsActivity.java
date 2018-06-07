@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.detect.detect.R;
 import com.detect.detect.constant.GlobalContants;
 import com.detect.detect.global.GlobalApplication;
+import com.detect.detect.shared_preferences.CommonSP;
 import com.detect.detect.utils.PrefUtils;
 import com.detect.detect.utils.ToastUtils;
 import com.detect.detect.utils.UIUtils;
@@ -93,6 +95,12 @@ public class SystemSettingsActivity extends BaseActivity {
             case R.id.machine_num_rl:
                 break;
             case R.id.line_correct_rl:
+                String password = CommonSP.getInstance().getPassword();
+                if (TextUtils.isEmpty(password)) {
+                    UIUtils.intentActivity(SetPasswordActivity.class, null, this);
+                } else {
+                    UIUtils.intentActivity(InputPasswordActivity.class, null, this);
+                }
                 break;
             case R.id.language_set_rl:
                 break;

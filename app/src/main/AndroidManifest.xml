@@ -83,6 +83,9 @@
         <activity android:name=".ui.DataProjectNameActivity" />
         <activity android:name=".ui.DataSelectPointActivity" />
         <activity android:name=".ui.DataPointDetailActivity" />
+        <activity android:name=".ui.SetPasswordActivity" />
+        <activity android:name=".ui.InputPasswordActivity" />
+        <activity android:name=".ui.ModifyParameterActivity" />
 
         <service android:name="com.amap.api.location.APSService" />
         <meta-data

@@ -13,6 +13,8 @@ public class CommonSP {
     //用户自己得属性
     public static final String SHARED_KEY_LONGITUDE = "longitude";//经度
     public static final String SHARED_KEY_LATITUDE = "latitude";//纬度
+    public static final String SHARED_KEY_PASSWORD = "password";//纬度
+    public static final String SHARED_KEY_LINE_PARAMS = "line_params";//纬度
 
     /**
      * 初始化
@@ -64,7 +66,24 @@ public class CommonSP {
     public String getLongitude() {
         return preferences.getString(SHARED_KEY_LONGITUDE, "0");
     }
+
     public String getLatitude() {
         return preferences.getString(SHARED_KEY_LATITUDE, "0");
+    }
+
+    public String getPassword() {
+        return preferences.getString(SHARED_KEY_PASSWORD, "");
+    }
+
+    public void setPassword(String password) {
+        preferences.edit().putString(SHARED_KEY_PASSWORD, password).apply();
+    }
+
+    public String getLineParams() {
+        return preferences.getString(SHARED_KEY_LINE_PARAMS, "");
+    }
+
+    public void setLineParams(String params) {
+        preferences.edit().putString(SHARED_KEY_LINE_PARAMS, params).apply();
     }
 }
